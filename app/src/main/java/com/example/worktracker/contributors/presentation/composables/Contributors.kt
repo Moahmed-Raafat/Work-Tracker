@@ -80,6 +80,7 @@ fun Contributors(navController: NavController,
 {
     var showAddContributorDialog by remember { mutableStateOf(false) }
 
+
     val context = LocalContext.current.applicationContext
     val getContributorsState by getContributorsViewModel.state.collectAsStateWithLifecycle()
 
