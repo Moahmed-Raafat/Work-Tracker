@@ -2,6 +2,8 @@ package com.example.worktracker.common
 
 import com.example.worktracker.contributors.data.remote.dto.AddContributorBodyDto
 import com.example.worktracker.contributors.data.remote.dto.AddContributorResponseDto
+import com.example.worktracker.contributors.data.remote.dto.DeleteContributorBodyDto
+import com.example.worktracker.contributors.data.remote.dto.DeleteContributorResponseDto
 import com.example.worktracker.contributors.data.remote.dto.GetContributorsBodyDto
 import com.example.worktracker.contributors.data.remote.dto.GetContributorsResponseDto
 import com.example.worktracker.contributors.data.remote.dto.UpdateContributorBodyDto
@@ -25,6 +27,10 @@ interface ServiceAPI {
     @Headers("Content-Type: application/json")
     @POST("exec")
     suspend fun updateContributor(@Body updateContributorBodyDto: UpdateContributorBodyDto) : UpdateContributorResponseDto
+
+    @Headers("Content-Type: application/json")
+    @POST("exec")
+    suspend fun deleteContributor(@Body deleteContributorBodyDto: DeleteContributorBodyDto) : DeleteContributorResponseDto
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //statuses
 

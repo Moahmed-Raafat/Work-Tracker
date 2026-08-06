@@ -3,6 +3,8 @@ package com.example.worktracker.contributors.data.remote.mappers
 import com.example.worktracker.contributors.data.remote.dto.AddContributorBodyDto
 import com.example.worktracker.contributors.data.remote.dto.AddContributorResponseDto
 import com.example.worktracker.contributors.data.remote.dto.ContributorDto
+import com.example.worktracker.contributors.data.remote.dto.DeleteContributorBodyDto
+import com.example.worktracker.contributors.data.remote.dto.DeleteContributorResponseDto
 import com.example.worktracker.contributors.data.remote.dto.GetContributorsBodyDto
 import com.example.worktracker.contributors.data.remote.dto.GetContributorsResponseDto
 import com.example.worktracker.contributors.data.remote.dto.UpdateContributorBodyDto
@@ -10,6 +12,8 @@ import com.example.worktracker.contributors.data.remote.dto.UpdateContributorRes
 import com.example.worktracker.contributors.domain.model.AddContributorBody
 import com.example.worktracker.contributors.domain.model.AddContributorResponse
 import com.example.worktracker.contributors.domain.model.Contributor
+import com.example.worktracker.contributors.domain.model.DeleteContributorBody
+import com.example.worktracker.contributors.domain.model.DeleteContributorResponse
 import com.example.worktracker.contributors.domain.model.GetContributorsBody
 import com.example.worktracker.contributors.domain.model.GetContributorsResponse
 import com.example.worktracker.contributors.domain.model.UpdateContributorBody
@@ -101,6 +105,31 @@ fun UpdateContributorBody.toDto(): UpdateContributorBodyDto
 fun UpdateContributorResponseDto.toDomain(): UpdateContributorResponse
 {
     return UpdateContributorResponse(
+        success=  success,
+        id= id,
+        message= message
+    )
+}
+
+fun DeleteContributorBodyDto.toDomain(): DeleteContributorBody
+{
+    return DeleteContributorBody(
+        action= action,
+        id= id
+    )
+}
+
+fun DeleteContributorBody.toDto(): DeleteContributorBodyDto
+{
+    return DeleteContributorBodyDto(
+        action= action,
+        id= id
+    )
+}
+
+fun DeleteContributorResponseDto.toDomain(): DeleteContributorResponse
+{
+    return DeleteContributorResponse(
         success=  success,
         id= id,
         message= message

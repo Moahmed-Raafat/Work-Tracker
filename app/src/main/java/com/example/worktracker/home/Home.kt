@@ -74,13 +74,13 @@ fun Home(navController: NavController)
                         verticalArrangement = Arrangement.Center) {
 
                         Image(
-                            painter = painterResource(id = R.drawable.app_icon),
+                            painter = painterResource(id = R.drawable.work_tracker),
                             contentDescription = "",
                             modifier = Modifier.height(70.dp).width(70.dp)
                         )
                         Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
                         Text(
-                            text = Constants.BUG_TRACKER,
+                            text = Constants.WORK_TRACKER,
                             color = colorResource(R.color.primary_text_color),
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp)
@@ -88,6 +88,31 @@ fun Home(navController: NavController)
                 }
 
                 Spacer(modifier = Modifier.fillMaxWidth().height(20.dp))
+
+                //work types
+                NavigationDrawerItem(
+
+                    label = { Text( text = Constants.WORK_TYPES , color = colorResource(R.color.primary_text_color), fontSize = 15.sp)},
+                    selected = false,
+                    icon = {
+                        Icon(
+                            //todo change icon
+                            painter = painterResource(R.drawable.work_types) ,
+                            contentDescription= Constants.WORK_TYPES,
+                            modifier = Modifier.size(30.dp)) },
+                    onClick= {
+                        //closing the navigation drawer
+                        coroutineScope.launch{
+                            //drawerState.close()
+                        }
+
+                        //navigating to selected screen
+                        navController.navigate(Screens.WorkTypes.route){
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                )
 
                 //contributors
                 NavigationDrawerItem(
@@ -102,7 +127,7 @@ fun Home(navController: NavController)
                     onClick= {
                         //closing the navigation drawer
                         coroutineScope.launch{
-                            drawerState.close()
+                            //drawerState.close()
                         }
 
                         //navigating to selected screen
@@ -124,7 +149,7 @@ fun Home(navController: NavController)
                     onClick= {
                         //closing the navigation drawer
                         coroutineScope.launch{
-                            drawerState.close()
+                            //drawerState.close()
                         }
 
                         //navigating to selected screen
@@ -148,7 +173,7 @@ fun Home(navController: NavController)
                     onClick= {
                         //closing the navigation drawer
                         coroutineScope.launch{
-                            drawerState.close()
+                            //drawerState.close()
                         }
 
                         //navigating to selected screen
@@ -159,7 +184,29 @@ fun Home(navController: NavController)
                     },
                 )
 
+                //about
+                NavigationDrawerItem(
 
+                    label = {
+                        Text(text = Constants.ABOUT , color = colorResource(R.color.primary_text_color), fontSize = 15.sp)
+                    },
+                    selected = false,
+                    icon = {Icon(painter = painterResource(R.drawable.about),
+                        contentDescription= Constants.ABOUT,
+                        modifier = Modifier.size(30.dp)) },
+                    onClick= {
+                        //closing the navigation drawer
+                        coroutineScope.launch{
+                            //drawerState.close()
+                        }
+
+                        //navigating to selected screen
+                        navController.navigate(Screens.About.route){
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                )
             }
 
         })

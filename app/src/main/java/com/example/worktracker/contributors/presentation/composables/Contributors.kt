@@ -64,6 +64,8 @@ import com.example.worktracker.common.Constants
 import com.example.worktracker.contributors.presentation.model.ContributorUI
 import com.example.worktracker.contributors.presentation.viewmodel.add_contributor.AddContributorEvents
 import com.example.worktracker.contributors.presentation.viewmodel.add_contributor.AddContributorViewModel
+import com.example.worktracker.contributors.presentation.viewmodel.delete_contributor.DeleteContributorEvents
+import com.example.worktracker.contributors.presentation.viewmodel.delete_contributor.DeleteContributorViewModel
 import com.example.worktracker.contributors.presentation.viewmodel.get_contributors.GetContributorsViewModel
 import com.example.worktracker.contributors.presentation.viewmodel.update_contributor.UpdateContributorEvents
 import com.example.worktracker.contributors.presentation.viewmodel.update_contributor.UpdateContributorViewModel
@@ -76,7 +78,9 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 fun Contributors(navController: NavController,
                  getContributorsViewModel: GetContributorsViewModel,
                  addContributorViewModel: AddContributorViewModel,
-                 updateContributorViewModel: UpdateContributorViewModel)
+                 updateContributorViewModel: UpdateContributorViewModel,
+                 deleteContributorViewModel: DeleteContributorViewModel
+)
 {
     var showAddContributorDialog by remember { mutableStateOf(false) }
 
@@ -116,7 +120,7 @@ fun Contributors(navController: NavController,
     //update contributor
     val updateContributorState by updateContributorViewModel.updateContributorState.collectAsStateWithLifecycle()
 
-    //handling success response and error for adding contributor
+    //handling success response and error for updating contributor
     LaunchedEffect(Unit) {
         updateContributorViewModel.updateContributorEvents.collect { event ->
             when (event) {
@@ -131,8 +135,23 @@ fun Contributors(navController: NavController,
         }
     }
     //////////////////////////////////////////////////////////////////////
+    //delete contributor
+    val deleteContributorState by deleteContributorViewModel.deleteContributorState.collectAsStateWithLifecycle()
 
-
+    //handling success response and error for deleting contributor
+    LaunchedEffect(Unit) {
+        deleteContributorViewModel.deleteContributorEvents.collect { event ->
+            when (event) {
+                is DeleteContributorEvents.Success -> {
+                    Toast.makeText(context, Constants.CONTRIBUTOR_IS_DELETED_SUCCESSFULLY, Toast.LENGTH_SHORT).show()
+                    getContributorsViewModel.loadFirstPage()
+                }
+                is DeleteContributorEvents.ShowError -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
     Scaffold(
         modifier = Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding(),
         topBar = {
@@ -201,17 +220,18 @@ fun Contributors(navController: NavController,
                             Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
                             ShowList(
                                 context,
-                                navController = navController,
                                 list = items,
                                 onLoadMore = { getContributorsViewModel.loadNextPage() },
-                                updateContributorViewModel
+                                updateContributorViewModel= updateContributorViewModel,
+                                deleteContributorViewModel= deleteContributorViewModel
                             )
                         }
 
                         // Show loading as an OVERLAY (not replacing the list)
                         if (getContributorsState.isLoading ||
                             addContributorState.isLoading ||
-                            updateContributorState.isLoading)
+                            updateContributorState.isLoading||
+                            deleteContributorState.isLoading)
                         {
                             Box(
                                 modifier = Modifier
@@ -264,14 +284,16 @@ fun Contributors(navController: NavController,
 @Composable
 fun ShowList(
     context: Context,
-    navController: NavController,
     list: List<ContributorUI>,
     onLoadMore: () -> Unit,
-    updateContributorViewModel: UpdateContributorViewModel)
+    updateContributorViewModel: UpdateContributorViewModel,
+    deleteContributorViewModel: DeleteContributorViewModel
+)
 {
     val listState = rememberLazyListState()
     var showUpdateContributorDialog by remember { mutableStateOf(false) }
     var showContributorDetailsDialog by remember { mutableStateOf(false) }
+    var showDeleteConributorDialog by remember { mutableStateOf(false) }
     var selectedContributor by remember { mutableStateOf<ContributorUI?>(null) }
 
 
@@ -391,19 +413,31 @@ fun ShowList(
                     showContributorDetailsDialog = false
                     showUpdateContributorDialog = true
                     selectedContributor= item
-
-                    //todo show the update dialog
                 },
-                onDelete = { id ->
+                onDelete = {
                     showContributorDetailsDialog = false
+                    showDeleteConributorDialog = true
+                }
+            )
+        }
+    }
+
+    if(showDeleteConributorDialog)
+    {
+        selectedContributor.let {
+            DeleteContributorDialog(
+                contributorUI = selectedContributor!!,
+                onDismiss = {
+                    showDeleteConributorDialog = false
+                },
+                onDelete = { contributorUi ->
+                    showDeleteConributorDialog = false
+                    deleteContributorViewModel.deleteContributor(contributorUi.id)
                 }
             )
         }
     }
 }
-
-//todo add a dialog for details
-//todo delete
 
 @Composable
 fun AddContributorDialog(
@@ -415,7 +449,10 @@ fun AddContributorDialog(
     Dialog(onDismissRequest = onDismiss) {
         Card(
             shape = RoundedCornerShape(16.dp),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = colorResource(R.color.white)
+            )
         ) {
             Column(
                 modifier = Modifier
@@ -546,17 +583,14 @@ fun UpdateContributorDialog(
     }
 }
 
-//todo finish the dialog
-//todo add delete functionality
+
 @Composable
 fun ShowContributorDetailsDialog(
     contributorUI: ContributorUI,
     onDismiss: () -> Unit,
     onUpdate: (ContributorUI) -> Unit,
-    onDelete: (Int) -> Unit
+    onDelete: () -> Unit
 ) {
-    var name by remember { mutableStateOf("") }
-
     Dialog(onDismissRequest = onDismiss) {
         Card(
             shape = RoundedCornerShape(16.dp),
@@ -635,7 +669,7 @@ fun ShowContributorDetailsDialog(
 
                     Button(
                         onClick = {
-                            onDelete(contributorUI.id)
+                            onDelete()
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = colorResource(R.color.color_1),
@@ -663,6 +697,75 @@ fun ShowContributorDetailsDialog(
 
                     TextButton(onClick = onDismiss)
                     {
+                        Text(Constants.CANCEL, color = colorResource(R.color.color_1))
+                    }
+                }
+            }
+        }
+    }
+
+
+}
+
+@Composable
+fun DeleteContributorDialog(
+    contributorUI: ContributorUI,
+    onDismiss: () -> Unit,
+    onDelete: (ContributorUI) -> Unit
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = colorResource(R.color.white)
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth()
+            ) {
+
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center)
+                {
+                    Text(
+                        text = Constants.DELETE_CONTRIBUTOR,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = colorResource(R.color.color_1)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = " Are you sure you want to delete this contributor",
+                    fontSize = 15.sp,
+                    color = colorResource(R.color.primary_text_color)
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+
+                    Button(
+                        onClick = {
+                            onDelete(contributorUI)
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colorResource(R.color.color_1),
+                            contentColor = colorResource(R.color.white)
+                        )
+                    ) {
+                        Text(Constants.DELETE)
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    TextButton(onClick = onDismiss) {
                         Text(Constants.CANCEL, color = colorResource(R.color.color_1))
                     }
                 }
