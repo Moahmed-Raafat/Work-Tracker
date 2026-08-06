@@ -5,6 +5,8 @@ import com.example.worktracker.common.Constants
 import com.example.worktracker.common.ServiceAPI
 import com.example.worktracker.contributors.data.repository.ContributorsRepositoryImpl
 import com.example.worktracker.contributors.domain.repository.ContributorsRepository
+import com.example.worktracker.worktypes.data.repository.WorkTypesRepositoryImpl
+import com.example.worktracker.worktypes.domain.repository.WorkTypesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -103,5 +105,11 @@ class ApplicationModule
     @Singleton
     fun provideContributorsRepository(serviceAPI: ServiceAPI): ContributorsRepository {
         return ContributorsRepositoryImpl(serviceAPI)
+    }
+
+    @Provides
+    @Singleton
+    fun provideWorkTypesRepository(serviceAPI: ServiceAPI): WorkTypesRepository {
+        return WorkTypesRepositoryImpl(serviceAPI)
     }
 }

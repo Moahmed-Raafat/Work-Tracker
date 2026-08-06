@@ -14,6 +14,10 @@ object Constants {
     const val ADD_CONTRIBUTOR_ACTION: String = "addContributor"
     const val UPDATE_CONTRIBUTOR_ACTION: String = "updateContributor"
     const val DELETE_CONTRIBUTOR_ACTION: String = "deleteContributor"
+    const val GET_WORK_TYPES_ACTION: String = "getWorkTypes"
+    const val ADD_WORK_TYPE_ACTION: String = "addWorkType"
+    const val UPDATE_WORK_TYPE_ACTION: String = "updateWorkType"
+    const val DELETE_WORK_TYPE_ACTION: String = "deleteWorkType"
 
 
 

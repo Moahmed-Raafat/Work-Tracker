@@ -82,9 +82,6 @@ dependencies {
     //Glide
     implementation ("com.github.bumptech.glide:glide:4.16.0")
 
-    //navigation
-    implementation("androidx.navigation:navigation-compose:2.7.0")
-
     //coil
     implementation("io.coil-kt:coil-compose:2.4.0")
 
@@ -97,4 +94,16 @@ dependencies {
     implementation ("com.squareup.okhttp3:okhttp:4.12.0")
     //implementation ("com.cloudinary:cloudinary-android:2.3.1")
     implementation("com.google.accompanist:accompanist-swiperefresh:0.31.5-beta")
+
+    //navigation
+    implementation("androidx.navigation:navigation-compose:2.9.8")
+
+    //room
+    implementation ("androidx.room:room-runtime:2.6.1")
+    kapt( "androidx.room:room-compiler:2.6.1")
+    implementation ("androidx.room:room-ktx:2.6.1")
+
+    //splash screen
+    implementation ("androidx.core:core-splashscreen:1.2.0")
+
 }

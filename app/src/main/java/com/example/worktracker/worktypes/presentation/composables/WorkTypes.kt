@@ -1,4 +1,4 @@
-package com.example.worktracker.work_types
+package com.example.worktracker.worktypes.presentation.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

@@ -14,7 +14,7 @@ import com.example.worktracker.contributors.presentation.viewmodel.update_contri
 import com.example.worktracker.home.Home
 import com.example.worktracker.priorities.Priorities
 import com.example.worktracker.statuses.Statuses
-import com.example.worktracker.work_types.WorkTypes
+import com.example.worktracker.worktypes.presentation.composables.WorkTypes
 
 @Composable
 fun Navigation()
