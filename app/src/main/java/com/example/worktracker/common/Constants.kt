@@ -18,6 +18,14 @@ object Constants {
     const val ADD_WORK_TYPE_ACTION: String = "addWorkType"
     const val UPDATE_WORK_TYPE_ACTION: String = "updateWorkType"
     const val DELETE_WORK_TYPE_ACTION: String = "deleteWorkType"
+    const val GET_STATUSES_ACTION: String = "getStatuses"
+    const val ADD_STATUS_ACTION: String = "addStatus"
+    const val UPDATE_STATUS_ACTION: String = "updateStatus"
+    const val DELETE_STATUS_ACTION: String = "deleteStatus"
+    const val GET_PRIORITIES_ACTION: String = "getPriorities"
+    const val ADD_PRIORITY_ACTION: String = "addPriority"
+    const val UPDATE_PRIORITY_ACTION: String = "updatePriority"
+    const val DELETE_PRIORITY_ACTION: String = "deletePriority"
 
 
 

@@ -1,4 +1,4 @@
-package com.example.worktracker.statuses
+package com.example.worktracker.priorities.presentation.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,7 +29,7 @@ import com.example.worktracker.common.Constants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Statuses(navController: NavController)
+fun Priorities(navController: NavController)
 {
     val context = LocalContext.current.applicationContext
 
@@ -42,7 +42,7 @@ fun Statuses(navController: NavController)
                     Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.Center)
                     {
                         Text(
-                            text = Constants.STATUSES,
+                            text = Constants.PRIORITIES,
                             fontWeight = FontWeight.Bold,
                             color = colorResource(R.color.primary_text_color),
                             textAlign = TextAlign.Center
@@ -63,7 +63,7 @@ fun Statuses(navController: NavController)
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally)
         {
-            Text(text = "statuses")
+            Text(text = "priorities")
         }
 
     }

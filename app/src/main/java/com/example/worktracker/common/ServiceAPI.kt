@@ -16,6 +16,22 @@ import com.example.worktracker.worktypes.data.remote.dto.GetWorkTypesBodyDto
 import com.example.worktracker.worktypes.data.remote.dto.GetWorkTypesResponseDto
 import com.example.worktracker.worktypes.data.remote.dto.UpdateWorkTypeBodyDto
 import com.example.worktracker.worktypes.data.remote.dto.UpdateWorkTypeResponseDto
+import com.example.worktracker.statuses.data.remote.dto.AddStatusBodyDto
+import com.example.worktracker.statuses.data.remote.dto.AddStatusResponseDto
+import com.example.worktracker.statuses.data.remote.dto.DeleteStatusBodyDto
+import com.example.worktracker.statuses.data.remote.dto.DeleteStatusResponseDto
+import com.example.worktracker.statuses.data.remote.dto.GetStatusesBodyDto
+import com.example.worktracker.statuses.data.remote.dto.GetStatusesResponseDto
+import com.example.worktracker.statuses.data.remote.dto.UpdateStatusBodyDto
+import com.example.worktracker.statuses.data.remote.dto.UpdateStatusResponseDto
+import com.example.worktracker.priorities.data.remote.dto.AddPriorityBodyDto
+import com.example.worktracker.priorities.data.remote.dto.AddPriorityResponseDto
+import com.example.worktracker.priorities.data.remote.dto.DeletePriorityBodyDto
+import com.example.worktracker.priorities.data.remote.dto.DeletePriorityResponseDto
+import com.example.worktracker.priorities.data.remote.dto.GetPrioritiesBodyDto
+import com.example.worktracker.priorities.data.remote.dto.GetPrioritiesResponseDto
+import com.example.worktracker.priorities.data.remote.dto.UpdatePriorityBodyDto
+import com.example.worktracker.priorities.data.remote.dto.UpdatePriorityResponseDto
 import retrofit2.http.Body
 import retrofit2.http.Headers
 import retrofit2.http.POST
@@ -61,9 +77,40 @@ interface ServiceAPI {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //statuses
 
+    @Headers("Content-Type: application/json")
+    @POST("exec")
+    suspend fun getStatuses(@Body getStatusesBodyDto: GetStatusesBodyDto) : GetStatusesResponseDto
+
+    @Headers("Content-Type: application/json")
+    @POST("exec")
+    suspend fun addStatus(@Body addStatusBodyDto: AddStatusBodyDto) : AddStatusResponseDto
+
+    @Headers("Content-Type: application/json")
+    @POST("exec")
+    suspend fun updateStatus(@Body updateStatusBodyDto: UpdateStatusBodyDto) : UpdateStatusResponseDto
+
+    @Headers("Content-Type: application/json")
+    @POST("exec")
+    suspend fun deleteStatus(@Body deleteStatusBodyDto: DeleteStatusBodyDto) : DeleteStatusResponseDto
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //priorities
+
+    @Headers("Content-Type: application/json")
+    @POST("exec")
+    suspend fun getPriorities(@Body getPrioritiesBodyDto: GetPrioritiesBodyDto) : GetPrioritiesResponseDto
+
+    @Headers("Content-Type: application/json")
+    @POST("exec")
+    suspend fun addPriority(@Body addPriorityBodyDto: AddPriorityBodyDto) : AddPriorityResponseDto
+
+    @Headers("Content-Type: application/json")
+    @POST("exec")
+    suspend fun updatePriority(@Body updatePriorityBodyDto: UpdatePriorityBodyDto) : UpdatePriorityResponseDto
+
+    @Headers("Content-Type: application/json")
+    @POST("exec")
+    suspend fun deletePriority(@Body deletePriorityBodyDto: DeletePriorityBodyDto) : DeletePriorityResponseDto
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

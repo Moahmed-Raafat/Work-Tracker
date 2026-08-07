@@ -7,6 +7,10 @@ import com.example.worktracker.contributors.data.repository.ContributorsReposito
 import com.example.worktracker.contributors.domain.repository.ContributorsRepository
 import com.example.worktracker.worktypes.data.repository.WorkTypesRepositoryImpl
 import com.example.worktracker.worktypes.domain.repository.WorkTypesRepository
+import com.example.worktracker.statuses.data.repository.StatusesRepositoryImpl
+import com.example.worktracker.statuses.domain.repository.StatusesRepository
+import com.example.worktracker.priorities.data.repository.PrioritiesRepositoryImpl
+import com.example.worktracker.priorities.domain.repository.PrioritiesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -111,5 +115,17 @@ class ApplicationModule
     @Singleton
     fun provideWorkTypesRepository(serviceAPI: ServiceAPI): WorkTypesRepository {
         return WorkTypesRepositoryImpl(serviceAPI)
+    }
+
+    @Provides
+    @Singleton
+    fun provideStatusesRepository(serviceAPI: ServiceAPI): StatusesRepository {
+        return StatusesRepositoryImpl(serviceAPI)
+    }
+
+    @Provides
+    @Singleton
+    fun providePrioritiesRepository(serviceAPI: ServiceAPI): PrioritiesRepository {
+        return PrioritiesRepositoryImpl(serviceAPI)
     }
 }

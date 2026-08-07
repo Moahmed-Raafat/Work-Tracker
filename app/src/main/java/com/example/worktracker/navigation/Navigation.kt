@@ -12,8 +12,8 @@ import com.example.worktracker.contributors.presentation.viewmodel.delete_contri
 import com.example.worktracker.contributors.presentation.viewmodel.get_contributors.GetContributorsViewModel
 import com.example.worktracker.contributors.presentation.viewmodel.update_contributor.UpdateContributorViewModel
 import com.example.worktracker.home.Home
-import com.example.worktracker.priorities.Priorities
-import com.example.worktracker.statuses.Statuses
+import com.example.worktracker.priorities.presentation.composables.Priorities
+import com.example.worktracker.statuses.presentation.composables.Statuses
 import com.example.worktracker.worktypes.presentation.composables.WorkTypes
 
 @Composable
