@@ -8,6 +8,8 @@ import com.example.worktracker.contributors.data.remote.dto.GetContributorsBodyD
 import com.example.worktracker.contributors.data.remote.dto.GetContributorsResponseDto
 import com.example.worktracker.contributors.data.remote.dto.UpdateContributorBodyDto
 import com.example.worktracker.contributors.data.remote.dto.UpdateContributorResponseDto
+import com.example.worktracker.home.data.remote.dto.GetWorkItemsBodyDto
+import com.example.worktracker.home.data.remote.dto.GetWorkItemsResponseDto
 import com.example.worktracker.worktypes.data.remote.dto.AddWorkTypeBodyDto
 import com.example.worktracker.worktypes.data.remote.dto.AddWorkTypeResponseDto
 import com.example.worktracker.worktypes.data.remote.dto.DeleteWorkTypeBodyDto
@@ -40,75 +42,59 @@ interface ServiceAPI {
 
     //contributors
 
-    @Headers("Content-Type: application/json")
     @POST("exec")
     suspend fun getContributors(@Body getContributorsBodyDto: GetContributorsBodyDto) : GetContributorsResponseDto
 
-    @Headers("Content-Type: application/json")
     @POST("exec")
     suspend fun addContributor(@Body addContributorsBodyDto: AddContributorBodyDto) : AddContributorResponseDto
 
-    @Headers("Content-Type: application/json")
     @POST("exec")
     suspend fun updateContributor(@Body updateContributorBodyDto: UpdateContributorBodyDto) : UpdateContributorResponseDto
 
-    @Headers("Content-Type: application/json")
     @POST("exec")
     suspend fun deleteContributor(@Body deleteContributorBodyDto: DeleteContributorBodyDto) : DeleteContributorResponseDto
     
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //work types
 
-    @Headers("Content-Type: application/json")
     @POST("exec")
     suspend fun getWorkTypes(@Body getWorkTypesBodyDto: GetWorkTypesBodyDto) : GetWorkTypesResponseDto
 
-    @Headers("Content-Type: application/json")
     @POST("exec")
     suspend fun addWorkType(@Body addWorkTypeBodyDto: AddWorkTypeBodyDto) : AddWorkTypeResponseDto
 
-    @Headers("Content-Type: application/json")
     @POST("exec")
     suspend fun updateWorkType(@Body updateWorkTypeBodyDto: UpdateWorkTypeBodyDto) : UpdateWorkTypeResponseDto
 
-    @Headers("Content-Type: application/json")
     @POST("exec")
     suspend fun deleteWorkType(@Body deleteWorkTypeBodyDto: DeleteWorkTypeBodyDto) : DeleteWorkTypeResponseDto
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //statuses
 
-    @Headers("Content-Type: application/json")
     @POST("exec")
     suspend fun getStatuses(@Body getStatusesBodyDto: GetStatusesBodyDto) : GetStatusesResponseDto
 
-    @Headers("Content-Type: application/json")
     @POST("exec")
     suspend fun addStatus(@Body addStatusBodyDto: AddStatusBodyDto) : AddStatusResponseDto
 
-    @Headers("Content-Type: application/json")
     @POST("exec")
     suspend fun updateStatus(@Body updateStatusBodyDto: UpdateStatusBodyDto) : UpdateStatusResponseDto
 
-    @Headers("Content-Type: application/json")
     @POST("exec")
     suspend fun deleteStatus(@Body deleteStatusBodyDto: DeleteStatusBodyDto) : DeleteStatusResponseDto
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //priorities
 
-    @Headers("Content-Type: application/json")
     @POST("exec")
     suspend fun getPriorities(@Body getPrioritiesBodyDto: GetPrioritiesBodyDto) : GetPrioritiesResponseDto
 
-    @Headers("Content-Type: application/json")
     @POST("exec")
     suspend fun addPriority(@Body addPriorityBodyDto: AddPriorityBodyDto) : AddPriorityResponseDto
 
-    @Headers("Content-Type: application/json")
     @POST("exec")
     suspend fun updatePriority(@Body updatePriorityBodyDto: UpdatePriorityBodyDto) : UpdatePriorityResponseDto
 
-    @Headers("Content-Type: application/json")
     @POST("exec")
     suspend fun deletePriority(@Body deletePriorityBodyDto: DeletePriorityBodyDto) : DeletePriorityResponseDto
 
@@ -118,5 +104,8 @@ interface ServiceAPI {
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    //bugs
+    //work items
+
+    @POST("exec")
+    suspend fun getWorkItems(@Body getWorkItemsBodyDto: GetWorkItemsBodyDto) : GetWorkItemsResponseDto
 }

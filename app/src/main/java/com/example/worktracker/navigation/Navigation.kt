@@ -11,10 +11,23 @@ import com.example.worktracker.contributors.presentation.viewmodel.add_contribut
 import com.example.worktracker.contributors.presentation.viewmodel.delete_contributor.DeleteContributorViewModel
 import com.example.worktracker.contributors.presentation.viewmodel.get_contributors.GetContributorsViewModel
 import com.example.worktracker.contributors.presentation.viewmodel.update_contributor.UpdateContributorViewModel
-import com.example.worktracker.home.Home
+import com.example.worktracker.home.presentation.composables.Home
+import com.example.worktracker.home.presentation.viewmodel.GetWorkItemsViewModel
 import com.example.worktracker.priorities.presentation.composables.Priorities
+import com.example.worktracker.priorities.presentation.viewmodel.add_priority.AddPriorityViewModel
+import com.example.worktracker.priorities.presentation.viewmodel.delete_priority.DeletePriorityViewModel
+import com.example.worktracker.priorities.presentation.viewmodel.get_priorities.GetPrioritiesViewModel
+import com.example.worktracker.priorities.presentation.viewmodel.update_priority.UpdatePriorityViewModel
 import com.example.worktracker.statuses.presentation.composables.Statuses
+import com.example.worktracker.statuses.presentation.viewmodel.add_status.AddStatusViewModel
+import com.example.worktracker.statuses.presentation.viewmodel.delete_status.DeleteStatusViewModel
+import com.example.worktracker.statuses.presentation.viewmodel.get_statuses.GetStatusesViewModel
+import com.example.worktracker.statuses.presentation.viewmodel.update_status.UpdateStatusViewModel
 import com.example.worktracker.worktypes.presentation.composables.WorkTypes
+import com.example.worktracker.worktypes.presentation.viewmodel.add_worktype.AddWorkTypeViewModel
+import com.example.worktracker.worktypes.presentation.viewmodel.delete_worktype.DeleteWorkTypeViewModel
+import com.example.worktracker.worktypes.presentation.viewmodel.get_worktypes.GetWorkTypesViewModel
+import com.example.worktracker.worktypes.presentation.viewmodel.update_worktype.UpdateWorkTypeViewModel
 
 @Composable
 fun Navigation()
@@ -28,11 +41,32 @@ fun Navigation()
     {
         composable(route=Screens.Home.route)
         {
-            Home(navController = navController)
+            val getWorkItemsViewModel: GetWorkItemsViewModel = hiltViewModel()
+            val getWorkTypesViewModel: GetWorkTypesViewModel = hiltViewModel()
+            val getContributorsViewModel: GetContributorsViewModel = hiltViewModel()
+            val getStatusesViewModel: GetStatusesViewModel = hiltViewModel()
+            val getPrioritiesViewModel: GetPrioritiesViewModel= hiltViewModel()
+
+            Home(navController = navController,
+                getWorkItemsViewModel= getWorkItemsViewModel,
+                getWorkTypesViewModel= getWorkTypesViewModel,
+                getContributorsViewModel= getContributorsViewModel,
+                getStatusesViewModel= getStatusesViewModel,
+                getPrioritiesViewModel= getPrioritiesViewModel)
         }
         composable(route=Screens.WorkTypes.route)
         {
-            WorkTypes(navController = navController)
+            val getWorkTypesViewModel: GetWorkTypesViewModel = hiltViewModel()
+            val addWorkTypeViewModel: AddWorkTypeViewModel = hiltViewModel()
+            val updateWorkTypeViewModel: UpdateWorkTypeViewModel = hiltViewModel()
+            val deleteWorkTypeViewModel: DeleteWorkTypeViewModel = hiltViewModel()
+            WorkTypes(
+                navController = navController,
+                getWorkTypesViewModel= getWorkTypesViewModel,
+                addWorkTypeViewModel= addWorkTypeViewModel,
+                updateWorkTypeViewModel= updateWorkTypeViewModel,
+                deleteWorkTypeViewModel= deleteWorkTypeViewModel
+                )
         }
         composable(route=Screens.Contributors.route)
         {
@@ -42,24 +76,42 @@ fun Navigation()
             val deleteContributorViewModel: DeleteContributorViewModel = hiltViewModel()
             Contributors(
                 navController = navController,
-                getContributorsViewModel,
-                addContributorViewModel,
-                updateContributorViewModel,
-                deleteContributorViewModel)
+                getContributorsViewModel= getContributorsViewModel,
+                addContributorViewModel= addContributorViewModel,
+                updateContributorViewModel= updateContributorViewModel,
+                deleteContributorViewModel= deleteContributorViewModel)
         }
         composable(route=Screens.Statuses.route)
         {
-            Statuses(navController = navController)
+            val getStatusesViewModel: GetStatusesViewModel = hiltViewModel()
+            val addStatusViewModel: AddStatusViewModel = hiltViewModel()
+            val updateStatusViewModel: UpdateStatusViewModel = hiltViewModel()
+            val deleteStatusViewModel: DeleteStatusViewModel = hiltViewModel()
+
+            Statuses(
+                navController = navController,
+                getStatusesViewModel= getStatusesViewModel,
+                addStatusViewModel = addStatusViewModel,
+                updateStatusViewModel = updateStatusViewModel,
+                deleteStatusViewModel = deleteStatusViewModel)
         }
         composable(route=Screens.Priorities.route)
         {
-            Priorities(navController = navController)
+            val getPrioritiesViewModel: GetPrioritiesViewModel= hiltViewModel()
+            val addPriorityViewModel: AddPriorityViewModel = hiltViewModel()
+            val updatePriorityViewModel: UpdatePriorityViewModel = hiltViewModel()
+            val deletePriorityViewModel: DeletePriorityViewModel = hiltViewModel()
+
+            Priorities(
+                navController = navController,
+                getPrioritiesViewModel= getPrioritiesViewModel,
+                addPriorityViewModel = addPriorityViewModel,
+                updatePriorityViewModel = updatePriorityViewModel,
+                deletePriorityViewModel = deletePriorityViewModel)
         }
         composable(route=Screens.About.route)
         {
             About(navController = navController)
         }
-
     }
-
 }

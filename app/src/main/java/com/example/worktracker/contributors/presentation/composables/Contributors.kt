@@ -739,7 +739,7 @@ fun DeleteContributorDialog(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = " Are you sure you want to delete this contributor",
+                    text = Constants.ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_CONTRIBUTOR,
                     fontSize = 15.sp,
                     color = colorResource(R.color.primary_text_color)
                 )

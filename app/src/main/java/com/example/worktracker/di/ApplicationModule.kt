@@ -5,6 +5,8 @@ import com.example.worktracker.common.Constants
 import com.example.worktracker.common.ServiceAPI
 import com.example.worktracker.contributors.data.repository.ContributorsRepositoryImpl
 import com.example.worktracker.contributors.domain.repository.ContributorsRepository
+import com.example.worktracker.home.data.repository.WorkItemsRepositoryImpl
+import com.example.worktracker.home.domain.repository.WorkItemsRepository
 import com.example.worktracker.worktypes.data.repository.WorkTypesRepositoryImpl
 import com.example.worktracker.worktypes.domain.repository.WorkTypesRepository
 import com.example.worktracker.statuses.data.repository.StatusesRepositoryImpl
@@ -127,5 +129,10 @@ class ApplicationModule
     @Singleton
     fun providePrioritiesRepository(serviceAPI: ServiceAPI): PrioritiesRepository {
         return PrioritiesRepositoryImpl(serviceAPI)
+    }
+    @Provides
+    @Singleton
+    fun provideWorkItemsRepository(serviceAPI: ServiceAPI): WorkItemsRepository {
+        return WorkItemsRepositoryImpl(serviceAPI)
     }
 }
