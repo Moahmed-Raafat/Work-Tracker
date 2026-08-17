@@ -1,5 +1,10 @@
 package com.example.worktracker.home.presentation.model
 
+import com.example.worktracker.contributors.presentation.model.ContributorUI
+import com.example.worktracker.priorities.presentation.model.PriorityUI
+import com.example.worktracker.statuses.presentation.model.StatusUI
+import com.example.worktracker.worktypes.presentation.model.WorkTypeUI
+
 data class WorkItemUI(
     var id: Int,
     var workItemNumber: String,
@@ -7,10 +12,12 @@ data class WorkItemUI(
     var description: String,
     var createdAt: String,
     var updatedAt: String,
-    var workTypeId: Int,
-    var assignerId: Int,
-    var assigneeId: Int,
-    var statusId: Int,
-    var priorityId: Int,
+
+    var workType: WorkTypeUI,
+    var assigner: ContributorUI,
+    var assignee: ContributorUI,
+    var status: StatusUI,
+    var priority: PriorityUI,
+
     var documentationLinks: List<String>
 )

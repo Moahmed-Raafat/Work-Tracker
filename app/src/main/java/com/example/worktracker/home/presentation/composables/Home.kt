@@ -90,15 +90,66 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(navController: NavController,
-         getWorkItemsViewModel: GetWorkItemsViewModel,
+         getWorkItemsViewModel: GetWorkItemsViewModel/*,
          getWorkTypesViewModel: GetWorkTypesViewModel,
          getContributorsViewModel: GetContributorsViewModel,
          getStatusesViewModel: GetStatusesViewModel,
-         getPrioritiesViewModel: GetPrioritiesViewModel
+         getPrioritiesViewModel: GetPrioritiesViewModel*/
 )
 {
     val context = LocalContext.current.applicationContext
 
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    //work types
+
+    /*val getWorkTypesState by getWorkTypesViewModel.state.collectAsStateWithLifecycle()
+
+    var isRefreshingWorkTypes by remember { mutableStateOf(false) }
+
+    LaunchedEffect(getWorkTypesState.error) {
+        if (!getWorkTypesState.error.isNullOrBlank()) {
+            Toast.makeText(context, getWorkTypesState.error, Toast.LENGTH_SHORT).show()
+        }
+    }*/
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    //contributors
+
+    /*val getContributorsState by getContributorsViewModel.state.collectAsStateWithLifecycle()
+
+    var isRefreshingContributors by remember { mutableStateOf(false) }
+
+    LaunchedEffect(getContributorsState.error) {
+        if (!getContributorsState.error.isNullOrBlank()) {
+            Toast.makeText(context, getContributorsState.error, Toast.LENGTH_SHORT).show()
+        }
+    }*/
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    //statuses
+
+    /*val getStatusesState by getStatusesViewModel.state.collectAsStateWithLifecycle()
+
+    var isRefreshingStatuses by remember { mutableStateOf(false) }
+
+    LaunchedEffect(getStatusesState.error) {
+        if (!getStatusesState.error.isNullOrBlank()) {
+            Toast.makeText(context, getStatusesState.error, Toast.LENGTH_SHORT).show()
+        }
+    }*/
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    //priorities
+
+    /*val getPrioritiesState by getPrioritiesViewModel.state.collectAsStateWithLifecycle()
+
+    var isRefreshingPriorities by remember { mutableStateOf(false) }
+
+    LaunchedEffect(getPrioritiesState.error) {
+        if (!getPrioritiesState.error.isNullOrBlank()) {
+            Toast.makeText(context, getPrioritiesState.error, Toast.LENGTH_SHORT).show()
+        }
+    }*/
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //work items list
@@ -363,7 +414,6 @@ fun Home(navController: NavController,
 
                         Box(modifier = Modifier.fillMaxSize())
                         {
-                            // Show the list (always)
                             if (items.isNotEmpty()) {
                                 Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
                                 ShowList(
@@ -374,7 +424,11 @@ fun Home(navController: NavController,
                             }
 
 
-                            if (getWorkItemsState.isLoading )
+                            if (getWorkItemsState.isLoading/*||
+                                getWorkTypesState.isLoading ||
+                                getContributorsState.isLoading ||
+                                getStatusesState.isLoading ||
+                                getPrioritiesState.isLoading*/)
                             {
                                 Box(
                                     modifier = Modifier
@@ -415,6 +469,8 @@ fun Home(navController: NavController,
 //todo how we will use the filters
 //todo what data to show in the list
 //todo apply colors
+
+//todo i need to get the priorities, contributors, statuses, work types and show them in the list with their names instead of ids
 @SuppressLint("UseKtx", "ResourceAsColor")
 @Composable
 fun ShowList(
@@ -438,7 +494,6 @@ fun ShowList(
             key = { _, item -> item.id }
         ) { index, item ->
 
-            // Pagination trigger when scrolling near bottom
             if (index >= list.size - 3) {
                 onLoadMore()
             }
@@ -466,10 +521,29 @@ fun ShowList(
                 {
                     Spacer(modifier = Modifier.fillMaxWidth().height(3.dp))
 
+                    //number and priority
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(
+                            text = item.workItemNumber,
+                            color = colorResource(R.color.primary_text_color),
+                            fontSize = 20.sp
+                        )
+                        Text(
+                            text = item.priority.name,
+                            color = colorResource(R.color.primary_text_color),
+                            fontSize = 20.sp
+                        )
+                    }
+                    Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
+
                     //title
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text(
-                            text = item.title,
+                            text = if (item.title.length > 50) {
+                                item.title.take(50) + "..."
+                            } else {
+                                item.title
+                            },
                             color = colorResource(R.color.primary_text_color),
                             fontSize = 20.sp
                         )

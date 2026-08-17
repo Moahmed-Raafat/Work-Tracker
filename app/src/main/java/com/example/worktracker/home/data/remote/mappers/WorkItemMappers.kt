@@ -1,11 +1,15 @@
 package com.example.worktracker.home.data.remote.mappers
 
+import com.example.worktracker.contributors.data.remote.mappers.toDomain
 import com.example.worktracker.home.data.remote.dto.GetWorkItemsBodyDto
 import com.example.worktracker.home.data.remote.dto.GetWorkItemsResponseDto
 import com.example.worktracker.home.data.remote.dto.WorkItemDto
 import com.example.worktracker.home.domain.model.GetWorkItemsBody
 import com.example.worktracker.home.domain.model.GetWorkItemsResponse
 import com.example.worktracker.home.domain.model.WorkItem
+import com.example.worktracker.priorities.data.remote.mappers.toDomain
+import com.example.worktracker.statuses.data.remote.mappers.toDomain
+import com.example.worktracker.worktypes.data.remote.mappers.toDomain
 
 fun GetWorkItemsBodyDto.toDomain(): GetWorkItemsBody {
     return GetWorkItemsBody(
@@ -44,11 +48,13 @@ fun WorkItemDto.toDomain(): WorkItem
         description = this.description,
         createdAt = this.createdAt,
         updatedAt = this.updatedAt,
-        workTypeId = this.workTypeId,
-        assignerId = this.assignerId,
-        assigneeId = this.assigneeId,
-        statusId = this.statusId,
-        priorityId = this.priorityId,
+
+        workType = workType.toDomain(),
+        assigner = assigner.toDomain(),
+        assignee = assignee.toDomain(),
+        status = status.toDomain(),
+        priority = priority.toDomain(),
+
         documentationLinks = this.documentationLinks
     )
 }

@@ -1,10 +1,14 @@
 package com.example.worktracker.home.presentation.mappers
 
 import com.example.worktracker.common.formatDateTime
+import com.example.worktracker.contributors.presentation.mappers.toUI
 import com.example.worktracker.home.domain.model.GetWorkItemsResponse
 import com.example.worktracker.home.domain.model.WorkItem
 import com.example.worktracker.home.presentation.model.GetWorkItemsResponseUI
 import com.example.worktracker.home.presentation.model.WorkItemUI
+import com.example.worktracker.priorities.presentation.mappers.toUI
+import com.example.worktracker.statuses.presentation.mappers.toUI
+import com.example.worktracker.worktypes.presentation.mappers.toUI
 
 fun WorkItem.toUI(): WorkItemUI {
     return WorkItemUI(
@@ -14,11 +18,13 @@ fun WorkItem.toUI(): WorkItemUI {
         description = this.description,
         createdAt = formatDateTime(createdAt),
         updatedAt = formatDateTime(updatedAt),
-        workTypeId = this.workTypeId,
-        assignerId = this.assignerId,
-        assigneeId = this.assigneeId,
-        statusId = this.statusId,
-        priorityId = this.priorityId,
+
+        workType = workType.toUI(),
+        assigner = assigner.toUI(),
+        assignee = assignee.toUI(),
+        status = status.toUI(),
+        priority = priority.toUI(),
+
         documentationLinks = this.documentationLinks
     )
 }

@@ -89,9 +89,7 @@ object Constants {
     const val LOOKS_EMPTY_HERE: String = "Looks empty here"
 
 
-
-
-    const val BASE_URL="https://script.google.com/macros/s/AKfycbzLWeh7wDIXNFfLOTIw4gbhEN60InhQu8c6pDolH2cp44GqF_snop0k-Clz4CPF1gBqkQ/"
+    const val BASE_URL="https://script.google.com/macros/s/AKfycbwFQ_CrF2p4rkINqIDA4Ks8recXGEz263rZietoEPc4G2l6jl65n4PivhHn4ZPZOa0W-A/"
 
     const val CLOUD_NAME="drnwo9mdm"
     const val API_KEY="817135666282944"

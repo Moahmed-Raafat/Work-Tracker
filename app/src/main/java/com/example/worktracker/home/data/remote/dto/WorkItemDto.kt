@@ -1,5 +1,9 @@
 package com.example.worktracker.home.data.remote.dto
 
+import com.example.worktracker.contributors.data.remote.dto.ContributorDto
+import com.example.worktracker.priorities.data.remote.dto.PriorityDto
+import com.example.worktracker.statuses.data.remote.dto.StatusDto
+import com.example.worktracker.worktypes.data.remote.dto.WorkTypeDto
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -22,21 +26,23 @@ data class WorkItemDto(
     @SerializedName("updatedAt")
     @Expose
     var updatedAt: String,
-    @SerializedName("workTypeId")
+
+    @SerializedName("workType")
     @Expose
-    var workTypeId: Int,
-    @SerializedName("assignerId")
+    var workType: WorkTypeDto,
+    @SerializedName("assigner")
     @Expose
-    var assignerId: Int,
-    @SerializedName("assigneeId")
+    var assigner: ContributorDto,
+    @SerializedName("assignee")
     @Expose
-    var assigneeId: Int,
-    @SerializedName("statusId")
+    var assignee: ContributorDto,
+    @SerializedName("status")
     @Expose
-    var statusId: Int,
-    @SerializedName("priorityId")
+    var status: StatusDto,
+    @SerializedName("priority")
     @Expose
-    var priorityId: Int,
+    var priority: PriorityDto,
+
     @SerializedName("documentationLinks")
     @Expose
     var documentationLinks: List<String>
