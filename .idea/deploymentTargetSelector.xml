@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="Work_Tracker.app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-08-17T14:22:04.547065300Z">
+        <DropdownSelection timestamp="2026-08-20T19:17:42.101586Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\moraa\.android\avd\Pixel_5_API_30_andrpid_10.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\moraa\.android\avd\Pixel_9.avd" />
             </handle>
           </Target>
         </DropdownSelection>

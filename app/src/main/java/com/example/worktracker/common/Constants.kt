@@ -87,6 +87,9 @@ object Constants {
     const val PRIORITY_NAME: String = "Priority name"
     const val WORK_TYPE_NAME: String = "Work type name"
     const val LOOKS_EMPTY_HERE: String = "Looks empty here"
+    const val ASSIGNED_TO: String = "Assigned to: "
+    const val ASSIGNEE: String = "Assignee"
+    const val ASSIGNER: String = "Assigner"
 
 
     const val BASE_URL="https://script.google.com/macros/s/AKfycbwFQ_CrF2p4rkINqIDA4Ks8recXGEz263rZietoEPc4G2l6jl65n4PivhHn4ZPZOa0W-A/"

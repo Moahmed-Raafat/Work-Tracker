@@ -25,26 +25,23 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Menu
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
@@ -65,24 +62,13 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.worktracker.R
 import com.example.worktracker.common.Constants
-import com.example.worktracker.contributors.presentation.viewmodel.get_contributors.GetContributorsViewModel
 import com.example.worktracker.home.presentation.model.WorkItemUI
 import com.example.worktracker.home.presentation.viewmodel.GetWorkItemsViewModel
 import com.example.worktracker.navigation.Screens
-import com.example.worktracker.priorities.presentation.composables.DeletePriorityDialog
-import com.example.worktracker.priorities.presentation.composables.ShowList
-import com.example.worktracker.priorities.presentation.composables.ShowPriorityDetailsDialog
-import com.example.worktracker.priorities.presentation.model.PriorityUI
-import com.example.worktracker.priorities.presentation.viewmodel.delete_priority.DeletePriorityViewModel
-import com.example.worktracker.priorities.presentation.viewmodel.get_priorities.GetPrioritiesViewModel
-import com.example.worktracker.priorities.presentation.viewmodel.update_priority.UpdatePriorityViewModel
-import com.example.worktracker.statuses.presentation.viewmodel.get_statuses.GetStatusesViewModel
-import com.example.worktracker.worktypes.presentation.viewmodel.get_worktypes.GetWorkTypesViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
@@ -163,9 +149,15 @@ fun Home(navController: NavController,
             Toast.makeText(context, getWorkItemsState.error, Toast.LENGTH_SHORT).show()
         }
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
+    //filters
+    var isFiltersAreaExpanded by remember { mutableStateOf(false) }
+    var isSortingAreaExpanded by remember { mutableStateOf(false) }
+    var isDescending by remember { mutableStateOf(false) }
 
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     //navigation drawer
     val coroutineScope = rememberCoroutineScope()
     val drawerState = rememberDrawerState( initialValue = DrawerValue.Closed )
@@ -323,6 +315,7 @@ fun Home(navController: NavController,
                 )
             }
         })
+
     {
         Scaffold(
             modifier = Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding(),
@@ -336,13 +329,13 @@ fun Home(navController: NavController,
                             Text(
                                 text = Constants.DASHBOARD,
                                 fontWeight = FontWeight.Bold,
-                                color = colorResource(R.color.primary_text_color)
+                                color = colorResource(R.color.white)
                             )
                         }
                     },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                        containerColor = colorResource(R.color.top_bar),
-                        titleContentColor = colorResource(R.color.primary_text_color),
+                        containerColor = colorResource(R.color.color_a),
+                        titleContentColor = colorResource(R.color.white),
                         navigationIconContentColor = Color.White
                     ),
                     navigationIcon = {
@@ -354,7 +347,7 @@ fun Home(navController: NavController,
                         {
                             Icon(imageVector = Icons.Rounded.Menu,
                                 contentDescription = "",
-                                tint = colorResource(R.color.primary_text_color))
+                                tint = colorResource(R.color.white))
                         }
                     },
                     actions = {
@@ -379,7 +372,7 @@ fun Home(navController: NavController,
                         //todo add work item
                     },
                     contentColor = Color.White,
-                    containerColor = colorResource(R.color.color_1)
+                    containerColor = colorResource(R.color.color_a)
                 ) {
                     Icon(
                         Icons.Rounded.Add,
@@ -414,13 +407,36 @@ fun Home(navController: NavController,
 
                         Box(modifier = Modifier.fillMaxSize())
                         {
-                            if (items.isNotEmpty()) {
+                            if (items.isNotEmpty())
+                            {
                                 Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
-                                ShowList(
-                                    context= context,
-                                    list = items,
-                                    onLoadMore = { getWorkItemsViewModel.loadNextPage() }
-                                )
+
+
+                                Column(modifier = Modifier.fillMaxSize()) {
+
+                                    //todo show the ascending and descending sort button and the filters button
+                                    ShowFilters(
+                                        isFiltersAreaExpanded = isFiltersAreaExpanded,
+                                        isSortingAreaExpanded= isSortingAreaExpanded,
+                                        onFiltersAreaExpandedChange = {
+                                            isFiltersAreaExpanded = it
+                                            },
+                                        onSortingAreaExpandedChange = {
+                                            isSortingAreaExpanded = it
+                                        },
+                                        onDescendingChange = {
+                                            isDescending = it
+                                            getWorkItemsViewModel.loadFirstPage(sortByCreationDateDescending = isDescending)
+                                        }
+                                    )
+
+                                    ShowList(
+                                        context= context,
+                                        list = items,
+                                        onLoadMore = { getWorkItemsViewModel.loadNextPage() }
+                                    )
+                                }
+
                             }
 
 
@@ -465,6 +481,144 @@ fun Home(navController: NavController,
     }
 }
 
+@Composable
+fun ShowFilters(
+    isFiltersAreaExpanded: Boolean,
+    isSortingAreaExpanded: Boolean,
+    onFiltersAreaExpandedChange: (Boolean) -> Unit,
+    onSortingAreaExpandedChange: (Boolean) -> Unit,
+    onDescendingChange: (Boolean) -> Unit )
+{
+    var isDescending by remember { mutableStateOf(false) }
+
+    Column(modifier = Modifier.fillMaxWidth())
+    {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(20.dp,10.dp,20.dp,5.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Column(/*horizontalAlignment = Alignment.CenterHorizontally*/
+                modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Filters",
+                    color = colorResource(R.color.color_a),
+                    fontSize = 20.sp
+                )
+            }
+            Column(/*horizontalAlignment = Alignment.CenterHorizontally*/
+                modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Filters",
+                    color = colorResource(R.color.color_a),
+                    fontSize = 20.sp
+                )
+            }
+        }
+        Divider(
+            modifier = Modifier.fillMaxWidth().padding(10.dp, 2.dp,10.dp,2.dp),
+            color = colorResource(R.color.color_a),
+            thickness = 1.dp
+        )
+
+
+        /*Row(
+            modifier = Modifier.fillMaxWidth().padding(20.dp,10.dp,20.dp,5.dp),
+            horizontalArrangement = Arrangement.SpaceBetween)
+        {
+            Text(
+                text = "Filters",
+                color = colorResource(R.color.color_a),
+                fontSize = 20.sp
+            )
+            Icon(
+                imageVector =
+                    if(isFiltersListExpanded) Icons.Default.KeyboardArrowDown
+                    else Icons.Default.KeyboardArrowUp,
+                contentDescription = "Filters",
+                tint = colorResource(R.color.color_a),
+                modifier = Modifier.clickable {
+                    onExpandedChange(!isFiltersListExpanded)
+                }.size(30.dp)
+            )
+        }
+        if(isFiltersListExpanded)
+        {
+            Column(modifier = Modifier.fillMaxWidth().padding(20.dp,0.dp))
+            {
+                Row()
+                {
+                    Text(
+                        text = Constants.WORK_TYPES,
+                        color = colorResource(R.color.color_c),
+                        fontSize = 15.sp
+                    )
+                    Text(
+                        text = Constants.PRIORITIES,
+                        color = colorResource(R.color.color_c),
+                        fontSize = 15.sp
+                    )
+                    Text(
+                        text = Constants.STATUSES,
+                        color = colorResource(R.color.color_c),
+                        fontSize = 15.sp
+                    )
+                    Text(
+                        text = Constants.ASSIGNEE,
+                        color = colorResource(R.color.color_c),
+                        fontSize = 15.sp
+                    )
+                    Text(
+                        text = Constants.ASSIGNER,
+                        color = colorResource(R.color.color_c),
+                        fontSize = 15.sp
+                    )
+                }
+                *//*Text(
+                    text = "sort by creation date",
+                    color = colorResource(R.color.color_c),
+                    fontSize = 15.sp
+                )
+                Row(modifier = Modifier.fillMaxWidth().padding(10.dp,2.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                )
+                {
+
+                    RadioButton(
+                        selected = !isDescending,
+                        onClick = {
+                            isDescending = false
+                            onDescendingChange(false)
+                        }
+                    )
+
+                    Text(
+                        text = "Ascending",
+                        color = colorResource(R.color.color_c),
+                        fontSize = 15.sp)
+
+                    RadioButton(
+                        selected = isDescending,
+                        onClick = {
+                            isDescending = true
+                            onDescendingChange(true)
+                        }
+                    )
+
+                    Text(
+                        text = "Descending",
+                        color = colorResource(R.color.color_c),
+                        fontSize = 15.sp
+                    )
+                }*//*
+
+
+            }
+
+
+        }*/
+
+    }
+}
 //todo how we will show the filters
 //todo how we will use the filters
 //todo what data to show in the list
@@ -485,7 +639,7 @@ fun ShowList(
 
     //show data
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxWidth().padding(5.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         state = listState)
     {
@@ -509,14 +663,14 @@ fun ShowList(
                 shape = RoundedCornerShape(7.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = colorResource(id = R.color.white)
+                    containerColor = colorResource(id = R.color.color_b)
                 )
             )
             {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(5.dp)
+                        .padding(10.dp)
                 )
                 {
                     Spacer(modifier = Modifier.fillMaxWidth().height(3.dp))
@@ -525,12 +679,12 @@ fun ShowList(
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text(
                             text = item.workItemNumber,
-                            color = colorResource(R.color.primary_text_color),
+                            color = colorResource(R.color.color_a),
                             fontSize = 20.sp
                         )
                         Text(
                             text = item.priority.name,
-                            color = colorResource(R.color.primary_text_color),
+                            color = colorResource(R.color.color_a),
                             fontSize = 20.sp
                         )
                     }
@@ -544,11 +698,57 @@ fun ShowList(
                             } else {
                                 item.title
                             },
-                            color = colorResource(R.color.primary_text_color),
+                            color = colorResource(R.color.color_a),
                             fontSize = 20.sp
                         )
                     }
-                    Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
+
+                    Spacer(modifier = Modifier.fillMaxWidth().height(15.dp))
+
+                    //work type and status
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(
+                            text = item.workType.name,
+                            color = colorResource(R.color.color_a),
+                            fontSize = 20.sp
+                        )
+                        Text(
+                            text = item.status.name,
+                            color = colorResource(R.color.color_a),
+                            fontSize = 20.sp
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.fillMaxWidth().height(15.dp))
+
+                    //assignee
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(
+                            text = Constants.ASSIGNED_TO + item.assignee.name,
+                            color = colorResource(R.color.color_a),
+                            fontSize = 20.sp
+                        )
+                    }
+
+                    //created at and updated at
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Column() {
+                            if(item.updatedAt != "")
+                            {
+                                Text(
+                                    text = Constants.UPDATED_AT + item.updatedAt,
+                                    color = colorResource(R.color.color_a),
+                                    fontSize = 15.sp,
+                                    fontStyle = FontStyle.Italic
+                                )
+                            }
+                            Text(
+                                text = Constants.CREATED_AT + item.createdAt,
+                                color = colorResource(R.color.color_a),
+                                fontSize = 20.sp
+                            )
+                        }
+                    }
                 }
             }
         }

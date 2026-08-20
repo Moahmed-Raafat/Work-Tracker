@@ -16,5 +16,9 @@
     <color name="secondary_text_color">#a6a3a1</color> <!--secondary text color-->
     <color name="primary_text_color">#252526</color> <!--primary text color-->
 
+    <color name="color_a">#210440</color>
+    <color name="color_b">#FDB095</color>
+    <color name="color_c">#E5958E</color>
+    <color name="color_d">#FFBA00</color>
 
 </resources>
