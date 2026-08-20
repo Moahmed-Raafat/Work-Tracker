@@ -1,0 +1,23 @@
+package com.example.worktracker.worktypes.domain.usecase
+
+import com.example.worktracker.common.DomainException
+import com.example.worktracker.common.Resource
+import com.example.worktracker.worktypes.domain.model.GetWorkTypesBody
+import com.example.worktracker.worktypes.domain.model.GetWorkTypesResponse
+import com.example.worktracker.worktypes.domain.repository.WorkTypesRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
+
+class GetWorkTypesUseCase @Inject constructor(private val workTypesRepository: WorkTypesRepository) {
+    operator fun invoke(getWorkTypesBody: GetWorkTypesBody): Flow<Resource<GetWorkTypesResponse>> =
+        flow {
+            emit(Resource.Loading())
+            try {
+                val result = workTypesRepository.getWorkTypes(getWorkTypesBody)
+                emit(Resource.Success(result))
+            } catch (e: DomainException) {
+                emit(Resource.Error(e.message ?: "Unexpected error"))
+            }
+        }
+}
