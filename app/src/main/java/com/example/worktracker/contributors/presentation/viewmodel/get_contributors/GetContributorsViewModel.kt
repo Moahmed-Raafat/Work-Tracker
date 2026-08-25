@@ -28,9 +28,9 @@ class GetContributorsViewModel @Inject constructor(private val getContributorsUs
     private var isLoadingPage = false
 
 
-    init {
+    /*init {
         loadFirstPage()
-    }
+    }*/
 
 
     fun loadFirstPage() {

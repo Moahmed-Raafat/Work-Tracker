@@ -89,6 +89,10 @@ fun Statuses(navController: NavController,
     val context = LocalContext.current.applicationContext
     val getStatusesState by getStatusesViewModel.state.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        getStatusesViewModel.loadFirstPage()
+    }
+
     var isRefreshing by remember { mutableStateOf(false) }
 
     LaunchedEffect(getStatusesState.error) {

@@ -88,6 +88,10 @@ fun Contributors(navController: NavController,
     val context = LocalContext.current.applicationContext
     val getContributorsState by getContributorsViewModel.state.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        getContributorsViewModel.loadFirstPage()
+    }
+
     var isRefreshing by remember { mutableStateOf(false) }
 
     LaunchedEffect(getContributorsState.error) {

@@ -86,6 +86,9 @@ fun Priorities(navController: NavController,
     val context = LocalContext.current.applicationContext
     val getPrioritiesState by getPrioritiesViewModel.state.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        getPrioritiesViewModel.loadFirstPage()
+    }
     var isRefreshing by remember { mutableStateOf(false) }
 
     LaunchedEffect(getPrioritiesState.error) {

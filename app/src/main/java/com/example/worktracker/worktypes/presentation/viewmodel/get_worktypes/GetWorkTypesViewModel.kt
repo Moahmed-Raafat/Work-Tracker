@@ -25,9 +25,9 @@ class GetWorkTypesViewModel @Inject constructor(private val getWorkTypesUseCase:
     private var isLastPage = false
     private var isLoadingPage = false
 
-    init {
+    /*init {
         loadFirstPage()
-    }
+    }*/
 
     fun loadFirstPage() {
         currentPage = 1

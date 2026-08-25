@@ -42,17 +42,19 @@ fun Navigation()
         composable(route=Screens.Home.route)
         {
             val getWorkItemsViewModel: GetWorkItemsViewModel = hiltViewModel()
-            /*val getWorkTypesViewModel: GetWorkTypesViewModel = hiltViewModel()
+            val getWorkTypesViewModel: GetWorkTypesViewModel = hiltViewModel()
             val getContributorsViewModel: GetContributorsViewModel = hiltViewModel()
             val getStatusesViewModel: GetStatusesViewModel = hiltViewModel()
-            val getPrioritiesViewModel: GetPrioritiesViewModel= hiltViewModel()*/
+            val getPrioritiesViewModel: GetPrioritiesViewModel= hiltViewModel()
+            val getAssignersViewModel: GetContributorsViewModel = hiltViewModel()
+            val getAssigneesViewModel: GetContributorsViewModel = hiltViewModel()
 
             Home(navController = navController,
-                getWorkItemsViewModel= getWorkItemsViewModel/*,
-                getWorkTypesViewModel= getWorkTypesViewModel,
-                getContributorsViewModel= getContributorsViewModel,
+                getWorkItemsViewModel= getWorkItemsViewModel,getWorkTypesViewModel= getWorkTypesViewModel,
                 getStatusesViewModel= getStatusesViewModel,
-                getPrioritiesViewModel= getPrioritiesViewModel*/)
+                getPrioritiesViewModel= getPrioritiesViewModel,
+                getAssignersViewModel= getAssignersViewModel,
+                getAssigneesViewModel= getAssigneesViewModel)
         }
         composable(route=Screens.WorkTypes.route)
         {

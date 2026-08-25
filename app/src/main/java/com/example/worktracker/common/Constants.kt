@@ -7,6 +7,7 @@ object Constants {
     const val STATUSES: String = "Statuses"
     const val PRIORITIES: String = "Priorities"
     const val WORK_TYPES: String = "Work Types"
+    const val WORK_TYPE: String = "Work Type"
     const val ABOUT: String = "About"
 
     //actions
@@ -90,6 +91,8 @@ object Constants {
     const val ASSIGNED_TO: String = "Assigned to: "
     const val ASSIGNEE: String = "Assignee"
     const val ASSIGNER: String = "Assigner"
+    const val STATUS: String = "Status"
+    const val PRIORITY: String = "Priority"
 
 
     const val BASE_URL="https://script.google.com/macros/s/AKfycbwFQ_CrF2p4rkINqIDA4Ks8recXGEz263rZietoEPc4G2l6jl65n4PivhHn4ZPZOa0W-A/"

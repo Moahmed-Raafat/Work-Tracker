@@ -25,9 +25,9 @@ class GetPrioritiesViewModel @Inject constructor(private val getPrioritiesUseCas
     private var isLastPage = false
     private var isLoadingPage = false
 
-    init {
+    /*init {
         loadFirstPage()
-    }
+    }*/
 
     fun loadFirstPage() {
         currentPage = 1

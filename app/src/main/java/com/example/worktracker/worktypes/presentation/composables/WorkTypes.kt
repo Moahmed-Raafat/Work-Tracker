@@ -86,6 +86,10 @@ fun WorkTypes(
     val context = LocalContext.current.applicationContext
     val getWorkTypesState by getWorkTypesViewModel.state.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        getWorkTypesViewModel.loadFirstPage()
+    }
+
     var isRefreshing by remember { mutableStateOf(false) }
 
     LaunchedEffect(getWorkTypesState.error) {

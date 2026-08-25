@@ -15,8 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GetStatusesViewModel @Inject constructor(private val getStatusesUseCase: GetStatusesUseCase) :
-    ViewModel() {
+class GetStatusesViewModel @Inject constructor(private val getStatusesUseCase: GetStatusesUseCase) : ViewModel() {
     private val _state = MutableStateFlow(GetStatusesState())
     val state: StateFlow<GetStatusesState> = _state
 
@@ -25,9 +24,9 @@ class GetStatusesViewModel @Inject constructor(private val getStatusesUseCase: G
     private var isLastPage = false
     private var isLoadingPage = false
 
-    init {
+    /*init {
         loadFirstPage()
-    }
+    }*/
 
     fun loadFirstPage() {
         currentPage = 1

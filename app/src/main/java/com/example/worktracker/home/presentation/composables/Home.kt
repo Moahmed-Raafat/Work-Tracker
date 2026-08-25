@@ -5,10 +5,12 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -25,16 +27,20 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalDrawerSheet
@@ -66,76 +72,37 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.worktracker.R
 import com.example.worktracker.common.Constants
+import com.example.worktracker.contributors.presentation.model.ContributorUI
+import com.example.worktracker.contributors.presentation.viewmodel.get_contributors.GetContributorsViewModel
 import com.example.worktracker.home.presentation.model.WorkItemUI
 import com.example.worktracker.home.presentation.viewmodel.GetWorkItemsViewModel
 import com.example.worktracker.navigation.Screens
+import com.example.worktracker.priorities.presentation.model.PriorityUI
+import com.example.worktracker.priorities.presentation.viewmodel.get_priorities.GetPrioritiesViewModel
+import com.example.worktracker.statuses.presentation.model.StatusUI
+import com.example.worktracker.statuses.presentation.viewmodel.get_statuses.GetStatusesViewModel
+import com.example.worktracker.worktypes.presentation.model.WorkTypeUI
+import com.example.worktracker.worktypes.presentation.viewmodel.get_worktypes.GetWorkTypesViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
 
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(navController: NavController,
-         getWorkItemsViewModel: GetWorkItemsViewModel/*,
+         getWorkItemsViewModel: GetWorkItemsViewModel,
          getWorkTypesViewModel: GetWorkTypesViewModel,
-         getContributorsViewModel: GetContributorsViewModel,
          getStatusesViewModel: GetStatusesViewModel,
-         getPrioritiesViewModel: GetPrioritiesViewModel*/
+         getPrioritiesViewModel: GetPrioritiesViewModel,
+         getAssignersViewModel: GetContributorsViewModel,
+         getAssigneesViewModel: GetContributorsViewModel
 )
 {
     val context = LocalContext.current.applicationContext
 
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    //work types
 
-    /*val getWorkTypesState by getWorkTypesViewModel.state.collectAsStateWithLifecycle()
-
-    var isRefreshingWorkTypes by remember { mutableStateOf(false) }
-
-    LaunchedEffect(getWorkTypesState.error) {
-        if (!getWorkTypesState.error.isNullOrBlank()) {
-            Toast.makeText(context, getWorkTypesState.error, Toast.LENGTH_SHORT).show()
-        }
-    }*/
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    //contributors
-
-    /*val getContributorsState by getContributorsViewModel.state.collectAsStateWithLifecycle()
-
-    var isRefreshingContributors by remember { mutableStateOf(false) }
-
-    LaunchedEffect(getContributorsState.error) {
-        if (!getContributorsState.error.isNullOrBlank()) {
-            Toast.makeText(context, getContributorsState.error, Toast.LENGTH_SHORT).show()
-        }
-    }*/
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    //statuses
-
-    /*val getStatusesState by getStatusesViewModel.state.collectAsStateWithLifecycle()
-
-    var isRefreshingStatuses by remember { mutableStateOf(false) }
-
-    LaunchedEffect(getStatusesState.error) {
-        if (!getStatusesState.error.isNullOrBlank()) {
-            Toast.makeText(context, getStatusesState.error, Toast.LENGTH_SHORT).show()
-        }
-    }*/
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    //priorities
-
-    /*val getPrioritiesState by getPrioritiesViewModel.state.collectAsStateWithLifecycle()
-
-    var isRefreshingPriorities by remember { mutableStateOf(false) }
-
-    LaunchedEffect(getPrioritiesState.error) {
-        if (!getPrioritiesState.error.isNullOrBlank()) {
-            Toast.makeText(context, getPrioritiesState.error, Toast.LENGTH_SHORT).show()
-        }
-    }*/
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //work items list
@@ -153,8 +120,12 @@ fun Home(navController: NavController,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //filters
     var isFiltersAreaExpanded by remember { mutableStateOf(false) }
-    var isSortingAreaExpanded by remember { mutableStateOf(false) }
     var isDescending by remember { mutableStateOf(false) }
+    var selectedWorkTypeFilter by remember { mutableStateOf<WorkTypeUI?>(null) }
+    var selectedPriorityFilter by remember { mutableStateOf<PriorityUI?>(null) }
+    var selectedStatusFilter by remember { mutableStateOf<StatusUI?>(null) }
+    var selectedAssignerFilter by remember { mutableStateOf<ContributorUI?>(null) }
+    var selectedAssigneeFilter by remember { mutableStateOf<ContributorUI?>(null) }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -315,7 +286,6 @@ fun Home(navController: NavController,
                 )
             }
         })
-
     {
         Scaffold(
             modifier = Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding(),
@@ -407,28 +377,84 @@ fun Home(navController: NavController,
 
                         Box(modifier = Modifier.fillMaxSize())
                         {
-                            if (items.isNotEmpty())
-                            {
-                                Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
+                            Column(modifier = Modifier.fillMaxSize()) {
 
+                                ShowFilters(
+                                    getWorkTypesViewModel = getWorkTypesViewModel,
+                                    getPrioritiesViewModel = getPrioritiesViewModel,
+                                    getStatusesViewModel = getStatusesViewModel,
+                                    getAssignersViewModel = getAssignersViewModel,
+                                    getAssigneesViewModel = getAssigneesViewModel,
+                                    isFiltersAreaExpanded = isFiltersAreaExpanded,
+                                    onSortingAreaExpandedChange = {
+                                        isDescending = it
+                                        getWorkItemsViewModel.loadFirstPage(
+                                            sortByCreationDateDescending = isDescending)
+                                    },
+                                    onFiltersAreaExpandedChange = {
+                                        isFiltersAreaExpanded = it
+                                    },
+                                    onSelectWorkTypeFilter = { workTypeUI ->
+                                        selectedWorkTypeFilter= workTypeUI
+                                        getWorkItemsViewModel.loadFirstPage(
+                                            sortByCreationDateDescending = isDescending,
+                                            filterByWorkTypeId = workTypeUI?.id,
+                                            filterByPriorityId = selectedPriorityFilter?.id,
+                                            filterByStatusId = selectedStatusFilter?.id,
+                                            filterByAssignerId = selectedAssignerFilter?.id,
+                                            filterByAssigneeId = selectedAssigneeFilter?.id,
+                                        )
+                                    },
+                                    onSelectPriorityFilter = { priorityUI->
+                                        selectedPriorityFilter= priorityUI
+                                        getWorkItemsViewModel.loadFirstPage(
+                                            sortByCreationDateDescending = isDescending,
+                                            filterByWorkTypeId = selectedWorkTypeFilter?.id,
+                                            filterByPriorityId = priorityUI?.id,
+                                            filterByStatusId = selectedStatusFilter?.id,
+                                            filterByAssignerId = selectedAssignerFilter?.id,
+                                            filterByAssigneeId = selectedAssigneeFilter?.id,
+                                        )
+                                    },
+                                    onSelectStatusFilter = { statusUI->
+                                        selectedStatusFilter= statusUI
+                                        getWorkItemsViewModel.loadFirstPage(
+                                            sortByCreationDateDescending = isDescending,
+                                            filterByWorkTypeId = selectedWorkTypeFilter?.id,
+                                            filterByPriorityId = selectedPriorityFilter?.id,
+                                            filterByStatusId = statusUI?.id,
+                                            filterByAssignerId = selectedAssignerFilter?.id,
+                                            filterByAssigneeId = selectedAssigneeFilter?.id,
+                                        )
+                                    },
+                                    onSelectAssignerFilter = { contributorUI->
+                                        selectedAssignerFilter= contributorUI
+                                        getWorkItemsViewModel.loadFirstPage(
+                                            sortByCreationDateDescending = isDescending,
+                                            filterByWorkTypeId = selectedWorkTypeFilter?.id,
+                                            filterByPriorityId = selectedPriorityFilter?.id,
+                                            filterByStatusId = selectedStatusFilter?.id,
+                                            filterByAssignerId = contributorUI?.id,
+                                            filterByAssigneeId = selectedAssigneeFilter?.id,
+                                        )
+                                    },
+                                    onSelectAssigneeFilter = { contributorUI->
+                                        selectedAssigneeFilter= contributorUI
+                                        getWorkItemsViewModel.loadFirstPage(
+                                            sortByCreationDateDescending = isDescending,
+                                            filterByWorkTypeId = selectedWorkTypeFilter?.id,
+                                            filterByPriorityId = selectedPriorityFilter?.id,
+                                            filterByStatusId = selectedStatusFilter?.id,
+                                            filterByAssignerId = selectedAssignerFilter?.id,
+                                            filterByAssigneeId = contributorUI?.id,
+                                        )
+                                    },
+                                    context = context
+                                )
 
-                                Column(modifier = Modifier.fillMaxSize()) {
-
-                                    //todo show the ascending and descending sort button and the filters button
-                                    ShowFilters(
-                                        isFiltersAreaExpanded = isFiltersAreaExpanded,
-                                        isSortingAreaExpanded= isSortingAreaExpanded,
-                                        onFiltersAreaExpandedChange = {
-                                            isFiltersAreaExpanded = it
-                                            },
-                                        onSortingAreaExpandedChange = {
-                                            isSortingAreaExpanded = it
-                                        },
-                                        onDescendingChange = {
-                                            isDescending = it
-                                            getWorkItemsViewModel.loadFirstPage(sortByCreationDateDescending = isDescending)
-                                        }
-                                    )
+                                if (items.isNotEmpty())
+                                {
+                                    Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
 
                                     ShowList(
                                         context= context,
@@ -436,15 +462,23 @@ fun Home(navController: NavController,
                                         onLoadMore = { getWorkItemsViewModel.loadNextPage() }
                                     )
                                 }
-
+                                else if(!getWorkItemsState.isLoading)
+                                {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .weight(1f),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = Constants.LOOKS_EMPTY_HERE,
+                                            color = colorResource(R.color.primary_text_color)
+                                        )
+                                    }
+                                }
                             }
 
-
-                            if (getWorkItemsState.isLoading/*||
-                                getWorkTypesState.isLoading ||
-                                getContributorsState.isLoading ||
-                                getStatusesState.isLoading ||
-                                getPrioritiesState.isLoading*/)
+                            if (getWorkItemsState.isLoading)
                             {
                                 Box(
                                     modifier = Modifier
@@ -455,176 +489,870 @@ fun Home(navController: NavController,
                                     CircularProgressIndicator()
                                 }
                             }
-
-                            // Show empty state (when not loading and empty)
-                            if (items.isEmpty() && !getWorkItemsState.isLoading) {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(16.dp),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    Text(
-                                        text = Constants.LOOKS_EMPTY_HERE,
-                                        color = colorResource(R.color.primary_text_color)
-                                    )
-                                }
-                            }
                             isRefreshing = false
                         }
                     }
                 }
-
             }
         }
     }
 }
-
 @Composable
 fun ShowFilters(
+    getWorkTypesViewModel: GetWorkTypesViewModel,
+    getPrioritiesViewModel: GetPrioritiesViewModel,
+    getStatusesViewModel: GetStatusesViewModel,
+    getAssignersViewModel: GetContributorsViewModel,
+    getAssigneesViewModel: GetContributorsViewModel,
     isFiltersAreaExpanded: Boolean,
-    isSortingAreaExpanded: Boolean,
-    onFiltersAreaExpandedChange: (Boolean) -> Unit,
     onSortingAreaExpandedChange: (Boolean) -> Unit,
-    onDescendingChange: (Boolean) -> Unit )
+    onFiltersAreaExpandedChange: (Boolean) -> Unit,
+    onSelectWorkTypeFilter: (WorkTypeUI?) -> Unit,
+    onSelectPriorityFilter: (PriorityUI?) -> Unit,
+    onSelectStatusFilter: (StatusUI?) -> Unit,
+    onSelectAssignerFilter: (ContributorUI?) -> Unit,
+    onSelectAssigneeFilter: (ContributorUI?) -> Unit,
+    context: Context
+    )
 {
     var isDescending by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.fillMaxWidth())
-    {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(20.dp,10.dp,20.dp,5.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Column(/*horizontalAlignment = Alignment.CenterHorizontally*/
-                modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Filters",
-                    color = colorResource(R.color.color_a),
-                    fontSize = 20.sp
-                )
-            }
-            Column(/*horizontalAlignment = Alignment.CenterHorizontally*/
-                modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Filters",
-                    color = colorResource(R.color.color_a),
-                    fontSize = 20.sp
-                )
-            }
-        }
-        Divider(
-            modifier = Modifier.fillMaxWidth().padding(10.dp, 2.dp,10.dp,2.dp),
-            color = colorResource(R.color.color_a),
-            thickness = 1.dp
+    var isWorkTypeFilterAreaExpanded by remember { mutableStateOf(false) }
+    var isPriorityFilterAreaExpanded by remember { mutableStateOf(false) }
+    var isStatusFilterAreaExpanded by remember { mutableStateOf(false) }
+    var isAssigneeFilterAreaExpanded by remember { mutableStateOf(false) }
+    var isAssignerFilterAreaExpanded by remember { mutableStateOf(false) }
+
+    var selectedWorkType by remember { mutableStateOf<WorkTypeUI?>(null) }
+    var selectedPriory by remember { mutableStateOf<PriorityUI?>(null) }
+    var selectedStatus by remember { mutableStateOf<StatusUI?>(null) }
+    var selectedAssigner by remember { mutableStateOf<ContributorUI?>(null) }
+    var selectedAssignee by remember { mutableStateOf<ContributorUI?>(null) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp,10.dp,10.dp,0.dp)
+            .border(width = 1.dp, color = Color.Black)
+            .padding(10.dp),
+        verticalArrangement = Arrangement.Center
         )
-
-
-        /*Row(
-            modifier = Modifier.fillMaxWidth().padding(20.dp,10.dp,20.dp,5.dp),
-            horizontalArrangement = Arrangement.SpaceBetween)
+    {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement =Arrangement.SpaceBetween )
         {
-            Text(
-                text = "Filters",
-                color = colorResource(R.color.color_a),
-                fontSize = 20.sp
-            )
-            Icon(
-                imageVector =
-                    if(isFiltersListExpanded) Icons.Default.KeyboardArrowDown
-                    else Icons.Default.KeyboardArrowUp,
-                contentDescription = "Filters",
-                tint = colorResource(R.color.color_a),
-                modifier = Modifier.clickable {
-                    onExpandedChange(!isFiltersListExpanded)
-                }.size(30.dp)
-            )
-        }
-        if(isFiltersListExpanded)
-        {
-            Column(modifier = Modifier.fillMaxWidth().padding(20.dp,0.dp))
+            //sorting area
+            Row(
+                modifier = Modifier.clickable{
+                    isDescending = !isDescending
+                    onSortingAreaExpandedChange(isDescending)
+            }, verticalAlignment = Alignment.CenterVertically)
             {
-                Row()
+                Text(
+                    text = "Sort: ",
+                    color = colorResource(R.color.color_a),
+                    fontSize = 15.sp,
+                    modifier = Modifier
+                )
+                Text(
+                    text = "creation date",
+                    color = colorResource(R.color.color_a),
+                    fontSize = 15.sp,
+                    modifier = Modifier
+                )
+                Icon(
+                    painter =
+                        if(isDescending) painterResource(id = R.drawable.arrow_down)
+                        else  painterResource(id = R.drawable.arrow_up),
+                    contentDescription = "Filters",
+                    tint = colorResource(R.color.color_a),
+                    modifier = Modifier.clickable {
+                        onFiltersAreaExpandedChange(!isFiltersAreaExpanded)
+                    }.size(15.dp)
+                )
+            }
+
+            //filters area
+            Row(
+                modifier = Modifier.clickable{
+                    onFiltersAreaExpandedChange(!isFiltersAreaExpanded)
+            }, verticalAlignment = Alignment.CenterVertically)
+            {
+                Text(
+                    text = "filter",
+                    color = colorResource(R.color.color_a),
+                    fontSize = 15.sp,
+                    modifier = Modifier
+                )
+                Spacer(modifier = Modifier.width(5.dp))
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = "Filters",
+                    tint = colorResource(R.color.color_a),
+                    modifier = Modifier.clickable {
+                        onFiltersAreaExpandedChange(!isFiltersAreaExpanded)
+                    }.size(15.dp)
+                )
+            }
+
+        }
+
+        //Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
+
+        //selected filter
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+
+            selectedWorkType?.let {
+                Box(
+                    modifier = Modifier
+                        .border(width = .5.dp, color = colorResource(R.color.color_b))
+                        .padding(1.dp)
+                        .clickable{
+                            selectedWorkType= null
+                            onSelectWorkTypeFilter(null)
+                        })
                 {
-                    Text(
-                        text = Constants.WORK_TYPES,
-                        color = colorResource(R.color.color_c),
-                        fontSize = 15.sp
-                    )
-                    Text(
-                        text = Constants.PRIORITIES,
-                        color = colorResource(R.color.color_c),
-                        fontSize = 15.sp
-                    )
-                    Text(
-                        text = Constants.STATUSES,
-                        color = colorResource(R.color.color_c),
-                        fontSize = 15.sp
-                    )
-                    Text(
-                        text = Constants.ASSIGNEE,
-                        color = colorResource(R.color.color_c),
-                        fontSize = 15.sp
-                    )
-                    Text(
-                        text = Constants.ASSIGNER,
-                        color = colorResource(R.color.color_c),
-                        fontSize = 15.sp
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = Constants.WORK_TYPE +": "+ it.name,
+                            fontSize = 15.sp,
+                            color = colorResource(R.color.color_b))
+                        Spacer(modifier = Modifier.width(3.dp))
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Filters",
+                            tint = colorResource(R.color.color_b),
+                            modifier = Modifier.clickable {
+                                selectedWorkType= null
+                                onSelectWorkTypeFilter(null)
+                            }.size(15.dp)
+                        )
+                    }
+
                 }
-                *//*Text(
-                    text = "sort by creation date",
+                Spacer(modifier = Modifier.width(10.dp))
+            }
+
+            selectedPriory?.let {
+                Box(
+                    modifier = Modifier
+                        .border(width = .5.dp, color = colorResource(R.color.color_b))
+                        .padding(1.dp)
+                        .clickable{
+                            selectedPriory= null
+                            onSelectPriorityFilter(null)
+                        })
+                {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = Constants.PRIORITY +": "+it.name,
+                            fontSize = 15.sp,
+                            color = colorResource(R.color.color_b))
+                        Spacer(modifier = Modifier.width(3.dp))
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Filters",
+                            tint = colorResource(R.color.color_b),
+                            modifier = Modifier.clickable {
+                                selectedPriory= null
+                                onSelectPriorityFilter(null)
+                            }.size(15.dp)
+                        )
+                    }
+
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+            }
+
+            selectedStatus?.let {
+                Box(
+                    modifier = Modifier
+                        .border(width = .5.dp, color = colorResource(R.color.color_b))
+                        .padding(1.dp)
+                        .clickable{
+                            selectedStatus= null
+                            onSelectStatusFilter(null)
+                        })
+                {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = Constants.STATUS +": "+it.name,
+                            fontSize = 15.sp,
+                            color = colorResource(R.color.color_b))
+                        Spacer(modifier = Modifier.width(3.dp))
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Filters",
+                            tint = colorResource(R.color.color_b),
+                            modifier = Modifier.clickable {
+                                selectedStatus= null
+                                onSelectStatusFilter(null)
+                            }.size(15.dp)
+                        )
+                    }
+
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+            }
+
+            selectedAssigner?.let {
+                Box(
+                    modifier = Modifier
+                        .border(width = .5.dp, color = colorResource(R.color.color_b))
+                        .padding(1.dp)
+                        .clickable{
+                            selectedAssigner= null
+                            onSelectAssignerFilter(null)
+                        })
+                {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = Constants.ASSIGNER +": "+it.name,
+                            fontSize = 15.sp,
+                            color = colorResource(R.color.color_b))
+                        Spacer(modifier = Modifier.width(3.dp))
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Filters",
+                            tint = colorResource(R.color.color_b),
+                            modifier = Modifier.clickable {
+                                selectedAssigner= null
+                                onSelectAssignerFilter(null)
+                            }.size(15.dp)
+                        )
+                    }
+
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+            }
+
+            selectedAssignee?.let {
+                Box(
+                    modifier = Modifier
+                        .border(width = .5.dp, color = colorResource(R.color.color_b))
+                        .padding(1.dp)
+                        .clickable{
+                            selectedAssignee= null
+                            onSelectAssigneeFilter(null)
+                        })
+                {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = Constants.ASSIGNEE +": "+it.name,
+                            fontSize = 15.sp,
+                            color = colorResource(R.color.color_b))
+                        Spacer(modifier = Modifier.width(3.dp))
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Filters",
+                            tint = colorResource(R.color.color_b),
+                            modifier = Modifier.clickable {
+                                selectedAssignee= null
+                                onSelectAssigneeFilter(null)
+                            }.size(15.dp)
+                        )
+                    }
+
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+            }
+        }
+
+        //filters are expanded
+        if(isFiltersAreaExpanded)
+        {
+            HorizontalDivider(
+                modifier = Modifier.fillMaxWidth().padding(0.dp, 5.dp,0.dp,5.dp),
+                color = colorResource(R.color.color_a),
+                thickness = 1.dp
+            )
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            //work types filter
+            Row(modifier = Modifier.fillMaxWidth().padding(10.dp,0.dp)
+                .clickable{
+                    getWorkTypesViewModel.loadFirstPage()
+                    isWorkTypeFilterAreaExpanded= !isWorkTypeFilterAreaExpanded
+                },
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically)
+            {
+                Text(
+                    text = Constants.WORK_TYPES,
                     color = colorResource(R.color.color_c),
                     fontSize = 15.sp
                 )
-                Row(modifier = Modifier.fillMaxWidth().padding(10.dp,2.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                Icon(
+                    imageVector =
+                        if(isWorkTypeFilterAreaExpanded) Icons.Default.KeyboardArrowDown
+                        else Icons.Default.KeyboardArrowUp,
+                    contentDescription = "Work Types",
+                    tint = colorResource(R.color.color_a),
+                    modifier = Modifier.size(30.dp)
                 )
-                {
-
-                    RadioButton(
-                        selected = !isDescending,
-                        onClick = {
-                            isDescending = false
-                            onDescendingChange(false)
-                        }
-                    )
-
-                    Text(
-                        text = "Ascending",
-                        color = colorResource(R.color.color_c),
-                        fontSize = 15.sp)
-
-                    RadioButton(
-                        selected = isDescending,
-                        onClick = {
-                            isDescending = true
-                            onDescendingChange(true)
-                        }
-                    )
-
-                    Text(
-                        text = "Descending",
-                        color = colorResource(R.color.color_c),
-                        fontSize = 15.sp
-                    )
-                }*//*
-
-
             }
 
+            //work types list
+            if(isWorkTypeFilterAreaExpanded)
+            {
+                val getWorkTypesState by getWorkTypesViewModel.state.collectAsStateWithLifecycle()
+                var isRefreshingWorkTypes by remember { mutableStateOf(false) }
 
-        }*/
+                LaunchedEffect(getWorkTypesState.error) {
+                    if (!getWorkTypesState.error.isNullOrBlank()) {
+                        Toast.makeText(context, getWorkTypesState.error, Toast.LENGTH_SHORT).show()
+                    }
+                }
 
+                val workTypesItems= getWorkTypesState.workTypesList
+                val listState = rememberLazyListState()
+
+                Box(
+                    modifier = Modifier
+                    .fillMaxWidth().height(120.dp)
+                    .padding(20.dp,0.dp)
+                    .border(width = 1.dp, color = Color.Black)
+                    .padding(10.dp))
+                {
+                    if (workTypesItems.isNotEmpty())
+                    {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            state = listState)
+                        {
+                            itemsIndexed(
+                                items = workTypesItems,
+                                key = { _, item -> item.id }
+                            ) { index, item ->
+
+                                // Pagination trigger when scrolling near bottom
+                                if (index >= workTypesItems.size - 3) {
+                                    getWorkTypesViewModel.loadNextPage()
+                                }
+
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable{
+                                            //todo
+                                            selectedWorkType = item
+                                            onSelectWorkTypeFilter(item)
+                                        })
+                                {
+                                    Text(
+                                        text = item.name,
+                                        color = colorResource(R.color.color_a),
+                                        fontSize = 15.sp
+                                    )
+                                    Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
+                                }
+                            }
+                        }
+                    }
+
+                    if (getWorkTypesState.isLoading)
+                    {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black.copy(alpha = 0.1f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+
+                    // Show empty state (when not loading and empty)
+                    if (workTypesItems.isEmpty() && !getWorkTypesState.isLoading) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = Constants.LOOKS_EMPTY_HERE,
+                                color = colorResource(R.color.primary_text_color)
+                            )
+                        }
+                    }
+                    isRefreshingWorkTypes = false
+                }
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+
+            ////////////////////////////////////////////////////////////////////////////////////////
+            //priority filter
+            Row(modifier = Modifier.fillMaxWidth().padding(10.dp,0.dp)
+                .clickable{
+                    getPrioritiesViewModel.loadFirstPage()
+                    isPriorityFilterAreaExpanded= !isPriorityFilterAreaExpanded
+                },
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically)
+            {
+                Text(
+                    text = Constants.PRIORITY,
+                    color = colorResource(R.color.color_c),
+                    fontSize = 15.sp
+                )
+                Icon(
+                    imageVector =
+                        if(isPriorityFilterAreaExpanded) Icons.Default.KeyboardArrowDown
+                        else Icons.Default.KeyboardArrowUp,
+                    contentDescription = "Priority",
+                    tint = colorResource(R.color.color_a),
+                    modifier = Modifier.size(30.dp)
+                )
+            }
+
+            //priorities list
+            if(isPriorityFilterAreaExpanded)
+            {
+                val getPrioritiesState by getPrioritiesViewModel.state.collectAsStateWithLifecycle()
+                var isRefreshingPriorities by remember { mutableStateOf(false) }
+
+                LaunchedEffect(getPrioritiesState.error) {
+                    if (!getPrioritiesState.error.isNullOrBlank()) {
+                        Toast.makeText(context, getPrioritiesState.error, Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                val prioritiesItems = getPrioritiesState.prioritiesList
+                val listState = rememberLazyListState()
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth().height(120.dp)
+                        .padding(20.dp, 0.dp)
+                        .border(width = 1.dp, color = Color.Black)
+                        .padding(10.dp)
+                ) {
+                    if (prioritiesItems.isNotEmpty()) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            state = listState
+                        ) {
+                            itemsIndexed(
+                                items = prioritiesItems,
+                                key = { _, item -> item.id }
+                            ) { index, item ->
+
+                                // Pagination trigger when scrolling near bottom
+                                if (index >= prioritiesItems.size - 3) {
+                                    getPrioritiesViewModel.loadNextPage()
+                                }
+
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            selectedPriory = item
+                                            onSelectPriorityFilter(item)
+                                        })
+                                {
+                                    Text(
+                                        text = item.name,
+                                        color = colorResource(R.color.color_a),
+                                        fontSize = 15.sp
+                                    )
+                                    Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
+                                }
+                            }
+                        }
+                    }
+
+                    if (getPrioritiesState.isLoading) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black.copy(alpha = 0.1f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+
+                    // Show empty state (when not loading and empty)
+                    if (prioritiesItems.isEmpty() && !getPrioritiesState.isLoading) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = Constants.LOOKS_EMPTY_HERE,
+                                color = colorResource(R.color.primary_text_color)
+                            )
+                        }
+                    }
+                    isRefreshingPriorities = false
+                }
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+
+            ////////////////////////////////////////////////////////////////////////////////////////
+            //status filter
+            Row(modifier = Modifier.fillMaxWidth().padding(10.dp,0.dp)
+                .clickable{
+                    getStatusesViewModel.loadFirstPage()
+                    isStatusFilterAreaExpanded= !isStatusFilterAreaExpanded
+                },
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically)
+            {
+                Text(
+                    text = Constants.STATUS,
+                    color = colorResource(R.color.color_c),
+                    fontSize = 15.sp
+                )
+                Icon(
+                    imageVector =
+                        if(isStatusFilterAreaExpanded) Icons.Default.KeyboardArrowDown
+                        else Icons.Default.KeyboardArrowUp,
+                    contentDescription = "Status",
+                    tint = colorResource(R.color.color_a),
+                    modifier = Modifier.size(30.dp)
+                )
+            }
+
+            //status list
+            if(isStatusFilterAreaExpanded)
+            {
+                val getStatusesState by getStatusesViewModel.state.collectAsStateWithLifecycle()
+                var isRefreshingStatuses by remember { mutableStateOf(false) }
+
+                LaunchedEffect(getStatusesState.error) {
+                    if (!getStatusesState.error.isNullOrBlank()) {
+                        Toast.makeText(context, getStatusesState.error, Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                val statusItems = getStatusesState.statusesList
+                val listState = rememberLazyListState()
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth().height(120.dp)
+                        .padding(20.dp, 0.dp)
+                        .border(width = 1.dp, color = Color.Black)
+                        .padding(10.dp)
+                ) {
+                    if (statusItems.isNotEmpty()) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            state = listState
+                        ) {
+                            itemsIndexed(
+                                items = statusItems,
+                                key = { _, item -> item.id }
+                            ) { index, item ->
+
+                                // Pagination trigger when scrolling near bottom
+                                if (index >= statusItems.size - 3) {
+                                    getStatusesViewModel.loadNextPage()
+                                }
+
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            selectedStatus = item
+                                            onSelectStatusFilter(item)
+                                        })
+                                {
+                                    Text(
+                                        text = item.name,
+                                        color = colorResource(R.color.color_a),
+                                        fontSize = 15.sp
+                                    )
+                                    Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
+                                }
+                            }
+                        }
+                    }
+
+                    if (getStatusesState.isLoading) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black.copy(alpha = 0.1f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+
+                    // Show empty state (when not loading and empty)
+                    if (statusItems.isEmpty() && !getStatusesState.isLoading) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = Constants.LOOKS_EMPTY_HERE,
+                                color = colorResource(R.color.primary_text_color)
+                            )
+                        }
+                    }
+                    isRefreshingStatuses = false
+                }
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+
+            ////////////////////////////////////////////////////////////////////////////////////////
+            //assigner filter
+            Row(modifier = Modifier.fillMaxWidth().padding(10.dp,0.dp)
+                .clickable{
+                    getAssignersViewModel.loadFirstPage()
+                    isAssignerFilterAreaExpanded= !isAssignerFilterAreaExpanded
+                },
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically)
+            {
+                Text(
+                    text = Constants.ASSIGNER,
+                    color = colorResource(R.color.color_c),
+                    fontSize = 15.sp
+                )
+                Icon(
+                    imageVector =
+                        if(isAssignerFilterAreaExpanded) Icons.Default.KeyboardArrowDown
+                        else Icons.Default.KeyboardArrowUp,
+                    contentDescription = "Assigner",
+                    tint = colorResource(R.color.color_a),
+                    modifier = Modifier.size(30.dp)
+                )
+            }
+
+            //assigner list
+            if(isAssignerFilterAreaExpanded)
+            {
+                val getContributorsState by getAssignersViewModel.state.collectAsStateWithLifecycle()
+                var isRefreshingContributors by remember { mutableStateOf(false) }
+
+                LaunchedEffect(getContributorsState.error) {
+                    if (!getContributorsState.error.isNullOrBlank()) {
+                        Toast.makeText(context, getContributorsState.error, Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                val contributorsItems = getContributorsState.contributorsList
+                val listState = rememberLazyListState()
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth().height(120.dp)
+                        .padding(20.dp, 0.dp)
+                        .border(width = 1.dp, color = Color.Black)
+                        .padding(10.dp)
+                ) {
+                    if (contributorsItems.isNotEmpty()) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            state = listState
+                        ) {
+                            itemsIndexed(
+                                items = contributorsItems,
+                                key = { _, item -> item.id }
+                            ) { index, item ->
+
+                                // Pagination trigger when scrolling near bottom
+                                if (index >= contributorsItems.size - 3) {
+                                    getAssignersViewModel.loadNextPage()
+                                }
+
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            selectedAssigner = item
+                                            onSelectAssignerFilter(item)
+                                        })
+                                {
+                                    Text(
+                                        text = item.name,
+                                        color = colorResource(R.color.color_a),
+                                        fontSize = 15.sp
+                                    )
+                                    Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
+                                }
+                            }
+                        }
+                    }
+
+                    if (getContributorsState.isLoading) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black.copy(alpha = 0.1f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+
+                    // Show empty state (when not loading and empty)
+                    if (contributorsItems.isEmpty() && !getContributorsState.isLoading) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = Constants.LOOKS_EMPTY_HERE,
+                                color = colorResource(R.color.primary_text_color)
+                            )
+                        }
+                    }
+                    isRefreshingContributors = false
+                }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            ////////////////////////////////////////////////////////////////////////////////////////
+            //assignee filter
+            Row(modifier = Modifier.fillMaxWidth().padding(10.dp,0.dp)
+                .clickable{
+                    getAssigneesViewModel.loadFirstPage()
+                    isAssigneeFilterAreaExpanded= !isAssigneeFilterAreaExpanded
+                },
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically)
+            {
+                Text(
+                    text = Constants.ASSIGNEE,
+                    color = colorResource(R.color.color_c),
+                    fontSize = 15.sp
+                )
+                Icon(
+                    imageVector =
+                        if(isAssigneeFilterAreaExpanded) Icons.Default.KeyboardArrowDown
+                        else Icons.Default.KeyboardArrowUp,
+                    contentDescription = "Assignee",
+                    tint = colorResource(R.color.color_a),
+                    modifier = Modifier.size(30.dp)
+                )
+            }
+
+            //assignee list
+            if(isAssigneeFilterAreaExpanded)
+            {
+                val getContributorsState by getAssigneesViewModel.state.collectAsStateWithLifecycle()
+                var isRefreshingContributors by remember { mutableStateOf(false) }
+
+                LaunchedEffect(getContributorsState.error) {
+                    if (!getContributorsState.error.isNullOrBlank()) {
+                        Toast.makeText(context, getContributorsState.error, Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                val contributorsItems = getContributorsState.contributorsList
+                val listState = rememberLazyListState()
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth().height(120.dp)
+                        .padding(20.dp, 0.dp)
+                        .border(width = 1.dp, color = Color.Black)
+                        .padding(10.dp)
+                ) {
+                    if (contributorsItems.isNotEmpty()) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            state = listState
+                        ) {
+                            itemsIndexed(
+                                items = contributorsItems,
+                                key = { _, item -> item.id }
+                            ) { index, item ->
+
+                                // Pagination trigger when scrolling near bottom
+                                if (index >= contributorsItems.size - 3) {
+                                    getAssigneesViewModel.loadNextPage()
+                                }
+
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            selectedAssignee = item
+                                            onSelectAssigneeFilter(item)
+                                        })
+                                {
+                                    Text(
+                                        text = item.name,
+                                        color = colorResource(R.color.color_a),
+                                        fontSize = 15.sp
+                                    )
+                                    Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
+                                }
+                            }
+                        }
+                    }
+
+                    if (getContributorsState.isLoading) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black.copy(alpha = 0.1f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+
+                    // Show empty state (when not loading and empty)
+                    if (contributorsItems.isEmpty() && !getContributorsState.isLoading) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = Constants.LOOKS_EMPTY_HERE,
+                                color = colorResource(R.color.primary_text_color)
+                            )
+                        }
+                    }
+                    isRefreshingContributors = false
+                }
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+
+
+        }
     }
 }
-//todo how we will show the filters
-//todo how we will use the filters
-//todo what data to show in the list
+
+//bugs
+//todo in descending order the list has an issue
+//todo when refreshing the list needs to maintain the sorting and filters
+//todo when opening all the filters i can not scroll through them so some filters lists do not show
+
+//tasks
 //todo apply colors
 
-//todo i need to get the priorities, contributors, statuses, work types and show them in the list with their names instead of ids
 @SuppressLint("UseKtx", "ResourceAsColor")
 @Composable
 fun ShowList(
@@ -755,6 +1483,5 @@ fun ShowList(
     }
 
 }
-
 
 
