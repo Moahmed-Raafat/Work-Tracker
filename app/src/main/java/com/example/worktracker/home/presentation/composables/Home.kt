@@ -26,6 +26,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.contextmenu.data.TextContextMenuSeparator.key
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -54,6 +55,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -85,6 +87,7 @@ import com.example.worktracker.worktypes.presentation.model.WorkTypeUI
 import com.example.worktracker.worktypes.presentation.viewmodel.get_worktypes.GetWorkTypesViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.NonCancellable.key
 import kotlinx.coroutines.launch
 
 
@@ -102,8 +105,6 @@ fun Home(navController: NavController,
 {
     val context = LocalContext.current.applicationContext
 
-
-
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //work items list
 
@@ -117,6 +118,12 @@ fun Home(navController: NavController,
         }
     }
 
+    /*LaunchedEffect(getWorkItemsState.isLoading) {
+        if (!getWorkItemsState.isLoading) {
+            isRefreshing = false
+        }
+    }*/
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //filters
     var isFiltersAreaExpanded by remember { mutableStateOf(false) }
@@ -126,7 +133,6 @@ fun Home(navController: NavController,
     var selectedStatusFilter by remember { mutableStateOf<StatusUI?>(null) }
     var selectedAssignerFilter by remember { mutableStateOf<ContributorUI?>(null) }
     var selectedAssigneeFilter by remember { mutableStateOf<ContributorUI?>(null) }
-
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //navigation drawer
@@ -389,7 +395,12 @@ fun Home(navController: NavController,
                                     onSortingAreaExpandedChange = {
                                         isDescending = it
                                         getWorkItemsViewModel.loadFirstPage(
-                                            sortByCreationDateDescending = isDescending)
+                                            sortByCreationDateDescending = isDescending,
+                                            filterByWorkTypeId = selectedWorkTypeFilter?.id,
+                                            filterByPriorityId = selectedPriorityFilter?.id,
+                                            filterByStatusId = selectedStatusFilter?.id,
+                                            filterByAssignerId = selectedAssignerFilter?.id,
+                                            filterByAssigneeId = selectedAssigneeFilter?.id)
                                     },
                                     onFiltersAreaExpandedChange = {
                                         isFiltersAreaExpanded = it
@@ -456,11 +467,33 @@ fun Home(navController: NavController,
                                 {
                                     Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
 
+                                    /*key(
+                                        isDescending,
+                                        selectedWorkTypeFilter,
+                                        selectedPriorityFilter,
+                                        selectedStatusFilter,
+                                        selectedAssignerFilter,
+                                        selectedAssigneeFilter
+                                    ) {
+                                        ShowList(
+                                            context = context,
+                                            list = items,
+                                            resetSignal = getWorkItemsState.resetToken,
+                                            onLoadMore = { getWorkItemsViewModel.loadNextPage() }
+                                        )
+                                    }*/
                                     ShowList(
+                                        context = context,
+                                        list = items,
+                                        resetSignal = getWorkItemsState.resetToken,
+                                        onLoadMore = { getWorkItemsViewModel.loadNextPage() }
+                                    )
+
+                                    /*ShowList(
                                         context= context,
                                         list = items,
                                         onLoadMore = { getWorkItemsViewModel.loadNextPage() }
-                                    )
+                                    )*/
                                 }
                                 else if(!getWorkItemsState.isLoading)
                                 {
@@ -561,12 +594,13 @@ fun ShowFilters(
                 )
                 Icon(
                     painter =
-                        if(isDescending) painterResource(id = R.drawable.arrow_down)
-                        else  painterResource(id = R.drawable.arrow_up),
+                        if(isDescending) painterResource(id = R.drawable.arrow_up)
+                        else  painterResource(id = R.drawable.arrow_down),
                     contentDescription = "Filters",
                     tint = colorResource(R.color.color_a),
                     modifier = Modifier.clickable {
-                        onFiltersAreaExpandedChange(!isFiltersAreaExpanded)
+                        isDescending = !isDescending
+                        onSortingAreaExpandedChange(isDescending)
                     }.size(15.dp)
                 )
             }
@@ -593,18 +627,14 @@ fun ShowFilters(
                     }.size(15.dp)
                 )
             }
-
         }
-
-        //Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
 
         //selected filter
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
-
+            verticalArrangement = Arrangement.spacedBy(5.dp))
+        {
             selectedWorkType?.let {
                 Box(
                     modifier = Modifier
@@ -1346,9 +1376,9 @@ fun ShowFilters(
 }
 
 //bugs
-//todo in descending order the list has an issue
 //todo when refreshing the list needs to maintain the sorting and filters
 //todo when opening all the filters i can not scroll through them so some filters lists do not show
+//todo when user collapse the filter section, all filters section must also get collapse
 
 //tasks
 //todo apply colors
@@ -1358,13 +1388,16 @@ fun ShowFilters(
 fun ShowList(
     context: Context,
     list: List<WorkItemUI>,
+    resetSignal: Int,
     onLoadMore: () -> Unit
 )
 {
     val listState = rememberLazyListState()
     var selectedWorkItem by remember { mutableStateOf<WorkItemUI?>(null) }
 
-
+    LaunchedEffect(resetSignal) {
+        listState.scrollToItem(0, 0)
+    }
     //show data
     LazyColumn(
         modifier = Modifier.fillMaxWidth().padding(5.dp),
@@ -1376,8 +1409,10 @@ fun ShowList(
             key = { _, item -> item.id }
         ) { index, item ->
 
-            if (index >= list.size - 3) {
-                onLoadMore()
+            LaunchedEffect(item.id, list.size) {
+                if (index >= list.size - 3) {
+                    onLoadMore()
+                }
             }
 
             Card(
@@ -1411,10 +1446,11 @@ fun ShowList(
                             fontSize = 20.sp
                         )
                         Text(
-                            text = item.priority.name,
+                            text = item.priority?.name ?: Constants.NOT_AVAILABLE,
                             color = colorResource(R.color.color_a),
                             fontSize = 20.sp
                         )
+
                     }
                     Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
 
@@ -1436,15 +1472,16 @@ fun ShowList(
                     //work type and status
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text(
-                            text = item.workType.name,
+                            text = item.workType?.name ?: Constants.NOT_AVAILABLE,
                             color = colorResource(R.color.color_a),
                             fontSize = 20.sp
                         )
                         Text(
-                            text = item.status.name,
+                            text = item.status?.name ?: Constants.NOT_AVAILABLE,
                             color = colorResource(R.color.color_a),
                             fontSize = 20.sp
                         )
+
                     }
 
                     Spacer(modifier = Modifier.fillMaxWidth().height(15.dp))
@@ -1452,7 +1489,7 @@ fun ShowList(
                     //assignee
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text(
-                            text = Constants.ASSIGNED_TO + item.assignee.name,
+                            text = Constants.ASSIGNED_TO + (item.assignee?.name ?: Constants.NOT_AVAILABLE),
                             color = colorResource(R.color.color_a),
                             fontSize = 20.sp
                         )

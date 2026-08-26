@@ -8,6 +8,7 @@ import com.example.worktracker.home.domain.model.GetWorkItemsBody
 import com.example.worktracker.home.domain.usecase.GetWorkItemsUseCase
 import com.example.worktracker.home.presentation.mappers.toUI
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -16,8 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GetWorkItemsViewModel @Inject constructor(private val getWorkItemsUseCase: GetWorkItemsUseCase):
-    ViewModel()
-{
+    ViewModel() {
 
     private val _state = MutableStateFlow(GetWorkItemsState())
     val state: StateFlow<GetWorkItemsState> = _state
@@ -37,21 +37,22 @@ class GetWorkItemsViewModel @Inject constructor(private val getWorkItemsUseCase:
     init {
         loadFirstPage(
             sortByCreationDateDescending = sortByCreationDateDescending,
-            filterByWorkTypeId= filterByWorkTypeId,
-            filterByAssignerId= filterByAssignerId,
-            filterByAssigneeId= filterByAssigneeId,
-            filterByStatusId= filterByStatusId,
-            filterByPriorityId= filterByPriorityId
+            filterByWorkTypeId = filterByWorkTypeId,
+            filterByAssignerId = filterByAssignerId,
+            filterByAssigneeId = filterByAssigneeId,
+            filterByStatusId = filterByStatusId,
+            filterByPriorityId = filterByPriorityId
         )
     }
 
-    fun loadFirstPage(sortByCreationDateDescending: Boolean,
-                      filterByWorkTypeId: Int? = null,
-                      filterByAssignerId: Int? = null,
-                      filterByAssigneeId: Int? = null,
-                      filterByStatusId: Int? = null,
-                      filterByPriorityId: Int? = null)
-    {
+    fun loadFirstPage(
+        sortByCreationDateDescending: Boolean,
+        filterByWorkTypeId: Int? = null,
+        filterByAssignerId: Int? = null,
+        filterByAssigneeId: Int? = null,
+        filterByStatusId: Int? = null,
+        filterByPriorityId: Int? = null
+    ) {
         this.sortByCreationDateDescending = sortByCreationDateDescending
         this.filterByWorkTypeId = filterByWorkTypeId
         this.filterByAssignerId = filterByAssignerId
@@ -65,8 +66,7 @@ class GetWorkItemsViewModel @Inject constructor(private val getWorkItemsUseCase:
         requestPage()
     }
 
-    fun loadNextPage()
-    {
+    fun loadNextPage() {
         if (isLoadingPage || isLastPage) return
 
         currentPage++
@@ -81,7 +81,10 @@ class GetWorkItemsViewModel @Inject constructor(private val getWorkItemsUseCase:
     //filterByStatusId is optional,
     //filterByPriorityId is optional
 
-    private fun requestPage() = viewModelScope.launch {
+    //cancel in-flight requests when starting a new one
+    private var requestJob: Job? = null
+
+    private fun requestPage() =  viewModelScope.launch {
 
         isLoadingPage = true
 
@@ -96,7 +99,6 @@ class GetWorkItemsViewModel @Inject constructor(private val getWorkItemsUseCase:
             filterByStatusId = filterByStatusId,
             filterByPriorityId = filterByPriorityId
         )
-
 
         getWorkItemsUseCase.invoke(getWorkItemsBody).collect { result ->
             when (result) {
@@ -143,13 +145,90 @@ class GetWorkItemsViewModel @Inject constructor(private val getWorkItemsUseCase:
                         state.copy(
                             isLoading = false,
                             workItemsList = mergedResponse.workItems,
-                            error = null
+                            error = null,
+                            resetToken = if (currentPage == 1) state.resetToken + 1 else state.resetToken
                         )
                     }
                 }
             }
         }
     }
+
+    /*private fun requestPage() {
+
+        requestJob?.cancel() // cancel any older, still-running request
+
+        requestJob = viewModelScope.launch {
+
+            isLoadingPage = true
+
+            val getWorkItemsBody = GetWorkItemsBody(
+                action = Constants.GET_WORK_ITEMS_ACTION,
+                page = currentPage,
+                pageSize = pageSize,
+                sortByCreationDateDescending = sortByCreationDateDescending,
+                filterByWorkTypeId = filterByWorkTypeId,
+                filterByAssignerId = filterByAssignerId,
+                filterByAssigneeId = filterByAssigneeId,
+                filterByStatusId = filterByStatusId,
+                filterByPriorityId = filterByPriorityId
+            )
+
+
+            getWorkItemsUseCase.invoke(getWorkItemsBody).collect { result ->
+                when (result) {
+
+                    is Resource.Loading -> {
+                        _state.update { state ->
+                            state.copy(isLoading = true, error = null)
+                        }
+                    }
+
+                    is Resource.Error -> {
+
+                        isLoadingPage = false
+
+                        _state.update { state ->
+                            state.copy(
+                                isLoading = false,
+                                error = result.message ?: "Unexpected error"
+                            )
+                        }
+                    }
+
+                    is Resource.Success -> {
+
+                        isLoadingPage = false
+
+                        val newResponse = result.data?.toUI() ?: return@collect
+
+                        if (newResponse.workItems.size < pageSize) {
+                            isLastPage = true
+                        }
+
+                        val oldItems = if (currentPage == 1) {
+                            emptyList()
+                        } else {
+                            _state.value.workItemsList
+                        }
+
+                        val mergedItems = oldItems.plus(newResponse.workItems)
+
+                        val mergedResponse = newResponse.copy(workItems = mergedItems)
+
+                        _state.update { state ->
+                            state.copy(
+                                isLoading = false,
+                                workItemsList = mergedResponse.workItems,
+                                error = null,
+                                resetToken = if (currentPage == 1) state.resetToken + 1 else state.resetToken
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }*/
 
     fun removeItem(id: Int) {
         _state.update { state ->

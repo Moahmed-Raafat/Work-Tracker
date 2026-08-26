@@ -49,11 +49,11 @@ fun WorkItemDto.toDomain(): WorkItem
         createdAt = this.createdAt,
         updatedAt = this.updatedAt,
 
-        workType = workType.toDomain(),
-        assigner = assigner.toDomain(),
-        assignee = assignee.toDomain(),
-        status = status.toDomain(),
-        priority = priority.toDomain(),
+        workType = workType?.toDomain(),
+        assigner = assigner?.toDomain(),
+        assignee = assignee?.toDomain(),
+        status = status?.toDomain(),
+        priority = priority?.toDomain(),
 
         documentationLinks = this.documentationLinks
     )

@@ -19,11 +19,11 @@ fun WorkItem.toUI(): WorkItemUI {
         createdAt = formatDateTime(createdAt),
         updatedAt = formatDateTime(updatedAt),
 
-        workType = workType.toUI(),
-        assigner = assigner.toUI(),
-        assignee = assignee.toUI(),
-        status = status.toUI(),
-        priority = priority.toUI(),
+        workType = workType?.toUI(),
+        assigner = assigner?.toUI(),
+        assignee = assignee?.toUI(),
+        status = status?.toUI(),
+        priority = priority?.toUI(),
 
         documentationLinks = this.documentationLinks
     )

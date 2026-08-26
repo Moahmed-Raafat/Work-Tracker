@@ -13,11 +13,11 @@ data class WorkItemUI(
     var createdAt: String,
     var updatedAt: String,
 
-    var workType: WorkTypeUI,
-    var assigner: ContributorUI,
-    var assignee: ContributorUI,
-    var status: StatusUI,
-    var priority: PriorityUI,
+    var workType: WorkTypeUI?,
+    var assigner: ContributorUI?,
+    var assignee: ContributorUI?,
+    var status: StatusUI?,
+    var priority: PriorityUI?,
 
     var documentationLinks: List<String>
 )

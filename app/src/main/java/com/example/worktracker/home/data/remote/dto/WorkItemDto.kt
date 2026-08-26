@@ -29,19 +29,19 @@ data class WorkItemDto(
 
     @SerializedName("workType")
     @Expose
-    var workType: WorkTypeDto,
+    var workType: WorkTypeDto?,
     @SerializedName("assigner")
     @Expose
-    var assigner: ContributorDto,
+    var assigner: ContributorDto?,
     @SerializedName("assignee")
     @Expose
-    var assignee: ContributorDto,
+    var assignee: ContributorDto?,
     @SerializedName("status")
     @Expose
-    var status: StatusDto,
+    var status: StatusDto?,
     @SerializedName("priority")
     @Expose
-    var priority: PriorityDto,
+    var priority: PriorityDto?,
 
     @SerializedName("documentationLinks")
     @Expose

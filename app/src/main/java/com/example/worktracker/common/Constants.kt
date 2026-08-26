@@ -93,6 +93,7 @@ object Constants {
     const val ASSIGNER: String = "Assigner"
     const val STATUS: String = "Status"
     const val PRIORITY: String = "Priority"
+    const val NOT_AVAILABLE: String = "Not available"
 
 
     const val BASE_URL="https://script.google.com/macros/s/AKfycbwFQ_CrF2p4rkINqIDA4Ks8recXGEz263rZietoEPc4G2l6jl65n4PivhHn4ZPZOa0W-A/"
