@@ -164,14 +164,13 @@ fun Priorities(navController: NavController,
                         Text(
                             text = Constants.PRIORITIES,
                             fontWeight = FontWeight.Bold,
-                            color = colorResource(R.color.primary_text_color),
+                            color = colorResource(R.color.white),
                             textAlign = TextAlign.Center
                         )
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = colorResource(R.color.top_bar),
-                    titleContentColor = colorResource(R.color.primary_text_color))
+                    containerColor = colorResource(R.color.color_a))
             )
         },
         floatingActionButton = {
@@ -180,13 +179,13 @@ fun Priorities(navController: NavController,
                     showAddPriorityDialog=true
                 },
                 contentColor = Color.White,
-                containerColor = colorResource(R.color.color_1)
+                containerColor = colorResource(R.color.color_d)
             ) {
                 Icon(
                     Icons.Rounded.Add,
                     contentDescription = Constants.ADD_PRIORITY,
                     modifier = Modifier.size(26.dp),
-                    tint = colorResource(R.color.white)
+                    tint = colorResource(R.color.color_a)
                 )
             }
         }

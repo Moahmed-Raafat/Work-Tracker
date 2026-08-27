@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.contextmenu.data.TextContextMenuSeparator.key
 import androidx.compose.material.icons.Icons
@@ -90,7 +91,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.NonCancellable.key
 import kotlinx.coroutines.launch
 
-
+//todo change all un proper icons in the app
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -144,11 +145,13 @@ fun Home(navController: NavController,
         drawerState =drawerState,
         gesturesEnabled = true,
         drawerContent = {
-            ModalDrawerSheet {
+            ModalDrawerSheet(
+                drawerContainerColor = colorResource(R.color.white)
+            ) {
                 Box(modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp)
-                    .background(colorResource(R.color.white)),
+                    .background(colorResource(R.color.color_a)),
                 )
                 {
                     Column(
@@ -156,15 +159,27 @@ fun Home(navController: NavController,
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center) {
 
-                        Image(
-                            painter = painterResource(id = R.drawable.work_tracker),
-                            contentDescription = "",
-                            modifier = Modifier.height(70.dp).width(70.dp)
-                        )
+                        //icon
+                        Box(
+                            modifier = Modifier
+                                .size(80.dp)
+                                .background(
+                                    color = colorResource(R.color.white),
+                                    shape = CircleShape
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.work_tracker),
+                                contentDescription = null,
+                                modifier = Modifier.size(70.dp)
+                            )
+                        }
+
                         Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
                         Text(
                             text = Constants.WORK_TRACKER,
-                            color = colorResource(R.color.primary_text_color),
+                            color = colorResource(R.color.white),
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp)
                     }
@@ -174,15 +189,20 @@ fun Home(navController: NavController,
 
                 //work types
                 NavigationDrawerItem(
-
-                    label = { Text( text = Constants.WORK_TYPES , color = colorResource(R.color.primary_text_color), fontSize = 15.sp)},
+                    label = {
+                        Text(
+                            text = Constants.WORK_TYPES ,
+                            color = colorResource(R.color.color_a),
+                            fontSize = 15.sp)
+                            },
                     selected = false,
                     icon = {
                         Icon(
                             //todo change icon
                             painter = painterResource(R.drawable.work_types) ,
                             contentDescription= Constants.WORK_TYPES,
-                            modifier = Modifier.size(30.dp)) },
+                            modifier = Modifier.size(30.dp),
+                            tint = colorResource(R.color.color_a)) },
                     onClick= {
                         //closing the navigation drawer
                         coroutineScope.launch{
@@ -200,13 +220,17 @@ fun Home(navController: NavController,
                 //contributors
                 NavigationDrawerItem(
 
-                    label = { Text( text = Constants.CONTRIBUTORS , color = colorResource(R.color.primary_text_color), fontSize = 15.sp)},
+                    label = { Text(
+                        text = Constants.CONTRIBUTORS ,
+                        color = colorResource(R.color.color_a),
+                        fontSize = 15.sp)},
                     selected = false,
                     icon = {
                         Icon(
                             painter = painterResource(R.drawable.contributor) ,
                             contentDescription= Constants.CONTRIBUTORS,
-                            modifier = Modifier.size(30.dp)) },
+                            modifier = Modifier.size(30.dp),
+                            tint = colorResource(R.color.color_a)) },
                     onClick= {
                         //closing the navigation drawer
                         coroutineScope.launch{
@@ -224,11 +248,13 @@ fun Home(navController: NavController,
                 //statuses
                 NavigationDrawerItem(
 
-                    label = { Text( text = Constants.STATUSES , color = colorResource(R.color.primary_text_color), fontSize = 15.sp)},
+                    label = { Text( text = Constants.STATUSES ,
+                        color = colorResource(R.color.color_a), fontSize = 15.sp)},
                     selected = false,
                     icon = {Icon(painter = painterResource(R.drawable.status),
                         contentDescription= Constants.STATUSES,
-                        modifier = Modifier.size(30.dp)) },
+                        modifier = Modifier.size(30.dp),
+                        tint = colorResource(R.color.color_a)) },
                     onClick= {
                         //closing the navigation drawer
                         coroutineScope.launch{
@@ -247,12 +273,14 @@ fun Home(navController: NavController,
                 NavigationDrawerItem(
 
                     label = {
-                        Text(text = Constants.PRIORITIES , color = colorResource(R.color.primary_text_color), fontSize = 15.sp)
+                        Text(text = Constants.PRIORITIES ,
+                            color = colorResource(R.color.color_a), fontSize = 15.sp)
                             },
                     selected = false,
                     icon = {Icon(painter = painterResource(R.drawable.priorities),
                         contentDescription= Constants.PRIORITIES,
-                        modifier = Modifier.size(30.dp)) },
+                        modifier = Modifier.size(30.dp),
+                        tint = colorResource(R.color.color_a)) },
                     onClick= {
                         //closing the navigation drawer
                         coroutineScope.launch{
@@ -271,12 +299,14 @@ fun Home(navController: NavController,
                 NavigationDrawerItem(
 
                     label = {
-                        Text(text = Constants.ABOUT , color = colorResource(R.color.primary_text_color), fontSize = 15.sp)
+                        Text(text = Constants.ABOUT ,
+                            color = colorResource(R.color.color_a), fontSize = 15.sp)
                     },
                     selected = false,
                     icon = {Icon(painter = painterResource(R.drawable.about),
                         contentDescription= Constants.ABOUT,
-                        modifier = Modifier.size(30.dp)) },
+                        modifier = Modifier.size(30.dp),
+                        tint = colorResource(R.color.color_a)) },
                     onClick= {
                         //closing the navigation drawer
                         coroutineScope.launch{
@@ -311,7 +341,6 @@ fun Home(navController: NavController,
                     },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                         containerColor = colorResource(R.color.color_a),
-                        titleContentColor = colorResource(R.color.white),
                         navigationIconContentColor = Color.White
                     ),
                     navigationIcon = {
@@ -348,13 +377,13 @@ fun Home(navController: NavController,
                         //todo add work item
                     },
                     contentColor = Color.White,
-                    containerColor = colorResource(R.color.color_a)
+                    containerColor = colorResource(R.color.color_d)
                 ) {
                     Icon(
                         Icons.Rounded.Add,
                         contentDescription = Constants.ADD_WORK_ITEM,
                         modifier = Modifier.size(26.dp),
-                        tint = colorResource(R.color.white)
+                        tint = colorResource(R.color.color_a)
                     )
                 }
             }

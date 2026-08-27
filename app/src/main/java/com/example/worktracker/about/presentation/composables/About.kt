@@ -1,4 +1,4 @@
-package com.example.worktracker.about
+package com.example.worktracker.about.presentation.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,14 +44,13 @@ fun About(navController: NavController)
                         Text(
                             text = Constants.ABOUT,
                             fontWeight = FontWeight.Bold,
-                            color = colorResource(R.color.primary_text_color),
+                            color = colorResource(R.color.white),
                             textAlign = TextAlign.Center
                         )
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = colorResource(R.color.top_bar),
-                    titleContentColor = colorResource(R.color.primary_text_color))
+                    containerColor = colorResource(R.color.color_a))
             )
         }
     )

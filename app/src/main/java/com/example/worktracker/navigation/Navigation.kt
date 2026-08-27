@@ -5,7 +5,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.worktracker.about.About
+import com.example.worktracker.about.presentation.composables.About
 import com.example.worktracker.contributors.presentation.composables.Contributors
 import com.example.worktracker.contributors.presentation.viewmodel.add_contributor.AddContributorViewModel
 import com.example.worktracker.contributors.presentation.viewmodel.delete_contributor.DeleteContributorViewModel
