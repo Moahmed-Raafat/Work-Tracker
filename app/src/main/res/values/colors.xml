@@ -23,6 +23,8 @@
     <color name="color_d">#FFBA00</color>
     <color name="color_e">#4A4A4A</color>
     <color name="muted_gray">#757575</color>
+    <color name="light_gray">#E0E0E0</color>
     <color name="background">#F4F5F8</color>
+    <color name="light_neutral_background">#F9F9FC</color>
 
 </resources>

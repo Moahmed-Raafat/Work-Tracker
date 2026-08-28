@@ -199,7 +199,7 @@ fun Statuses(navController: NavController,
 
         Column(
             modifier = Modifier.fillMaxSize().padding(innerPadding)
-                .background(color = colorResource(R.color.white)),
+                .background(color = colorResource(R.color.background)),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally)
         {
@@ -355,7 +355,7 @@ fun ShowList(
                                 selectedStatus= item
                                 showUpdateStatusDialog= true
                             },
-                            tint = colorResource(R.color.color_1)
+                            tint = colorResource(R.color.color_d)
                         )
                     }
 
@@ -370,7 +370,7 @@ fun ShowList(
                             {
                                 Text(
                                     text = Constants.UPDATED_AT + item.updatedAt,
-                                    color = colorResource(R.color.secondary_text_color),
+                                    color = colorResource(R.color.muted_gray),
                                     fontSize = 15.sp,
                                     fontStyle = FontStyle.Italic
                                 )
@@ -379,7 +379,7 @@ fun ShowList(
                             //creation date
                             Text(
                                 text = Constants.CREATED_AT + item.createdAt,
-                                color = colorResource(R.color.secondary_text_color),
+                                color = colorResource(R.color.muted_gray),
                                 fontSize = 15.sp,
                                 fontStyle = FontStyle.Italic
                             )

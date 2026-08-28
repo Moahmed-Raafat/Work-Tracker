@@ -324,7 +324,9 @@ fun Home(navController: NavController,
         })
     {
         Scaffold(
-            modifier = Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding(),
+            modifier = Modifier.fillMaxSize().
+            statusBarsPadding().
+            navigationBarsPadding(),
             topBar = {
                 TopAppBar(
                     modifier = Modifier.height(50.dp),
@@ -386,13 +388,17 @@ fun Home(navController: NavController,
                         tint = colorResource(R.color.color_a)
                     )
                 }
-            }
+            },
+
         )
         { innerPadding ->
 
             Column(
-                modifier = Modifier.fillMaxSize().padding(innerPadding)
-                    .background(color = colorResource(R.color.white)),
+                modifier =
+                    Modifier.
+                    fillMaxSize().
+                    padding(innerPadding)
+                    .background(color = colorResource(R.color.background)),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally)
             {
@@ -496,33 +502,12 @@ fun Home(navController: NavController,
                                 {
                                     Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
 
-                                    /*key(
-                                        isDescending,
-                                        selectedWorkTypeFilter,
-                                        selectedPriorityFilter,
-                                        selectedStatusFilter,
-                                        selectedAssignerFilter,
-                                        selectedAssigneeFilter
-                                    ) {
-                                        ShowList(
-                                            context = context,
-                                            list = items,
-                                            resetSignal = getWorkItemsState.resetToken,
-                                            onLoadMore = { getWorkItemsViewModel.loadNextPage() }
-                                        )
-                                    }*/
                                     ShowList(
                                         context = context,
                                         list = items,
                                         resetSignal = getWorkItemsState.resetToken,
                                         onLoadMore = { getWorkItemsViewModel.loadNextPage() }
                                     )
-
-                                    /*ShowList(
-                                        context= context,
-                                        list = items,
-                                        onLoadMore = { getWorkItemsViewModel.loadNextPage() }
-                                    )*/
                                 }
                                 else if(!getWorkItemsState.isLoading)
                                 {
@@ -593,14 +578,15 @@ fun ShowFilters(
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth().background(colorResource(R.color.white))
             .padding(10.dp,10.dp,10.dp,0.dp)
-            .border(width = 1.dp, color = Color.Black)
+            .border(width = 1.dp, color = colorResource(R.color.light_gray))
             .padding(10.dp),
         verticalArrangement = Arrangement.Center
         )
     {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement =Arrangement.SpaceBetween )
+        Row(modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement =Arrangement.SpaceBetween )
         {
             //sorting area
             Row(
@@ -642,7 +628,9 @@ fun ShowFilters(
             {
                 Text(
                     text = "filter",
-                    color = colorResource(R.color.color_a),
+                    color =
+                        if(isFiltersAreaExpanded) colorResource(R.color.color_b)
+                        else colorResource(R.color.color_a),
                     fontSize = 15.sp,
                     modifier = Modifier
                 )
@@ -650,7 +638,9 @@ fun ShowFilters(
                 Icon(
                     imageVector = Icons.Default.Settings,
                     contentDescription = "Filters",
-                    tint = colorResource(R.color.color_a),
+                    tint =
+                        if(isFiltersAreaExpanded) colorResource(R.color.color_b)
+                        else colorResource(R.color.color_a),
                     modifier = Modifier.clickable {
                         onFiltersAreaExpandedChange(!isFiltersAreaExpanded)
                     }.size(15.dp)
@@ -825,7 +815,7 @@ fun ShowFilters(
         {
             HorizontalDivider(
                 modifier = Modifier.fillMaxWidth().padding(0.dp, 5.dp,0.dp,5.dp),
-                color = colorResource(R.color.color_a),
+                color = colorResource(R.color.light_gray),
                 thickness = 1.dp
             )
 
@@ -842,15 +832,20 @@ fun ShowFilters(
             {
                 Text(
                     text = Constants.WORK_TYPES,
-                    color = colorResource(R.color.color_c),
-                    fontSize = 15.sp
+                    color =
+                        if(isWorkTypeFilterAreaExpanded) colorResource(R.color.color_b)
+                        else  colorResource(R.color.color_a),
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold
                 )
                 Icon(
                     imageVector =
                         if(isWorkTypeFilterAreaExpanded) Icons.Default.KeyboardArrowDown
                         else Icons.Default.KeyboardArrowUp,
                     contentDescription = "Work Types",
-                    tint = colorResource(R.color.color_a),
+                    tint =
+                        if(isWorkTypeFilterAreaExpanded) colorResource(R.color.color_b)
+                        else  colorResource(R.color.color_a),
                     modifier = Modifier.size(30.dp)
                 )
             }
@@ -874,7 +869,8 @@ fun ShowFilters(
                     modifier = Modifier
                     .fillMaxWidth().height(120.dp)
                     .padding(20.dp,0.dp)
-                    .border(width = 1.dp, color = Color.Black)
+                    .border(width = 1.dp, color = colorResource(R.color.light_gray))
+                    .background(colorResource(R.color.white))
                     .padding(10.dp))
                 {
                     if (workTypesItems.isNotEmpty())
@@ -905,7 +901,7 @@ fun ShowFilters(
                                 {
                                     Text(
                                         text = item.name,
-                                        color = colorResource(R.color.color_a),
+                                        color = colorResource(R.color.color_e),
                                         fontSize = 15.sp
                                     )
                                     Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
@@ -958,15 +954,20 @@ fun ShowFilters(
             {
                 Text(
                     text = Constants.PRIORITY,
-                    color = colorResource(R.color.color_c),
-                    fontSize = 15.sp
+                    color =
+                        if(isPriorityFilterAreaExpanded) colorResource(R.color.color_b)
+                        else  colorResource(R.color.color_a),
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold
                 )
                 Icon(
                     imageVector =
                         if(isPriorityFilterAreaExpanded) Icons.Default.KeyboardArrowDown
                         else Icons.Default.KeyboardArrowUp,
                     contentDescription = "Priority",
-                    tint = colorResource(R.color.color_a),
+                    tint =
+                        if(isPriorityFilterAreaExpanded) colorResource(R.color.color_b)
+                        else  colorResource(R.color.color_a),
                     modifier = Modifier.size(30.dp)
                 )
             }
@@ -990,7 +991,8 @@ fun ShowFilters(
                     modifier = Modifier
                         .fillMaxWidth().height(120.dp)
                         .padding(20.dp, 0.dp)
-                        .border(width = 1.dp, color = Color.Black)
+                        .border(width = 1.dp, color = colorResource(R.color.light_gray))
+                        .background(colorResource(R.color.white))
                         .padding(10.dp)
                 ) {
                     if (prioritiesItems.isNotEmpty()) {
@@ -1019,7 +1021,7 @@ fun ShowFilters(
                                 {
                                     Text(
                                         text = item.name,
-                                        color = colorResource(R.color.color_a),
+                                        color = colorResource(R.color.color_e),
                                         fontSize = 15.sp
                                     )
                                     Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
@@ -1071,15 +1073,20 @@ fun ShowFilters(
             {
                 Text(
                     text = Constants.STATUS,
-                    color = colorResource(R.color.color_c),
-                    fontSize = 15.sp
+                    color =
+                        if(isStatusFilterAreaExpanded) colorResource(R.color.color_b)
+                        else  colorResource(R.color.color_a),
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold
                 )
                 Icon(
                     imageVector =
                         if(isStatusFilterAreaExpanded) Icons.Default.KeyboardArrowDown
                         else Icons.Default.KeyboardArrowUp,
                     contentDescription = "Status",
-                    tint = colorResource(R.color.color_a),
+                    tint =
+                        if(isStatusFilterAreaExpanded) colorResource(R.color.color_b)
+                        else  colorResource(R.color.color_a),
                     modifier = Modifier.size(30.dp)
                 )
             }
@@ -1103,7 +1110,8 @@ fun ShowFilters(
                     modifier = Modifier
                         .fillMaxWidth().height(120.dp)
                         .padding(20.dp, 0.dp)
-                        .border(width = 1.dp, color = Color.Black)
+                        .border(width = 1.dp, color = colorResource(R.color.light_gray))
+                        .background(colorResource(R.color.white))
                         .padding(10.dp)
                 ) {
                     if (statusItems.isNotEmpty()) {
@@ -1132,7 +1140,7 @@ fun ShowFilters(
                                 {
                                     Text(
                                         text = item.name,
-                                        color = colorResource(R.color.color_a),
+                                        color = colorResource(R.color.color_e),
                                         fontSize = 15.sp
                                     )
                                     Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
@@ -1184,15 +1192,20 @@ fun ShowFilters(
             {
                 Text(
                     text = Constants.ASSIGNER,
-                    color = colorResource(R.color.color_c),
-                    fontSize = 15.sp
+                    color =
+                        if(isAssignerFilterAreaExpanded) colorResource(R.color.color_b)
+                        else  colorResource(R.color.color_a),
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold
                 )
                 Icon(
                     imageVector =
                         if(isAssignerFilterAreaExpanded) Icons.Default.KeyboardArrowDown
                         else Icons.Default.KeyboardArrowUp,
                     contentDescription = "Assigner",
-                    tint = colorResource(R.color.color_a),
+                    tint =
+                        if(isAssignerFilterAreaExpanded) colorResource(R.color.color_b)
+                        else  colorResource(R.color.color_a),
                     modifier = Modifier.size(30.dp)
                 )
             }
@@ -1216,7 +1229,8 @@ fun ShowFilters(
                     modifier = Modifier
                         .fillMaxWidth().height(120.dp)
                         .padding(20.dp, 0.dp)
-                        .border(width = 1.dp, color = Color.Black)
+                        .border(width = 1.dp, color = colorResource(R.color.light_gray))
+                        .background(colorResource(R.color.white))
                         .padding(10.dp)
                 ) {
                     if (contributorsItems.isNotEmpty()) {
@@ -1245,7 +1259,7 @@ fun ShowFilters(
                                 {
                                     Text(
                                         text = item.name,
-                                        color = colorResource(R.color.color_a),
+                                        color = colorResource(R.color.color_e),
                                         fontSize = 15.sp
                                     )
                                     Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
@@ -1298,15 +1312,20 @@ fun ShowFilters(
             {
                 Text(
                     text = Constants.ASSIGNEE,
-                    color = colorResource(R.color.color_c),
-                    fontSize = 15.sp
+                    color =
+                        if(isAssigneeFilterAreaExpanded) colorResource(R.color.color_b)
+                        else  colorResource(R.color.color_a),
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold
                 )
                 Icon(
                     imageVector =
                         if(isAssigneeFilterAreaExpanded) Icons.Default.KeyboardArrowDown
                         else Icons.Default.KeyboardArrowUp,
                     contentDescription = "Assignee",
-                    tint = colorResource(R.color.color_a),
+                    tint =
+                        if(isAssigneeFilterAreaExpanded) colorResource(R.color.color_b)
+                        else  colorResource(R.color.color_a),
                     modifier = Modifier.size(30.dp)
                 )
             }
@@ -1330,7 +1349,8 @@ fun ShowFilters(
                     modifier = Modifier
                         .fillMaxWidth().height(120.dp)
                         .padding(20.dp, 0.dp)
-                        .border(width = 1.dp, color = Color.Black)
+                        .border(width = 1.dp, color = colorResource(R.color.light_gray))
+                        .background(colorResource(R.color.white))
                         .padding(10.dp)
                 ) {
                     if (contributorsItems.isNotEmpty()) {
@@ -1359,7 +1379,7 @@ fun ShowFilters(
                                 {
                                     Text(
                                         text = item.name,
-                                        color = colorResource(R.color.color_a),
+                                        color = colorResource(R.color.color_e),
                                         fontSize = 15.sp
                                     )
                                     Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
@@ -1398,8 +1418,6 @@ fun ShowFilters(
                 }
             }
             Spacer(modifier = Modifier.height(10.dp))
-
-
         }
     }
 }
@@ -1455,7 +1473,7 @@ fun ShowList(
                 shape = RoundedCornerShape(7.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = colorResource(id = R.color.color_b)
+                    containerColor = colorResource(id = R.color.white)
                 )
             )
             {
@@ -1476,7 +1494,7 @@ fun ShowList(
                         )
                         Text(
                             text = item.priority?.name ?: Constants.NOT_AVAILABLE,
-                            color = colorResource(R.color.color_a),
+                            color = colorResource(R.color.color_d),
                             fontSize = 20.sp
                         )
 
@@ -1502,12 +1520,12 @@ fun ShowList(
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text(
                             text = item.workType?.name ?: Constants.NOT_AVAILABLE,
-                            color = colorResource(R.color.color_a),
+                            color = colorResource(R.color.color_b),
                             fontSize = 20.sp
                         )
                         Text(
                             text = item.status?.name ?: Constants.NOT_AVAILABLE,
-                            color = colorResource(R.color.color_a),
+                            color = colorResource(R.color.color_b),
                             fontSize = 20.sp
                         )
 
@@ -1519,7 +1537,7 @@ fun ShowList(
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text(
                             text = Constants.ASSIGNED_TO + (item.assignee?.name ?: Constants.NOT_AVAILABLE),
-                            color = colorResource(R.color.color_a),
+                            color = colorResource(R.color.color_e),
                             fontSize = 20.sp
                         )
                     }
@@ -1531,14 +1549,14 @@ fun ShowList(
                             {
                                 Text(
                                     text = Constants.UPDATED_AT + item.updatedAt,
-                                    color = colorResource(R.color.color_a),
+                                    color = colorResource(R.color.color_e),
                                     fontSize = 15.sp,
                                     fontStyle = FontStyle.Italic
                                 )
                             }
                             Text(
                                 text = Constants.CREATED_AT + item.createdAt,
-                                color = colorResource(R.color.color_a),
+                                color = colorResource(R.color.color_e),
                                 fontSize = 20.sp
                             )
                         }
