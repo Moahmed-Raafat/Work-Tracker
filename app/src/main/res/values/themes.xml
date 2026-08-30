@@ -6,7 +6,7 @@
     <style name="Theme.MySplashScreen" parent="Theme.SplashScreen">
         <item
             name="android:windowSplashScreenBackground"
-            tools:targetApi="31">@color/top_bar</item>
+            tools:targetApi="31">@color/color_a</item>
         <item
             name="android:windowSplashScreenAnimatedIcon"
             tools:ignore="NewApi">@drawable/work_tracker</item>

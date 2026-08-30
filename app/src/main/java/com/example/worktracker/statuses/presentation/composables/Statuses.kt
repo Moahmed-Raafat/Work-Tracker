@@ -258,7 +258,7 @@ fun Statuses(navController: NavController,
                             ) {
                                 Text(
                                     text = Constants.LOOKS_EMPTY_HERE,
-                                    color = colorResource(R.color.primary_text_color)
+                                    color = colorResource(R.color.color_a)
                                 )
                             }
                         }
@@ -344,7 +344,7 @@ fun ShowList(
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text(
                             text = item.name,
-                            color = colorResource(R.color.primary_text_color),
+                            color = colorResource(R.color.color_a),
                             fontSize = 20.sp
                         )
 
@@ -473,7 +473,8 @@ fun AddStatusDialog(
                     Text(
                         text = Constants.ADD_STATUS,
                         style = MaterialTheme.typography.titleLarge,
-                        color = colorResource(R.color.color_1)
+                        color = colorResource(R.color.color_a),
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -500,7 +501,7 @@ fun AddStatusDialog(
                         },
                         enabled = name.trim().isNotEmpty(),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_1),
+                            containerColor = colorResource(R.color.color_a),
                             contentColor = colorResource(R.color.white)
                         )
                     ) {
@@ -510,7 +511,7 @@ fun AddStatusDialog(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     TextButton(onClick = onDismiss) {
-                        Text(Constants.CANCEL, color = colorResource(R.color.color_1))
+                        Text(Constants.CANCEL, color = colorResource(R.color.color_c))
                     }
                 }
             }
@@ -545,7 +546,8 @@ fun UpdateStatusDialog(
                     Text(
                         text = Constants.UPDATE_STATUS,
                         style = MaterialTheme.typography.titleLarge,
-                        color = colorResource(R.color.color_1)
+                        color = colorResource(R.color.color_a),
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -572,7 +574,7 @@ fun UpdateStatusDialog(
                         },
                         enabled = newName.trim().isNotEmpty(),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_1),
+                            containerColor = colorResource(R.color.color_a),
                             contentColor = colorResource(R.color.white)
                         )
                     ) {
@@ -582,9 +584,8 @@ fun UpdateStatusDialog(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     TextButton(onClick = onDismiss) {
-                        Text(Constants.CANCEL, color = colorResource(R.color.color_1))
+                        Text(Constants.CANCEL, color = colorResource(R.color.color_c))
                     }
-
                 }
             }
         }
@@ -618,7 +619,8 @@ fun ShowStatusDetailsDialog(
                     Text(
                         text = Constants.STATUS_DETAILS,
                         style = MaterialTheme.typography.titleLarge,
-                        color = colorResource(R.color.color_1)
+                        color = colorResource(R.color.color_a),
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -629,11 +631,11 @@ fun ShowStatusDetailsDialog(
                     Text(
                         text= Constants.NAME,
                         fontSize = 15.sp,
-                        color = colorResource(R.color.secondary_text_color))
+                        color = colorResource(R.color.muted_gray))
 
                     Text(text= statusUI.name,
                         fontSize = 15.sp,
-                        color = colorResource(R.color.primary_text_color))
+                        color = colorResource(R.color.color_a))
                 }
                 Spacer(modifier = Modifier.height(5.dp))
 
@@ -643,12 +645,12 @@ fun ShowStatusDetailsDialog(
                     {
                         Text(
                             text = Constants.UPDATED_AT,
-                            color = colorResource(R.color.secondary_text_color),
+                            color = colorResource(R.color.muted_gray),
                             fontSize = 15.sp
                         )
                         Text(
                             text = statusUI.updatedAt,
-                            color = colorResource(R.color.primary_text_color),
+                            color = colorResource(R.color.color_a),
                             fontSize = 15.sp
                         )
                         Spacer(modifier = Modifier.height(5.dp))
@@ -658,12 +660,12 @@ fun ShowStatusDetailsDialog(
                 {
                     Text(
                         text = Constants.UPDATED_AT,
-                        color = colorResource(R.color.secondary_text_color),
+                        color = colorResource(R.color.muted_gray),
                         fontSize = 15.sp
                     )
                     Text(
                         text = statusUI.createdAt,
-                        color = colorResource(R.color.primary_text_color),
+                        color = colorResource(R.color.color_a),
                         fontSize = 15.sp
                     )
                 }
@@ -680,7 +682,7 @@ fun ShowStatusDetailsDialog(
                             onDelete()
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_1),
+                            containerColor = colorResource(R.color.color_a),
                             contentColor = colorResource(R.color.white)
                         )
                     ) {
@@ -694,7 +696,7 @@ fun ShowStatusDetailsDialog(
                             onUpdate(statusUI)
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_1),
+                            containerColor = colorResource(R.color.color_a),
                             contentColor = colorResource(R.color.white)
                         )
                     ) {
@@ -705,7 +707,7 @@ fun ShowStatusDetailsDialog(
 
                     TextButton(onClick = onDismiss)
                     {
-                        Text(Constants.CANCEL, color = colorResource(R.color.color_1))
+                        Text(Constants.CANCEL, color = colorResource(R.color.color_c))
                     }
                 }
             }
@@ -739,7 +741,8 @@ fun DeleteStatusDialog(
                     Text(
                         text = Constants.DELETE_STATUS,
                         style = MaterialTheme.typography.titleLarge,
-                        color = colorResource(R.color.color_1)
+                        color = colorResource(R.color.color_a),
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -748,7 +751,7 @@ fun DeleteStatusDialog(
                 Text(
                     text = Constants.ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_STATUS,
                     fontSize = 15.sp,
-                    color = colorResource(R.color.primary_text_color)
+                    color = colorResource(R.color.color_a)
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -763,7 +766,7 @@ fun DeleteStatusDialog(
                             onDelete(statusUI)
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_1),
+                            containerColor = colorResource(R.color.color_a),
                             contentColor = colorResource(R.color.white)
                         )
                     ) {
@@ -773,7 +776,7 @@ fun DeleteStatusDialog(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     TextButton(onClick = onDismiss) {
-                        Text(Constants.CANCEL, color = colorResource(R.color.color_1))
+                        Text(Constants.CANCEL, color = colorResource(R.color.color_c))
                     }
                 }
             }

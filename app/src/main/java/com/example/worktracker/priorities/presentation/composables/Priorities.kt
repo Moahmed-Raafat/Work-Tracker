@@ -254,7 +254,7 @@ fun Priorities(navController: NavController,
                             ) {
                                 Text(
                                     text = Constants.LOOKS_EMPTY_HERE,
-                                    color = colorResource(R.color.primary_text_color)
+                                    color = colorResource(R.color.color_a)
                                 )
                             }
                         }
@@ -340,7 +340,7 @@ fun ShowList(
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text(
                             text = item.name,
-                            color = colorResource(R.color.primary_text_color),
+                            color = colorResource(R.color.color_a),
                             fontSize = 20.sp
                         )
 
@@ -469,7 +469,8 @@ fun AddPriorityDialog(
                     Text(
                         text = Constants.ADD_PRIORITY,
                         style = MaterialTheme.typography.titleLarge,
-                        color = colorResource(R.color.color_1)
+                        color = colorResource(R.color.color_a),
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -496,7 +497,7 @@ fun AddPriorityDialog(
                         },
                         enabled = name.trim().isNotEmpty(),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_1),
+                            containerColor = colorResource(R.color.color_a),
                             contentColor = colorResource(R.color.white)
                         )
                     ) {
@@ -506,7 +507,7 @@ fun AddPriorityDialog(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     TextButton(onClick = onDismiss) {
-                        Text(Constants.CANCEL, color = colorResource(R.color.color_1))
+                        Text(Constants.CANCEL, color = colorResource(R.color.color_c))
                     }
                 }
             }
@@ -541,7 +542,8 @@ fun UpdatePriorityDialog(
                     Text(
                         text = Constants.UPDATE_PRIORITY,
                         style = MaterialTheme.typography.titleLarge,
-                        color = colorResource(R.color.color_1)
+                        color = colorResource(R.color.color_a),
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -568,7 +570,7 @@ fun UpdatePriorityDialog(
                         },
                         enabled = newName.trim().isNotEmpty(),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_1),
+                            containerColor = colorResource(R.color.color_a),
                             contentColor = colorResource(R.color.white)
                         )
                     ) {
@@ -578,7 +580,7 @@ fun UpdatePriorityDialog(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     TextButton(onClick = onDismiss) {
-                        Text(Constants.CANCEL, color = colorResource(R.color.color_1))
+                        Text(Constants.CANCEL, color = colorResource(R.color.color_c))
                     }
 
                 }
@@ -614,7 +616,8 @@ fun ShowPriorityDetailsDialog(
                     Text(
                         text = Constants.PRIORITY_DETAILS,
                         style = MaterialTheme.typography.titleLarge,
-                        color = colorResource(R.color.color_1)
+                        color = colorResource(R.color.color_a),
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -625,11 +628,11 @@ fun ShowPriorityDetailsDialog(
                     Text(
                         text= Constants.NAME,
                         fontSize = 15.sp,
-                        color = colorResource(R.color.secondary_text_color))
+                        color = colorResource(R.color.muted_gray))
 
                     Text(text= priorityUI.name,
                         fontSize = 15.sp,
-                        color = colorResource(R.color.primary_text_color))
+                        color = colorResource(R.color.color_a))
                 }
                 Spacer(modifier = Modifier.height(5.dp))
 
@@ -639,12 +642,12 @@ fun ShowPriorityDetailsDialog(
                     {
                         Text(
                             text = Constants.UPDATED_AT,
-                            color = colorResource(R.color.secondary_text_color),
+                            color = colorResource(R.color.muted_gray),
                             fontSize = 15.sp
                         )
                         Text(
                             text = priorityUI.updatedAt,
-                            color = colorResource(R.color.primary_text_color),
+                            color = colorResource(R.color.color_a),
                             fontSize = 15.sp
                         )
                         Spacer(modifier = Modifier.height(5.dp))
@@ -654,12 +657,12 @@ fun ShowPriorityDetailsDialog(
                 {
                     Text(
                         text = Constants.UPDATED_AT,
-                        color = colorResource(R.color.secondary_text_color),
+                        color = colorResource(R.color.muted_gray),
                         fontSize = 15.sp
                     )
                     Text(
                         text = priorityUI.createdAt,
-                        color = colorResource(R.color.primary_text_color),
+                        color = colorResource(R.color.color_a),
                         fontSize = 15.sp
                     )
                 }
@@ -676,7 +679,7 @@ fun ShowPriorityDetailsDialog(
                             onDelete()
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_1),
+                            containerColor = colorResource(R.color.color_a),
                             contentColor = colorResource(R.color.white)
                         )
                     ) {
@@ -690,7 +693,7 @@ fun ShowPriorityDetailsDialog(
                             onUpdate(priorityUI)
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_1),
+                            containerColor = colorResource(R.color.color_a),
                             contentColor = colorResource(R.color.white)
                         )
                     ) {
@@ -701,7 +704,7 @@ fun ShowPriorityDetailsDialog(
 
                     TextButton(onClick = onDismiss)
                     {
-                        Text(Constants.CANCEL, color = colorResource(R.color.color_1))
+                        Text(Constants.CANCEL, color = colorResource(R.color.color_c))
                     }
                 }
             }
@@ -734,7 +737,8 @@ fun DeletePriorityDialog(
                     Text(
                         text = Constants.DELETE_PRIORITY,
                         style = MaterialTheme.typography.titleLarge,
-                        color = colorResource(R.color.color_1)
+                        color = colorResource(R.color.color_a),
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -743,7 +747,7 @@ fun DeletePriorityDialog(
                 Text(
                     text = Constants.ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_PRIORITY,
                     fontSize = 15.sp,
-                    color = colorResource(R.color.primary_text_color)
+                    color = colorResource(R.color.color_a)
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -758,7 +762,7 @@ fun DeletePriorityDialog(
                             onDelete(priorityUI)
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_1),
+                            containerColor = colorResource(R.color.color_a),
                             contentColor = colorResource(R.color.white)
                         )
                     ) {
@@ -768,7 +772,7 @@ fun DeletePriorityDialog(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     TextButton(onClick = onDismiss) {
-                        Text(Constants.CANCEL, color = colorResource(R.color.color_1))
+                        Text(Constants.CANCEL, color = colorResource(R.color.color_c))
                     }
                 }
             }

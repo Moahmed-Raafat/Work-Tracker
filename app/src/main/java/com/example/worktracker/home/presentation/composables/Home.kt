@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,9 +26,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.contextmenu.data.TextContextMenuSeparator.key
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -145,6 +148,7 @@ fun Home(navController: NavController,
         drawerState =drawerState,
         gesturesEnabled = true,
         drawerContent = {
+
             ModalDrawerSheet(
                 drawerContainerColor = colorResource(R.color.white)
             ) {
@@ -188,7 +192,8 @@ fun Home(navController: NavController,
                 Spacer(modifier = Modifier.fillMaxWidth().height(20.dp))
 
                 //work types
-                NavigationDrawerItem(
+                //todo change icon
+                /*NavigationDrawerItem(
                     label = {
                         Text(
                             text = Constants.WORK_TYPES ,
@@ -198,7 +203,6 @@ fun Home(navController: NavController,
                     selected = false,
                     icon = {
                         Icon(
-                            //todo change icon
                             painter = painterResource(R.drawable.work_types) ,
                             contentDescription= Constants.WORK_TYPES,
                             modifier = Modifier.size(30.dp),
@@ -215,7 +219,12 @@ fun Home(navController: NavController,
                             restoreState = true
                         }
                     },
-                )
+                )*/
+                NavigationDrawerItem(
+                    navController= navController,
+                    drawerState= drawerState,
+                    label= Constants.WORK_TYPES,
+                    icon= R.drawable.work_types)
 
                 //contributors
                 NavigationDrawerItem(
@@ -410,7 +419,14 @@ fun Home(navController: NavController,
                         state = rememberSwipeRefreshState(isRefreshing),
                         onRefresh = {
                             isRefreshing = true
-                            getWorkItemsViewModel.loadFirstPage(sortByCreationDateDescending = false)
+                            getWorkItemsViewModel.loadFirstPage(
+                                sortByCreationDateDescending = isDescending,
+                                filterByWorkTypeId = selectedWorkTypeFilter?.id,
+                                filterByPriorityId = selectedPriorityFilter?.id,
+                                filterByStatusId = selectedStatusFilter?.id,
+                                filterByAssignerId = selectedAssignerFilter?.id,
+                                filterByAssigneeId = selectedAssigneeFilter?.id
+                            )
                         }
                     )
                     {
@@ -519,7 +535,7 @@ fun Home(navController: NavController,
                                     ) {
                                         Text(
                                             text = Constants.LOOKS_EMPTY_HERE,
-                                            color = colorResource(R.color.primary_text_color)
+                                            color = colorResource(R.color.color_a)
                                         )
                                     }
                                 }
@@ -576,12 +592,16 @@ fun ShowFilters(
     var selectedAssigner by remember { mutableStateOf<ContributorUI?>(null) }
     var selectedAssignee by remember { mutableStateOf<ContributorUI?>(null) }
 
+    val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
-            .fillMaxWidth().background(colorResource(R.color.white))
+            .fillMaxWidth()
+            .heightIn(max = 500.dp)
+            .background(colorResource(R.color.white))
             .padding(10.dp,10.dp,10.dp,0.dp)
             .border(width = 1.dp, color = colorResource(R.color.light_gray))
-            .padding(10.dp),
+            .padding(10.dp)
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.Center
         )
     {
@@ -623,7 +643,16 @@ fun ShowFilters(
             //filters area
             Row(
                 modifier = Modifier.clickable{
+
+                    if (isFiltersAreaExpanded) {
+                        isWorkTypeFilterAreaExpanded = false
+                        isPriorityFilterAreaExpanded = false
+                        isStatusFilterAreaExpanded = false
+                        isAssignerFilterAreaExpanded = false
+                        isAssigneeFilterAreaExpanded = false
+                    }
                     onFiltersAreaExpandedChange(!isFiltersAreaExpanded)
+
             }, verticalAlignment = Alignment.CenterVertically)
             {
                 Text(
@@ -642,6 +671,13 @@ fun ShowFilters(
                         if(isFiltersAreaExpanded) colorResource(R.color.color_b)
                         else colorResource(R.color.color_a),
                     modifier = Modifier.clickable {
+                        if (isFiltersAreaExpanded) {
+                            isWorkTypeFilterAreaExpanded = false
+                            isPriorityFilterAreaExpanded = false
+                            isStatusFilterAreaExpanded = false
+                            isAssignerFilterAreaExpanded = false
+                            isAssigneeFilterAreaExpanded = false
+                        }
                         onFiltersAreaExpandedChange(!isFiltersAreaExpanded)
                     }.size(15.dp)
                 )
@@ -933,7 +969,7 @@ fun ShowFilters(
                         ) {
                             Text(
                                 text = Constants.LOOKS_EMPTY_HERE,
-                                color = colorResource(R.color.primary_text_color)
+                                color = colorResource(R.color.color_a)
                             )
                         }
                     }
@@ -1052,7 +1088,7 @@ fun ShowFilters(
                         ) {
                             Text(
                                 text = Constants.LOOKS_EMPTY_HERE,
-                                color = colorResource(R.color.primary_text_color)
+                                color = colorResource(R.color.color_a)
                             )
                         }
                     }
@@ -1171,7 +1207,7 @@ fun ShowFilters(
                         ) {
                             Text(
                                 text = Constants.LOOKS_EMPTY_HERE,
-                                color = colorResource(R.color.primary_text_color)
+                                color = colorResource(R.color.color_a)
                             )
                         }
                     }
@@ -1290,7 +1326,7 @@ fun ShowFilters(
                         ) {
                             Text(
                                 text = Constants.LOOKS_EMPTY_HERE,
-                                color = colorResource(R.color.primary_text_color)
+                                color = colorResource(R.color.color_a)
                             )
                         }
                     }
@@ -1410,7 +1446,7 @@ fun ShowFilters(
                         ) {
                             Text(
                                 text = Constants.LOOKS_EMPTY_HERE,
-                                color = colorResource(R.color.primary_text_color)
+                                color = colorResource(R.color.color_a)
                             )
                         }
                     }
@@ -1423,12 +1459,11 @@ fun ShowFilters(
 }
 
 //bugs
-//todo when refreshing the list needs to maintain the sorting and filters
-//todo when opening all the filters i can not scroll through them so some filters lists do not show
-//todo when user collapse the filter section, all filters section must also get collapse
 
 //tasks
-//todo apply colors
+//todo the code has a lot of redundancy, we need to reduce the redundancy
+
+
 
 @SuppressLint("UseKtx", "ResourceAsColor")
 @Composable

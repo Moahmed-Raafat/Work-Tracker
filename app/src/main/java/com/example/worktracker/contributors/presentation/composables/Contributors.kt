@@ -257,7 +257,7 @@ fun Contributors(navController: NavController,
                             ) {
                                 Text(
                                     text = Constants.LOOKS_EMPTY_HERE,
-                                    color = colorResource(R.color.primary_text_color)
+                                    color = colorResource(R.color.color_a)
                                 )
                             }
                         }
@@ -343,7 +343,7 @@ fun ShowList(
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text(
                             text = item.name,
-                            color = colorResource(R.color.primary_text_color),
+                            color = colorResource(R.color.color_a),
                             fontSize = 20.sp
                         )
 
@@ -468,7 +468,8 @@ fun AddContributorDialog(
                     Text(
                         text = Constants.ADD_CONTRIBUTOR,
                         style = MaterialTheme.typography.titleLarge,
-                        color = colorResource(R.color.color_1)
+                        color = colorResource(R.color.color_a),
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -495,7 +496,7 @@ fun AddContributorDialog(
                         },
                         enabled = name.trim().isNotEmpty(),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_1),
+                            containerColor = colorResource(R.color.color_a),
                             contentColor = colorResource(R.color.white)
                         )
                     ) {
@@ -505,7 +506,7 @@ fun AddContributorDialog(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     TextButton(onClick = onDismiss) {
-                        Text(Constants.CANCEL, color = colorResource(R.color.color_1))
+                        Text(Constants.CANCEL, color = colorResource(R.color.color_c))
                     }
                 }
             }
@@ -540,7 +541,8 @@ fun UpdateContributorDialog(
                     Text(
                         text = Constants.UPDATE_CONTRIBUTOR,
                         style = MaterialTheme.typography.titleLarge,
-                        color = colorResource(R.color.color_1)
+                        color = colorResource(R.color.color_a),
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -567,7 +569,7 @@ fun UpdateContributorDialog(
                         },
                         enabled = newName.trim().isNotEmpty(),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_1),
+                            containerColor = colorResource(R.color.color_a),
                             contentColor = colorResource(R.color.white)
                         )
                     ) {
@@ -577,7 +579,7 @@ fun UpdateContributorDialog(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     TextButton(onClick = onDismiss) {
-                        Text(Constants.CANCEL, color = colorResource(R.color.color_1))
+                        Text(Constants.CANCEL, color = colorResource(R.color.color_c))
                     }
 
                 }
@@ -613,7 +615,8 @@ fun ShowContributorDetailsDialog(
                     Text(
                         text = Constants.CONTRIBUTOR_DETAILS,
                         style = MaterialTheme.typography.titleLarge,
-                        color = colorResource(R.color.color_1)
+                        color = colorResource(R.color.color_a),
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -624,11 +627,11 @@ fun ShowContributorDetailsDialog(
                     Text(
                         text= Constants.NAME,
                         fontSize = 15.sp,
-                        color = colorResource(R.color.secondary_text_color))
+                        color = colorResource(R.color.muted_gray))
 
                     Text(text= contributorUI.name,
                         fontSize = 15.sp,
-                        color = colorResource(R.color.primary_text_color))
+                        color = colorResource(R.color.color_a))
                 }
                 Spacer(modifier = Modifier.height(5.dp))
 
@@ -638,12 +641,12 @@ fun ShowContributorDetailsDialog(
                     {
                         Text(
                             text = Constants.UPDATED_AT,
-                            color = colorResource(R.color.secondary_text_color),
+                            color = colorResource(R.color.muted_gray),
                             fontSize = 15.sp
                         )
                         Text(
                             text = contributorUI.updatedAt,
-                            color = colorResource(R.color.primary_text_color),
+                            color = colorResource(R.color.color_a),
                             fontSize = 15.sp
                         )
                         Spacer(modifier = Modifier.height(5.dp))
@@ -653,12 +656,12 @@ fun ShowContributorDetailsDialog(
                 {
                     Text(
                         text = Constants.UPDATED_AT,
-                        color = colorResource(R.color.secondary_text_color),
+                        color = colorResource(R.color.muted_gray),
                         fontSize = 15.sp
                     )
                     Text(
                         text = contributorUI.createdAt,
-                        color = colorResource(R.color.primary_text_color),
+                        color = colorResource(R.color.color_a),
                         fontSize = 15.sp
                     )
                 }
@@ -675,7 +678,7 @@ fun ShowContributorDetailsDialog(
                             onDelete()
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_1),
+                            containerColor = colorResource(R.color.color_a),
                             contentColor = colorResource(R.color.white)
                         )
                     ) {
@@ -689,7 +692,7 @@ fun ShowContributorDetailsDialog(
                             onUpdate(contributorUI)
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_1),
+                            containerColor = colorResource(R.color.color_a),
                             contentColor = colorResource(R.color.white)
                         )
                     ) {
@@ -700,7 +703,7 @@ fun ShowContributorDetailsDialog(
 
                     TextButton(onClick = onDismiss)
                     {
-                        Text(Constants.CANCEL, color = colorResource(R.color.color_1))
+                        Text(Constants.CANCEL, color = colorResource(R.color.color_c))
                     }
                 }
             }
@@ -735,7 +738,8 @@ fun DeleteContributorDialog(
                     Text(
                         text = Constants.DELETE_CONTRIBUTOR,
                         style = MaterialTheme.typography.titleLarge,
-                        color = colorResource(R.color.color_1)
+                        color = colorResource(R.color.color_a),
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -744,7 +748,7 @@ fun DeleteContributorDialog(
                 Text(
                     text = Constants.ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_CONTRIBUTOR,
                     fontSize = 15.sp,
-                    color = colorResource(R.color.primary_text_color)
+                    color = colorResource(R.color.color_a)
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -759,7 +763,7 @@ fun DeleteContributorDialog(
                             onDelete(contributorUI)
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_1),
+                            containerColor = colorResource(R.color.color_a),
                             contentColor = colorResource(R.color.white)
                         )
                     ) {
@@ -769,7 +773,7 @@ fun DeleteContributorDialog(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     TextButton(onClick = onDismiss) {
-                        Text(Constants.CANCEL, color = colorResource(R.color.color_1))
+                        Text(Constants.CANCEL, color = colorResource(R.color.color_c))
                     }
                 }
             }

@@ -255,7 +255,7 @@ fun WorkTypes(
                             ) {
                                 Text(
                                     text = Constants.LOOKS_EMPTY_HERE,
-                                    color = colorResource(R.color.primary_text_color)
+                                    color = colorResource(R.color.color_a)
                                 )
                             }
                         }
@@ -341,7 +341,7 @@ fun ShowList(
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text(
                             text = item.name,
-                            color = colorResource(R.color.primary_text_color),
+                            color = colorResource(R.color.color_a),
                             fontSize = 20.sp
                         )
 
@@ -470,7 +470,8 @@ fun AddWorkTypeDialog(
                     Text(
                         text = Constants.ADD_WORK_TYPE,
                         style = MaterialTheme.typography.titleLarge,
-                        color = colorResource(R.color.color_1)
+                        color = colorResource(R.color.color_a),
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -497,7 +498,7 @@ fun AddWorkTypeDialog(
                         },
                         enabled = name.trim().isNotEmpty(),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_1),
+                            containerColor = colorResource(R.color.color_a),
                             contentColor = colorResource(R.color.white)
                         )
                     ) {
@@ -507,7 +508,7 @@ fun AddWorkTypeDialog(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     TextButton(onClick = onDismiss) {
-                        Text(Constants.CANCEL, color = colorResource(R.color.color_1))
+                        Text(Constants.CANCEL, color = colorResource(R.color.color_c))
                     }
                 }
             }
@@ -542,7 +543,8 @@ fun UpdateWorkTypeDialog(
                     Text(
                         text = Constants.UPDATE_WORK_TYPE,
                         style = MaterialTheme.typography.titleLarge,
-                        color = colorResource(R.color.color_1)
+                        color = colorResource(R.color.color_a),
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -569,7 +571,7 @@ fun UpdateWorkTypeDialog(
                         },
                         enabled = newName.trim().isNotEmpty(),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_1),
+                            containerColor = colorResource(R.color.color_a),
                             contentColor = colorResource(R.color.white)
                         )
                     ) {
@@ -579,7 +581,7 @@ fun UpdateWorkTypeDialog(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     TextButton(onClick = onDismiss) {
-                        Text(Constants.CANCEL, color = colorResource(R.color.color_1))
+                        Text(Constants.CANCEL, color = colorResource(R.color.color_c))
                     }
                 }
             }
@@ -614,7 +616,8 @@ fun ShowWorkTypeDetailsDialog(
                     Text(
                         text = Constants.WORK_TYPE_DETAILS,
                         style = MaterialTheme.typography.titleLarge,
-                        color = colorResource(R.color.color_1)
+                        color = colorResource(R.color.color_a),
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -625,11 +628,11 @@ fun ShowWorkTypeDetailsDialog(
                     Text(
                         text= Constants.NAME,
                         fontSize = 15.sp,
-                        color = colorResource(R.color.secondary_text_color))
+                        color = colorResource(R.color.muted_gray))
 
                     Text(text= workTypeUI.name,
                         fontSize = 15.sp,
-                        color = colorResource(R.color.primary_text_color))
+                        color = colorResource(R.color.color_a))
                 }
                 Spacer(modifier = Modifier.height(5.dp))
 
@@ -639,12 +642,12 @@ fun ShowWorkTypeDetailsDialog(
                     {
                         Text(
                             text = Constants.UPDATED_AT,
-                            color = colorResource(R.color.secondary_text_color),
+                            color = colorResource(R.color.muted_gray),
                             fontSize = 15.sp
                         )
                         Text(
                             text = workTypeUI.updatedAt,
-                            color = colorResource(R.color.primary_text_color),
+                            color = colorResource(R.color.color_a),
                             fontSize = 15.sp
                         )
                         Spacer(modifier = Modifier.height(5.dp))
@@ -654,12 +657,12 @@ fun ShowWorkTypeDetailsDialog(
                 {
                     Text(
                         text = Constants.UPDATED_AT,
-                        color = colorResource(R.color.secondary_text_color),
+                        color = colorResource(R.color.muted_gray),
                         fontSize = 15.sp
                     )
                     Text(
                         text = workTypeUI.createdAt,
-                        color = colorResource(R.color.primary_text_color),
+                        color = colorResource(R.color.color_a),
                         fontSize = 15.sp
                     )
                 }
@@ -676,7 +679,7 @@ fun ShowWorkTypeDetailsDialog(
                             onDelete()
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_1),
+                            containerColor = colorResource(R.color.color_a),
                             contentColor = colorResource(R.color.white)
                         )
                     ) {
@@ -690,7 +693,7 @@ fun ShowWorkTypeDetailsDialog(
                             onUpdate(workTypeUI)
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_1),
+                            containerColor = colorResource(R.color.color_a),
                             contentColor = colorResource(R.color.white)
                         )
                     ) {
@@ -701,7 +704,7 @@ fun ShowWorkTypeDetailsDialog(
 
                     TextButton(onClick = onDismiss)
                     {
-                        Text(Constants.CANCEL, color = colorResource(R.color.color_1))
+                        Text(Constants.CANCEL, color = colorResource(R.color.color_c))
                     }
                 }
             }
@@ -734,7 +737,8 @@ fun DeleteWorkTypeDialog(
                     Text(
                         text = Constants.DELETE_WORK_TYPE,
                         style = MaterialTheme.typography.titleLarge,
-                        color = colorResource(R.color.color_1)
+                        color = colorResource(R.color.color_a),
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -743,7 +747,7 @@ fun DeleteWorkTypeDialog(
                 Text(
                     text = Constants.ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_WORK_TYPE,
                     fontSize = 15.sp,
-                    color = colorResource(R.color.primary_text_color)
+                    color = colorResource(R.color.color_a)
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -757,7 +761,7 @@ fun DeleteWorkTypeDialog(
                             onDelete(workTypeUI)
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_1),
+                            containerColor = colorResource(R.color.color_a),
                             contentColor = colorResource(R.color.white)
                         )
                     ) {
@@ -767,7 +771,7 @@ fun DeleteWorkTypeDialog(
                     Spacer(modifier = Modifier.width(8.dp))
 
                     TextButton(onClick = onDismiss) {
-                        Text(Constants.CANCEL, color = colorResource(R.color.color_1))
+                        Text(Constants.CANCEL, color = colorResource(R.color.color_c))
                     }
                 }
             }
