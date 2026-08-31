@@ -9,6 +9,7 @@ object Constants {
     const val WORK_TYPES: String = "Work Types"
     const val WORK_TYPE: String = "Work Type"
     const val ABOUT: String = "About"
+    const val ADD_WORK_ITEM: String = "Add Work Item"
 
     //actions
     const val GET_CONTRIBUTORS_ACTION: String = "getContributors"
@@ -60,7 +61,7 @@ object Constants {
     const val ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_WORK_TYPE: String = "Are you sure you want to delete this work type"
     const val WORK_ITEM_TITLE: String = "Work Item Title"
     const val WORK_ITEM_DESCRIPTION: String = "Work Item Description"
-    const val ADD_WORK_ITEM: String = "Add Work Item"
+
     const val NAME: String = "Name: "
     const val DASHBOARD: String = "Dashboard"
     const val WORK_TRACKER: String = "Work Tracker"

@@ -3,7 +3,6 @@ package com.example.worktracker.home.presentation.composables
 import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,17 +28,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.contextmenu.data.TextContextMenuSeparator.key
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Menu
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -50,7 +43,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -59,7 +51,6 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -91,10 +82,10 @@ import com.example.worktracker.worktypes.presentation.model.WorkTypeUI
 import com.example.worktracker.worktypes.presentation.viewmodel.get_worktypes.GetWorkTypesViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import kotlinx.coroutines.NonCancellable.key
 import kotlinx.coroutines.launch
 
 //todo change all un proper icons in the app
+//todo when network is not available or the list is empty i can not refresh to retry the api
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -193,142 +184,44 @@ fun Home(navController: NavController,
 
                 //work types
                 //todo change icon
-                /*NavigationDrawerItem(
-                    label = {
-                        Text(
-                            text = Constants.WORK_TYPES ,
-                            color = colorResource(R.color.color_a),
-                            fontSize = 15.sp)
-                            },
-                    selected = false,
-                    icon = {
-                        Icon(
-                            painter = painterResource(R.drawable.work_types) ,
-                            contentDescription= Constants.WORK_TYPES,
-                            modifier = Modifier.size(30.dp),
-                            tint = colorResource(R.color.color_a)) },
-                    onClick= {
-                        //closing the navigation drawer
-                        coroutineScope.launch{
-                            //drawerState.close()
-                        }
-
-                        //navigating to selected screen
-                        navController.navigate(Screens.WorkTypes.route){
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                )*/
                 NavigationDrawerItem(
                     navController= navController,
                     drawerState= drawerState,
                     label= Constants.WORK_TYPES,
-                    icon= R.drawable.work_types)
+                    icon= R.drawable.work_types,
+                    Screens.WorkTypes.route)
 
                 //contributors
                 NavigationDrawerItem(
-
-                    label = { Text(
-                        text = Constants.CONTRIBUTORS ,
-                        color = colorResource(R.color.color_a),
-                        fontSize = 15.sp)},
-                    selected = false,
-                    icon = {
-                        Icon(
-                            painter = painterResource(R.drawable.contributor) ,
-                            contentDescription= Constants.CONTRIBUTORS,
-                            modifier = Modifier.size(30.dp),
-                            tint = colorResource(R.color.color_a)) },
-                    onClick= {
-                        //closing the navigation drawer
-                        coroutineScope.launch{
-                            //drawerState.close()
-                        }
-
-                        //navigating to selected screen
-                        navController.navigate(Screens.Contributors.route){
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                )
+                    navController= navController,
+                    drawerState= drawerState,
+                    label= Constants.CONTRIBUTORS,
+                    icon= R.drawable.contributor,
+                    Screens.Contributors.route)
 
                 //statuses
                 NavigationDrawerItem(
-
-                    label = { Text( text = Constants.STATUSES ,
-                        color = colorResource(R.color.color_a), fontSize = 15.sp)},
-                    selected = false,
-                    icon = {Icon(painter = painterResource(R.drawable.status),
-                        contentDescription= Constants.STATUSES,
-                        modifier = Modifier.size(30.dp),
-                        tint = colorResource(R.color.color_a)) },
-                    onClick= {
-                        //closing the navigation drawer
-                        coroutineScope.launch{
-                            //drawerState.close()
-                        }
-
-                        //navigating to selected screen
-                        navController.navigate(Screens.Statuses.route){
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                )
+                    navController= navController,
+                    drawerState= drawerState,
+                    label= Constants.STATUSES,
+                    icon= R.drawable.status,
+                    Screens.Statuses.route)
 
                 //priorities
                 NavigationDrawerItem(
-
-                    label = {
-                        Text(text = Constants.PRIORITIES ,
-                            color = colorResource(R.color.color_a), fontSize = 15.sp)
-                            },
-                    selected = false,
-                    icon = {Icon(painter = painterResource(R.drawable.priorities),
-                        contentDescription= Constants.PRIORITIES,
-                        modifier = Modifier.size(30.dp),
-                        tint = colorResource(R.color.color_a)) },
-                    onClick= {
-                        //closing the navigation drawer
-                        coroutineScope.launch{
-                            //drawerState.close()
-                        }
-
-                        //navigating to selected screen
-                        navController.navigate(Screens.Priorities.route){
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                )
+                    navController= navController,
+                    drawerState= drawerState,
+                    label= Constants.PRIORITIES,
+                    icon= R.drawable.priorities,
+                    Screens.Priorities.route)
 
                 //about
                 NavigationDrawerItem(
-
-                    label = {
-                        Text(text = Constants.ABOUT ,
-                            color = colorResource(R.color.color_a), fontSize = 15.sp)
-                    },
-                    selected = false,
-                    icon = {Icon(painter = painterResource(R.drawable.about),
-                        contentDescription= Constants.ABOUT,
-                        modifier = Modifier.size(30.dp),
-                        tint = colorResource(R.color.color_a)) },
-                    onClick= {
-                        //closing the navigation drawer
-                        coroutineScope.launch{
-                            //drawerState.close()
-                        }
-
-                        //navigating to selected screen
-                        navController.navigate(Screens.About.route){
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                )
+                    navController= navController,
+                    drawerState= drawerState,
+                    label= Constants.ABOUT,
+                    icon= R.drawable.about,
+                    Screens.About.route)
             }
         })
     {
@@ -385,7 +278,7 @@ fun Home(navController: NavController,
             floatingActionButton = {
                 androidx.compose.material3.FloatingActionButton(
                     onClick = {
-                        //todo add work item
+                        navController.navigate(Screens.ADDWorkItem.route)
                     },
                     contentColor = Color.White,
                     containerColor = colorResource(R.color.color_d)
@@ -690,159 +583,60 @@ fun ShowFilters(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalArrangement = Arrangement.spacedBy(5.dp))
         {
-            selectedWorkType?.let {
-                Box(
-                    modifier = Modifier
-                        .border(width = .5.dp, color = colorResource(R.color.color_b))
-                        .padding(1.dp)
-                        .clickable{
-                            selectedWorkType= null
-                            onSelectWorkTypeFilter(null)
-                        })
-                {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = Constants.WORK_TYPE +": "+ it.name,
-                            fontSize = 15.sp,
-                            color = colorResource(R.color.color_b))
-                        Spacer(modifier = Modifier.width(3.dp))
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = "Filters",
-                            tint = colorResource(R.color.color_b),
-                            modifier = Modifier.clickable {
-                                selectedWorkType= null
-                                onSelectWorkTypeFilter(null)
-                            }.size(15.dp)
-                        )
-                    }
 
-                }
-                Spacer(modifier = Modifier.width(10.dp))
+            selectedWorkType?.let {
+                SelectedFilter(
+                    label = Constants.WORK_TYPE,
+                    value = it.name,
+                    onClear = {
+                        selectedWorkType = null
+                        onSelectWorkTypeFilter(null)
+                    }
+                )
             }
 
             selectedPriory?.let {
-                Box(
-                    modifier = Modifier
-                        .border(width = .5.dp, color = colorResource(R.color.color_b))
-                        .padding(1.dp)
-                        .clickable{
-                            selectedPriory= null
-                            onSelectPriorityFilter(null)
-                        })
-                {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = Constants.PRIORITY +": "+it.name,
-                            fontSize = 15.sp,
-                            color = colorResource(R.color.color_b))
-                        Spacer(modifier = Modifier.width(3.dp))
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = "Filters",
-                            tint = colorResource(R.color.color_b),
-                            modifier = Modifier.clickable {
-                                selectedPriory= null
-                                onSelectPriorityFilter(null)
-                            }.size(15.dp)
-                        )
+                SelectedFilter(
+                    label = Constants.PRIORITY,
+                    value = it.name,
+                    onClear = {
+                        selectedPriory = null
+                        onSelectPriorityFilter(null)
                     }
-
-                }
-                Spacer(modifier = Modifier.width(10.dp))
+                )
             }
 
             selectedStatus?.let {
-                Box(
-                    modifier = Modifier
-                        .border(width = .5.dp, color = colorResource(R.color.color_b))
-                        .padding(1.dp)
-                        .clickable{
-                            selectedStatus= null
-                            onSelectStatusFilter(null)
-                        })
-                {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = Constants.STATUS +": "+it.name,
-                            fontSize = 15.sp,
-                            color = colorResource(R.color.color_b))
-                        Spacer(modifier = Modifier.width(3.dp))
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = "Filters",
-                            tint = colorResource(R.color.color_b),
-                            modifier = Modifier.clickable {
-                                selectedStatus= null
-                                onSelectStatusFilter(null)
-                            }.size(15.dp)
-                        )
+                SelectedFilter(
+                    label = Constants.STATUS,
+                    value = it.name,
+                    onClear = {
+                        selectedStatus = null
+                        onSelectStatusFilter(null)
                     }
-
-                }
-                Spacer(modifier = Modifier.width(10.dp))
+                )
             }
 
             selectedAssigner?.let {
-                Box(
-                    modifier = Modifier
-                        .border(width = .5.dp, color = colorResource(R.color.color_b))
-                        .padding(1.dp)
-                        .clickable{
-                            selectedAssigner= null
-                            onSelectAssignerFilter(null)
-                        })
-                {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = Constants.ASSIGNER +": "+it.name,
-                            fontSize = 15.sp,
-                            color = colorResource(R.color.color_b))
-                        Spacer(modifier = Modifier.width(3.dp))
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = "Filters",
-                            tint = colorResource(R.color.color_b),
-                            modifier = Modifier.clickable {
-                                selectedAssigner= null
-                                onSelectAssignerFilter(null)
-                            }.size(15.dp)
-                        )
+                SelectedFilter(
+                    label = Constants.ASSIGNER,
+                    value = it.name,
+                    onClear = {
+                        selectedAssigner = null
+                        onSelectAssignerFilter(null)
                     }
-
-                }
-                Spacer(modifier = Modifier.width(10.dp))
+                )
             }
 
             selectedAssignee?.let {
-                Box(
-                    modifier = Modifier
-                        .border(width = .5.dp, color = colorResource(R.color.color_b))
-                        .padding(1.dp)
-                        .clickable{
-                            selectedAssignee= null
-                            onSelectAssigneeFilter(null)
-                        })
-                {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = Constants.ASSIGNEE +": "+it.name,
-                            fontSize = 15.sp,
-                            color = colorResource(R.color.color_b))
-                        Spacer(modifier = Modifier.width(3.dp))
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = "Filters",
-                            tint = colorResource(R.color.color_b),
-                            modifier = Modifier.clickable {
-                                selectedAssignee= null
-                                onSelectAssigneeFilter(null)
-                            }.size(15.dp)
-                        )
+                SelectedFilter(
+                    label = Constants.ASSIGNEE,
+                    value = it.name,
+                    onClear = {
+                        selectedAssignee = null
+                        onSelectAssigneeFilter(null)
                     }
-
-                }
-                Spacer(modifier = Modifier.width(10.dp))
+                )
             }
         }
 
@@ -858,39 +652,20 @@ fun ShowFilters(
             Spacer(modifier = Modifier.height(5.dp))
 
             //work types filter
-            Row(modifier = Modifier.fillMaxWidth().padding(10.dp,0.dp)
-                .clickable{
+            ShowFilterOption(
+                label= Constants.WORK_TYPES,
+                isExpanded= isWorkTypeFilterAreaExpanded,
+                onClick= {
                     getWorkTypesViewModel.loadFirstPage()
                     isWorkTypeFilterAreaExpanded= !isWorkTypeFilterAreaExpanded
-                },
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically)
-            {
-                Text(
-                    text = Constants.WORK_TYPES,
-                    color =
-                        if(isWorkTypeFilterAreaExpanded) colorResource(R.color.color_b)
-                        else  colorResource(R.color.color_a),
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Icon(
-                    imageVector =
-                        if(isWorkTypeFilterAreaExpanded) Icons.Default.KeyboardArrowDown
-                        else Icons.Default.KeyboardArrowUp,
-                    contentDescription = "Work Types",
-                    tint =
-                        if(isWorkTypeFilterAreaExpanded) colorResource(R.color.color_b)
-                        else  colorResource(R.color.color_a),
-                    modifier = Modifier.size(30.dp)
-                )
-            }
+                }
+            )
 
             //work types list
             if(isWorkTypeFilterAreaExpanded)
             {
                 val getWorkTypesState by getWorkTypesViewModel.state.collectAsStateWithLifecycle()
-                var isRefreshingWorkTypes by remember { mutableStateOf(false) }
+                //var isRefreshingWorkTypes by remember { mutableStateOf(false) }
 
                 LaunchedEffect(getWorkTypesState.error) {
                     if (!getWorkTypesState.error.isNullOrBlank()) {
@@ -901,118 +676,38 @@ fun ShowFilters(
                 val workTypesItems= getWorkTypesState.workTypesList
                 val listState = rememberLazyListState()
 
-                Box(
-                    modifier = Modifier
-                    .fillMaxWidth().height(120.dp)
-                    .padding(20.dp,0.dp)
-                    .border(width = 1.dp, color = colorResource(R.color.light_gray))
-                    .background(colorResource(R.color.white))
-                    .padding(10.dp))
-                {
-                    if (workTypesItems.isNotEmpty())
-                    {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            state = listState)
-                        {
-                            itemsIndexed(
-                                items = workTypesItems,
-                                key = { _, item -> item.id }
-                            ) { index, item ->
-
-                                // Pagination trigger when scrolling near bottom
-                                if (index >= workTypesItems.size - 3) {
-                                    getWorkTypesViewModel.loadNextPage()
-                                }
-
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable{
-                                            //todo
-                                            selectedWorkType = item
-                                            onSelectWorkTypeFilter(item)
-                                        })
-                                {
-                                    Text(
-                                        text = item.name,
-                                        color = colorResource(R.color.color_e),
-                                        fontSize = 15.sp
-                                    )
-                                    Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
-                                }
-                            }
-                        }
+                ShowFilterItems(
+                    items = workTypesItems,
+                    isLoading = getWorkTypesState.isLoading,
+                    listState = listState,
+                    key = { it.id },
+                    itemText = { it.name },
+                    onLoadNextPage = {
+                        getWorkTypesViewModel.loadNextPage()
+                    },
+                    onItemSelected = { item ->
+                        selectedWorkType = item
+                        onSelectWorkTypeFilter(item)
                     }
-
-                    if (getWorkTypesState.isLoading)
-                    {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.Black.copy(alpha = 0.1f)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    }
-
-                    // Show empty state (when not loading and empty)
-                    if (workTypesItems.isEmpty() && !getWorkTypesState.isLoading) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = Constants.LOOKS_EMPTY_HERE,
-                                color = colorResource(R.color.color_a)
-                            )
-                        }
-                    }
-                    isRefreshingWorkTypes = false
-                }
+                )
             }
             Spacer(modifier = Modifier.height(10.dp))
 
             ////////////////////////////////////////////////////////////////////////////////////////
             //priority filter
-            Row(modifier = Modifier.fillMaxWidth().padding(10.dp,0.dp)
-                .clickable{
+            ShowFilterOption(
+                label= Constants.PRIORITY,
+                isExpanded= isPriorityFilterAreaExpanded,
+                onClick= {
                     getPrioritiesViewModel.loadFirstPage()
                     isPriorityFilterAreaExpanded= !isPriorityFilterAreaExpanded
-                },
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically)
-            {
-                Text(
-                    text = Constants.PRIORITY,
-                    color =
-                        if(isPriorityFilterAreaExpanded) colorResource(R.color.color_b)
-                        else  colorResource(R.color.color_a),
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Icon(
-                    imageVector =
-                        if(isPriorityFilterAreaExpanded) Icons.Default.KeyboardArrowDown
-                        else Icons.Default.KeyboardArrowUp,
-                    contentDescription = "Priority",
-                    tint =
-                        if(isPriorityFilterAreaExpanded) colorResource(R.color.color_b)
-                        else  colorResource(R.color.color_a),
-                    modifier = Modifier.size(30.dp)
-                )
-            }
+                }
+            )
 
             //priorities list
-            if(isPriorityFilterAreaExpanded)
-            {
+            if(isPriorityFilterAreaExpanded) {
                 val getPrioritiesState by getPrioritiesViewModel.state.collectAsStateWithLifecycle()
-                var isRefreshingPriorities by remember { mutableStateOf(false) }
+                //var isRefreshingPriorities by remember { mutableStateOf(false) }
 
                 LaunchedEffect(getPrioritiesState.error) {
                     if (!getPrioritiesState.error.isNullOrBlank()) {
@@ -1023,115 +718,40 @@ fun ShowFilters(
                 val prioritiesItems = getPrioritiesState.prioritiesList
                 val listState = rememberLazyListState()
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth().height(120.dp)
-                        .padding(20.dp, 0.dp)
-                        .border(width = 1.dp, color = colorResource(R.color.light_gray))
-                        .background(colorResource(R.color.white))
-                        .padding(10.dp)
-                ) {
-                    if (prioritiesItems.isNotEmpty()) {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            state = listState
-                        ) {
-                            itemsIndexed(
-                                items = prioritiesItems,
-                                key = { _, item -> item.id }
-                            ) { index, item ->
-
-                                // Pagination trigger when scrolling near bottom
-                                if (index >= prioritiesItems.size - 3) {
-                                    getPrioritiesViewModel.loadNextPage()
-                                }
-
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            selectedPriory = item
-                                            onSelectPriorityFilter(item)
-                                        })
-                                {
-                                    Text(
-                                        text = item.name,
-                                        color = colorResource(R.color.color_e),
-                                        fontSize = 15.sp
-                                    )
-                                    Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
-                                }
-                            }
-                        }
+                ShowFilterItems(
+                    items = prioritiesItems,
+                    isLoading = getPrioritiesState.isLoading,
+                    listState = listState,
+                    key = { it.id },
+                    itemText = { it.name },
+                    onLoadNextPage = {
+                        getPrioritiesViewModel.loadNextPage()
+                    },
+                    onItemSelected = { item ->
+                        selectedPriory = item
+                        onSelectPriorityFilter(item)
                     }
-
-                    if (getPrioritiesState.isLoading) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.Black.copy(alpha = 0.1f)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    }
-
-                    // Show empty state (when not loading and empty)
-                    if (prioritiesItems.isEmpty() && !getPrioritiesState.isLoading) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = Constants.LOOKS_EMPTY_HERE,
-                                color = colorResource(R.color.color_a)
-                            )
-                        }
-                    }
-                    isRefreshingPriorities = false
-                }
+                )
             }
+
             Spacer(modifier = Modifier.height(10.dp))
 
             ////////////////////////////////////////////////////////////////////////////////////////
             //status filter
-            Row(modifier = Modifier.fillMaxWidth().padding(10.dp,0.dp)
-                .clickable{
+            ShowFilterOption(
+                label= Constants.STATUS,
+                isExpanded= isStatusFilterAreaExpanded,
+                onClick= {
                     getStatusesViewModel.loadFirstPage()
                     isStatusFilterAreaExpanded= !isStatusFilterAreaExpanded
-                },
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically)
-            {
-                Text(
-                    text = Constants.STATUS,
-                    color =
-                        if(isStatusFilterAreaExpanded) colorResource(R.color.color_b)
-                        else  colorResource(R.color.color_a),
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Icon(
-                    imageVector =
-                        if(isStatusFilterAreaExpanded) Icons.Default.KeyboardArrowDown
-                        else Icons.Default.KeyboardArrowUp,
-                    contentDescription = "Status",
-                    tint =
-                        if(isStatusFilterAreaExpanded) colorResource(R.color.color_b)
-                        else  colorResource(R.color.color_a),
-                    modifier = Modifier.size(30.dp)
-                )
-            }
+                }
+            )
 
             //status list
             if(isStatusFilterAreaExpanded)
             {
                 val getStatusesState by getStatusesViewModel.state.collectAsStateWithLifecycle()
-                var isRefreshingStatuses by remember { mutableStateOf(false) }
+                //var isRefreshingStatuses by remember { mutableStateOf(false) }
 
                 LaunchedEffect(getStatusesState.error) {
                     if (!getStatusesState.error.isNullOrBlank()) {
@@ -1142,115 +762,40 @@ fun ShowFilters(
                 val statusItems = getStatusesState.statusesList
                 val listState = rememberLazyListState()
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth().height(120.dp)
-                        .padding(20.dp, 0.dp)
-                        .border(width = 1.dp, color = colorResource(R.color.light_gray))
-                        .background(colorResource(R.color.white))
-                        .padding(10.dp)
-                ) {
-                    if (statusItems.isNotEmpty()) {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            state = listState
-                        ) {
-                            itemsIndexed(
-                                items = statusItems,
-                                key = { _, item -> item.id }
-                            ) { index, item ->
-
-                                // Pagination trigger when scrolling near bottom
-                                if (index >= statusItems.size - 3) {
-                                    getStatusesViewModel.loadNextPage()
-                                }
-
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            selectedStatus = item
-                                            onSelectStatusFilter(item)
-                                        })
-                                {
-                                    Text(
-                                        text = item.name,
-                                        color = colorResource(R.color.color_e),
-                                        fontSize = 15.sp
-                                    )
-                                    Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
-                                }
-                            }
-                        }
+                ShowFilterItems(
+                    items = statusItems,
+                    isLoading = getStatusesState.isLoading,
+                    listState = listState,
+                    key = { it.id },
+                    itemText = { it.name },
+                    onLoadNextPage = {
+                        getStatusesViewModel.loadNextPage()
+                    },
+                    onItemSelected = { item ->
+                        selectedStatus = item
+                        onSelectStatusFilter(item)
                     }
+                )
 
-                    if (getStatusesState.isLoading) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.Black.copy(alpha = 0.1f)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    }
-
-                    // Show empty state (when not loading and empty)
-                    if (statusItems.isEmpty() && !getStatusesState.isLoading) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = Constants.LOOKS_EMPTY_HERE,
-                                color = colorResource(R.color.color_a)
-                            )
-                        }
-                    }
-                    isRefreshingStatuses = false
-                }
             }
             Spacer(modifier = Modifier.height(10.dp))
 
             ////////////////////////////////////////////////////////////////////////////////////////
             //assigner filter
-            Row(modifier = Modifier.fillMaxWidth().padding(10.dp,0.dp)
-                .clickable{
+            ShowFilterOption(
+                label= Constants.ASSIGNER,
+                isExpanded= isAssignerFilterAreaExpanded,
+                onClick= {
                     getAssignersViewModel.loadFirstPage()
                     isAssignerFilterAreaExpanded= !isAssignerFilterAreaExpanded
-                },
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically)
-            {
-                Text(
-                    text = Constants.ASSIGNER,
-                    color =
-                        if(isAssignerFilterAreaExpanded) colorResource(R.color.color_b)
-                        else  colorResource(R.color.color_a),
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Icon(
-                    imageVector =
-                        if(isAssignerFilterAreaExpanded) Icons.Default.KeyboardArrowDown
-                        else Icons.Default.KeyboardArrowUp,
-                    contentDescription = "Assigner",
-                    tint =
-                        if(isAssignerFilterAreaExpanded) colorResource(R.color.color_b)
-                        else  colorResource(R.color.color_a),
-                    modifier = Modifier.size(30.dp)
-                )
-            }
+                }
+            )
 
             //assigner list
             if(isAssignerFilterAreaExpanded)
             {
                 val getContributorsState by getAssignersViewModel.state.collectAsStateWithLifecycle()
-                var isRefreshingContributors by remember { mutableStateOf(false) }
+                //var isRefreshingContributors by remember { mutableStateOf(false) }
 
                 LaunchedEffect(getContributorsState.error) {
                     if (!getContributorsState.error.isNullOrBlank()) {
@@ -1261,116 +806,40 @@ fun ShowFilters(
                 val contributorsItems = getContributorsState.contributorsList
                 val listState = rememberLazyListState()
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth().height(120.dp)
-                        .padding(20.dp, 0.dp)
-                        .border(width = 1.dp, color = colorResource(R.color.light_gray))
-                        .background(colorResource(R.color.white))
-                        .padding(10.dp)
-                ) {
-                    if (contributorsItems.isNotEmpty()) {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            state = listState
-                        ) {
-                            itemsIndexed(
-                                items = contributorsItems,
-                                key = { _, item -> item.id }
-                            ) { index, item ->
-
-                                // Pagination trigger when scrolling near bottom
-                                if (index >= contributorsItems.size - 3) {
-                                    getAssignersViewModel.loadNextPage()
-                                }
-
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            selectedAssigner = item
-                                            onSelectAssignerFilter(item)
-                                        })
-                                {
-                                    Text(
-                                        text = item.name,
-                                        color = colorResource(R.color.color_e),
-                                        fontSize = 15.sp
-                                    )
-                                    Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
-                                }
-                            }
-                        }
+                ShowFilterItems(
+                    items = contributorsItems,
+                    isLoading = getContributorsState.isLoading,
+                    listState = listState,
+                    key = { it.id },
+                    itemText = { it.name },
+                    onLoadNextPage = {
+                        getAssignersViewModel.loadNextPage()
+                    },
+                    onItemSelected = { item ->
+                        selectedAssigner = item
+                        onSelectAssignerFilter(item)
                     }
-
-                    if (getContributorsState.isLoading) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.Black.copy(alpha = 0.1f)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    }
-
-                    // Show empty state (when not loading and empty)
-                    if (contributorsItems.isEmpty() && !getContributorsState.isLoading) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = Constants.LOOKS_EMPTY_HERE,
-                                color = colorResource(R.color.color_a)
-                            )
-                        }
-                    }
-                    isRefreshingContributors = false
-                }
+                )
             }
 
             Spacer(modifier = Modifier.height(10.dp))
 
             ////////////////////////////////////////////////////////////////////////////////////////
             //assignee filter
-            Row(modifier = Modifier.fillMaxWidth().padding(10.dp,0.dp)
-                .clickable{
+            ShowFilterOption(
+                label= Constants.ASSIGNEE,
+                isExpanded= isAssigneeFilterAreaExpanded,
+                onClick= {
                     getAssigneesViewModel.loadFirstPage()
                     isAssigneeFilterAreaExpanded= !isAssigneeFilterAreaExpanded
-                },
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically)
-            {
-                Text(
-                    text = Constants.ASSIGNEE,
-                    color =
-                        if(isAssigneeFilterAreaExpanded) colorResource(R.color.color_b)
-                        else  colorResource(R.color.color_a),
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Icon(
-                    imageVector =
-                        if(isAssigneeFilterAreaExpanded) Icons.Default.KeyboardArrowDown
-                        else Icons.Default.KeyboardArrowUp,
-                    contentDescription = "Assignee",
-                    tint =
-                        if(isAssigneeFilterAreaExpanded) colorResource(R.color.color_b)
-                        else  colorResource(R.color.color_a),
-                    modifier = Modifier.size(30.dp)
-                )
-            }
+                }
+            )
 
             //assignee list
             if(isAssigneeFilterAreaExpanded)
             {
                 val getContributorsState by getAssigneesViewModel.state.collectAsStateWithLifecycle()
-                var isRefreshingContributors by remember { mutableStateOf(false) }
+                //var isRefreshingContributors by remember { mutableStateOf(false) }
 
                 LaunchedEffect(getContributorsState.error) {
                     if (!getContributorsState.error.isNullOrBlank()) {
@@ -1381,89 +850,25 @@ fun ShowFilters(
                 val contributorsItems = getContributorsState.contributorsList
                 val listState = rememberLazyListState()
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth().height(120.dp)
-                        .padding(20.dp, 0.dp)
-                        .border(width = 1.dp, color = colorResource(R.color.light_gray))
-                        .background(colorResource(R.color.white))
-                        .padding(10.dp)
-                ) {
-                    if (contributorsItems.isNotEmpty()) {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            state = listState
-                        ) {
-                            itemsIndexed(
-                                items = contributorsItems,
-                                key = { _, item -> item.id }
-                            ) { index, item ->
-
-                                // Pagination trigger when scrolling near bottom
-                                if (index >= contributorsItems.size - 3) {
-                                    getAssigneesViewModel.loadNextPage()
-                                }
-
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            selectedAssignee = item
-                                            onSelectAssigneeFilter(item)
-                                        })
-                                {
-                                    Text(
-                                        text = item.name,
-                                        color = colorResource(R.color.color_e),
-                                        fontSize = 15.sp
-                                    )
-                                    Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
-                                }
-                            }
-                        }
+                ShowFilterItems(
+                    items = contributorsItems,
+                    isLoading = getContributorsState.isLoading,
+                    listState = listState,
+                    key = { it.id },
+                    itemText = { it.name },
+                    onLoadNextPage = {
+                        getAssigneesViewModel.loadNextPage()
+                    },
+                    onItemSelected = { item ->
+                        selectedAssignee = item
+                        onSelectAssigneeFilter(item)
                     }
-
-                    if (getContributorsState.isLoading) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.Black.copy(alpha = 0.1f)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    }
-
-                    // Show empty state (when not loading and empty)
-                    if (contributorsItems.isEmpty() && !getContributorsState.isLoading) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = Constants.LOOKS_EMPTY_HERE,
-                                color = colorResource(R.color.color_a)
-                            )
-                        }
-                    }
-                    isRefreshingContributors = false
-                }
+                )
             }
             Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }
-
-//bugs
-
-//tasks
-//todo the code has a lot of redundancy, we need to reduce the redundancy
-
-
 
 @SuppressLint("UseKtx", "ResourceAsColor")
 @Composable
@@ -1472,8 +877,7 @@ fun ShowList(
     list: List<WorkItemUI>,
     resetSignal: Int,
     onLoadMore: () -> Unit
-)
-{
+) {
     val listState = rememberLazyListState()
     var selectedWorkItem by remember { mutableStateOf<WorkItemUI?>(null) }
 
@@ -1484,7 +888,8 @@ fun ShowList(
     LazyColumn(
         modifier = Modifier.fillMaxWidth().padding(5.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        state = listState)
+        state = listState
+    )
     {
         itemsIndexed(
             items = list,
@@ -1503,7 +908,7 @@ fun ShowList(
                     .padding(5.dp)
                     .clickable {
                         //todo show details
-                        selectedWorkItem= item
+                        selectedWorkItem = item
                     },
                 shape = RoundedCornerShape(7.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
@@ -1521,7 +926,10 @@ fun ShowList(
                     Spacer(modifier = Modifier.fillMaxWidth().height(3.dp))
 
                     //number and priority
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
                         Text(
                             text = item.workItemNumber,
                             color = colorResource(R.color.color_a),
@@ -1537,7 +945,10 @@ fun ShowList(
                     Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
 
                     //title
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
                         Text(
                             text = if (item.title.length > 50) {
                                 item.title.take(50) + "..."
@@ -1552,7 +963,10 @@ fun ShowList(
                     Spacer(modifier = Modifier.fillMaxWidth().height(15.dp))
 
                     //work type and status
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
                         Text(
                             text = item.workType?.name ?: Constants.NOT_AVAILABLE,
                             color = colorResource(R.color.color_b),
@@ -1569,19 +983,25 @@ fun ShowList(
                     Spacer(modifier = Modifier.fillMaxWidth().height(15.dp))
 
                     //assignee
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
                         Text(
-                            text = Constants.ASSIGNED_TO + (item.assignee?.name ?: Constants.NOT_AVAILABLE),
+                            text = Constants.ASSIGNED_TO + (item.assignee?.name
+                                ?: Constants.NOT_AVAILABLE),
                             color = colorResource(R.color.color_e),
                             fontSize = 20.sp
                         )
                     }
 
                     //created at and updated at
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
                         Column() {
-                            if(item.updatedAt != "")
-                            {
+                            if (item.updatedAt != "") {
                                 Text(
                                     text = Constants.UPDATED_AT + item.updatedAt,
                                     color = colorResource(R.color.color_e),
@@ -1600,7 +1020,7 @@ fun ShowList(
             }
         }
     }
-
 }
+
 
 

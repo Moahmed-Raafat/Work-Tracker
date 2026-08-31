@@ -153,6 +153,7 @@ fun Priorities(navController: NavController,
             }
         }
     }
+
     Scaffold(
         modifier = Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding(),
         topBar = {
@@ -190,7 +191,6 @@ fun Priorities(navController: NavController,
             }
         }
     )
-
     { innerPadding ->
 
         Column(

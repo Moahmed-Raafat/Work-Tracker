@@ -9,14 +9,6 @@
     <color name="white">#FFFFFFFF</color>
 
 
-    <!--<color name="color_1">#8776ea</color>
-    <color name="color_2">#c0bcdf</color>
-    <color name="color_3">#544f69</color>
-    <color name="top_bar">#f1f2f4</color> &lt;!&ndash; background&ndash;&gt;
-    <color name="secondary_text_color">#a6a3a1</color> &lt;!&ndash;secondary text color&ndash;&gt;
-    <color name="primary_text_color">#252526</color> &lt;!&ndash;primary text color&ndash;&gt;-->
-
-
     <color name="color_a">#210440</color>
     <color name="color_b">#FDB095</color>
     <color name="color_c">#E5958E</color>

@@ -11,6 +11,7 @@ import com.example.worktracker.contributors.presentation.viewmodel.add_contribut
 import com.example.worktracker.contributors.presentation.viewmodel.delete_contributor.DeleteContributorViewModel
 import com.example.worktracker.contributors.presentation.viewmodel.get_contributors.GetContributorsViewModel
 import com.example.worktracker.contributors.presentation.viewmodel.update_contributor.UpdateContributorViewModel
+import com.example.worktracker.home.presentation.composables.AddWorkItem
 import com.example.worktracker.home.presentation.composables.Home
 import com.example.worktracker.home.presentation.viewmodel.GetWorkItemsViewModel
 import com.example.worktracker.priorities.presentation.composables.Priorities
@@ -43,14 +44,14 @@ fun Navigation()
         {
             val getWorkItemsViewModel: GetWorkItemsViewModel = hiltViewModel()
             val getWorkTypesViewModel: GetWorkTypesViewModel = hiltViewModel()
-            val getContributorsViewModel: GetContributorsViewModel = hiltViewModel()
             val getStatusesViewModel: GetStatusesViewModel = hiltViewModel()
             val getPrioritiesViewModel: GetPrioritiesViewModel= hiltViewModel()
             val getAssignersViewModel: GetContributorsViewModel = hiltViewModel()
             val getAssigneesViewModel: GetContributorsViewModel = hiltViewModel()
 
             Home(navController = navController,
-                getWorkItemsViewModel= getWorkItemsViewModel,getWorkTypesViewModel= getWorkTypesViewModel,
+                getWorkItemsViewModel= getWorkItemsViewModel,
+                getWorkTypesViewModel= getWorkTypesViewModel,
                 getStatusesViewModel= getStatusesViewModel,
                 getPrioritiesViewModel= getPrioritiesViewModel,
                 getAssignersViewModel= getAssignersViewModel,
@@ -114,6 +115,23 @@ fun Navigation()
         composable(route=Screens.About.route)
         {
             About(navController = navController)
+        }
+        composable(route=Screens.ADDWorkItem.route)
+        {
+            //val getWorkItemsViewModel: GetWorkItemsViewModel = hiltViewModel()
+            val getWorkTypesViewModel: GetWorkTypesViewModel = hiltViewModel()
+            val getStatusesViewModel: GetStatusesViewModel = hiltViewModel()
+            val getPrioritiesViewModel: GetPrioritiesViewModel= hiltViewModel()
+            val getAssignersViewModel: GetContributorsViewModel = hiltViewModel()
+            val getAssigneesViewModel: GetContributorsViewModel = hiltViewModel()
+
+            AddWorkItem(
+                navController = navController,
+                getWorkTypesViewModel= getWorkTypesViewModel,
+                getStatusesViewModel= getStatusesViewModel,
+                getPrioritiesViewModel= getPrioritiesViewModel,
+                getAssignersViewModel= getAssignersViewModel,
+                getAssigneesViewModel= getAssigneesViewModel)
         }
     }
 }
