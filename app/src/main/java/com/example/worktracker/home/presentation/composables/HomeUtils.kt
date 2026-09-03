@@ -1,6 +1,5 @@
 package com.example.worktracker.home.presentation.composables
 
-import android.net.http.SslCertificate.restoreState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -40,9 +39,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.worktracker.R
 import com.example.worktracker.common.Constants
-import com.example.worktracker.home.presentation.composables.NavigationDrawerItem
-import com.example.worktracker.navigation.Screens
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 

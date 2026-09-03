@@ -462,7 +462,8 @@ fun AddPriorityDialog(
                 modifier = Modifier
                     .padding(20.dp)
                     .fillMaxWidth()
-            ) {
+            )
+            {
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center)
                 {

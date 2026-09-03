@@ -29,7 +29,7 @@ fun WorkItem.toUI(): WorkItemUI {
     )
 }
 
-fun GetWorkItemsResponse.toUI(): GetWorkItemsResponseUI{
+fun GetWorkItemsResponse.toUI(): GetWorkItemsResponseUI {
     return GetWorkItemsResponseUI(
         success = this.success,
         page = this.page,

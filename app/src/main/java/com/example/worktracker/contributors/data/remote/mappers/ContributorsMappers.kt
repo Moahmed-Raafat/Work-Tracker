@@ -19,12 +19,12 @@ import com.example.worktracker.contributors.domain.model.GetContributorsResponse
 import com.example.worktracker.contributors.domain.model.UpdateContributorBody
 import com.example.worktracker.contributors.domain.model.UpdateContributorResponse
 
-
 fun ContributorDto.toDomain(): Contributor
 {
     return Contributor(
         id= id,
         name= name,
+        imageUrl= imageUrl,
         createdAt= createdAt,
         updatedAt= updatedAt
     )
@@ -63,7 +63,8 @@ fun AddContributorBodyDto.toDomain(): AddContributorBody
 {
     return AddContributorBody(
         action= action,
-        name= name
+        name= name,
+        imageUrl= imageUrl
     )
 }
 
@@ -71,7 +72,8 @@ fun AddContributorBody.toDto(): AddContributorBodyDto
 {
     return AddContributorBodyDto(
         action= action,
-        name= name
+        name= name,
+        imageUrl= imageUrl
     )
 }
 
@@ -89,7 +91,8 @@ fun UpdateContributorBodyDto.toDomain(): UpdateContributorBody
     return UpdateContributorBody(
         action= action,
         id= id,
-        newName= newName
+        newName= newName,
+        imageUrl= imageUrl
     )
 }
 
@@ -98,7 +101,8 @@ fun UpdateContributorBody.toDto(): UpdateContributorBodyDto
     return UpdateContributorBodyDto(
         action= action,
         id= id,
-        newName= newName
+        newName= newName,
+        imageUrl= imageUrl
     )
 }
 

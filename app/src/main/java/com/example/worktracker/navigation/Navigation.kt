@@ -14,6 +14,7 @@ import com.example.worktracker.contributors.presentation.viewmodel.update_contri
 import com.example.worktracker.home.presentation.composables.AddWorkItem
 import com.example.worktracker.home.presentation.composables.Home
 import com.example.worktracker.home.presentation.viewmodel.GetWorkItemsViewModel
+import com.example.worktracker.home.presentation.viewmodel.add_work_item.AddWorkItemViewModel
 import com.example.worktracker.priorities.presentation.composables.Priorities
 import com.example.worktracker.priorities.presentation.viewmodel.add_priority.AddPriorityViewModel
 import com.example.worktracker.priorities.presentation.viewmodel.delete_priority.DeletePriorityViewModel
@@ -124,6 +125,7 @@ fun Navigation()
             val getPrioritiesViewModel: GetPrioritiesViewModel= hiltViewModel()
             val getAssignersViewModel: GetContributorsViewModel = hiltViewModel()
             val getAssigneesViewModel: GetContributorsViewModel = hiltViewModel()
+            val addWorkItemViewModel: AddWorkItemViewModel = hiltViewModel()
 
             AddWorkItem(
                 navController = navController,
@@ -131,7 +133,8 @@ fun Navigation()
                 getStatusesViewModel= getStatusesViewModel,
                 getPrioritiesViewModel= getPrioritiesViewModel,
                 getAssignersViewModel= getAssignersViewModel,
-                getAssigneesViewModel= getAssigneesViewModel)
+                getAssigneesViewModel= getAssigneesViewModel,
+                addWorkItemViewModel= addWorkItemViewModel)
         }
     }
 }

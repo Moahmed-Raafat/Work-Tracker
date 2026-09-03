@@ -106,4 +106,6 @@ dependencies {
     //splash screen
     implementation ("androidx.core:core-splashscreen:1.2.0")
 
+    //Cloudinary
+    implementation ("com.cloudinary:cloudinary-android:2.3.1")
 }

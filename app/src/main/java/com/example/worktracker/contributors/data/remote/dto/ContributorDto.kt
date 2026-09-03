@@ -10,6 +10,9 @@ data class ContributorDto(
     @SerializedName("name")
     @Expose
     var name: String,
+    @SerializedName("imageUrl")
+    @Expose
+    var imageUrl: String?,
     @SerializedName("createdAt")
     @Expose
     var createdAt: String,

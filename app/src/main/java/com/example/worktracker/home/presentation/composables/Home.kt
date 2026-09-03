@@ -38,6 +38,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -276,7 +277,7 @@ fun Home(navController: NavController,
                 )
             },
             floatingActionButton = {
-                androidx.compose.material3.FloatingActionButton(
+                FloatingActionButton(
                     onClick = {
                         navController.navigate(Screens.ADDWorkItem.route)
                     },

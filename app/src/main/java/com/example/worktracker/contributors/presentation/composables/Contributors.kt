@@ -1,8 +1,15 @@
 package com.example.worktracker.contributors.presentation.composables
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Environment
+import android.provider.MediaStore
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -25,7 +33,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -40,6 +50,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -48,19 +59,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.worktracker.R
 import com.example.worktracker.common.Constants
+import com.example.worktracker.common.cloundinary.CloudinaryUploader.initCloudinary
+import com.example.worktracker.common.cloundinary.CloudinaryUploader.uploadImageToCloudinary
 import com.example.worktracker.contributors.presentation.model.ContributorUI
 import com.example.worktracker.contributors.presentation.viewmodel.add_contributor.AddContributorEvents
 import com.example.worktracker.contributors.presentation.viewmodel.add_contributor.AddContributorViewModel
@@ -71,6 +90,11 @@ import com.example.worktracker.contributors.presentation.viewmodel.update_contri
 import com.example.worktracker.contributors.presentation.viewmodel.update_contributor.UpdateContributorViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import java.io.File
+import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -156,13 +180,29 @@ fun Contributors(navController: NavController,
             }
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////
+    //image uploading
+    var isUploading by remember { mutableStateOf(false) }
+    var buttonState by remember { mutableStateOf(true) }
+
+    //disable the button when an image is getting uploaded
+    LaunchedEffect(isUploading) {
+        buttonState = !isUploading
+    }
+
     Scaffold(
-        modifier = Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding(),
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .navigationBarsPadding(),
         topBar = {
             TopAppBar(
                 modifier = Modifier.height(50.dp),
                 title = {
-                    Box(modifier = Modifier.fillMaxWidth().fillMaxHeight(), contentAlignment = Alignment.Center)
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(), contentAlignment = Alignment.Center)
                     {
                         Text(
                             text = Constants.CONTRIBUTORS,
@@ -197,7 +237,9 @@ fun Contributors(navController: NavController,
     { innerPadding ->
 
         Column(
-            modifier = Modifier.fillMaxSize().padding(innerPadding)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
                 .background(color = colorResource(R.color.background)),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally)
@@ -220,7 +262,9 @@ fun Contributors(navController: NavController,
                     {
                         // Show the list (always)
                         if (items.isNotEmpty()) {
-                            Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
+                            Spacer(modifier = Modifier
+                                .fillMaxWidth()
+                                .height(10.dp))
                             ShowList(
                                 context,
                                 list = items,
@@ -275,10 +319,23 @@ fun Contributors(navController: NavController,
             onDismiss = {
                 showAddContributorDialog = false
             },
-            onAdd = { name ->
+            onAddContributor = { name, imageUrl ->
                 showAddContributorDialog = false
-                addContributorViewModel.addContributor(name)
-            }
+
+                if(imageUrl != null)
+                {
+                    addContributorViewModel.addContributor(name,imageUrl)
+                }
+                else
+                {
+                    addContributorViewModel.addContributor(name)
+                }
+
+            },
+            isUploading = isUploading,
+            buttonState = buttonState,
+            onIsUploadingChange = { isUploading = it },
+            onButtonStateChange = { buttonState = it }
         )
     }
 }
@@ -321,8 +378,8 @@ fun ShowList(
                     .fillMaxWidth()
                     .padding(5.dp)
                     .clickable {
-                        showContributorDetailsDialog= true
-                        selectedContributor= item
+                        showContributorDetailsDialog = true
+                        selectedContributor = item
                     },
                 shape = RoundedCornerShape(7.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
@@ -331,60 +388,91 @@ fun ShowList(
                 )
             )
             {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(5.dp)
-                )
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(5.dp))
                 {
-                    Spacer(modifier = Modifier.fillMaxWidth().height(3.dp))
-
-                    //name
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text(
-                            text = item.name,
-                            color = colorResource(R.color.color_a),
-                            fontSize = 20.sp
-                        )
-
-                        Icon(
-                            Icons.Rounded.Edit,
-                            contentDescription = Constants.EDIT_CONTRIBUTOR,
-                            modifier = Modifier.size(26.dp).clickable{
-                                selectedContributor= item
-                                showUpdateContributorDialog= true
-                            },
-                            tint = colorResource(R.color.color_d)
-                        )
+                    //image
+                    Column() {
+                        if(item.imageUrl?.isEmpty() == true)
+                        {
+                            Icon(
+                                painter= painterResource(R.drawable.person),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(80.dp)
+                                    .clip(RoundedCornerShape(10.dp)),
+                                tint = colorResource(R.color.color_a)
+                            )
+                        }
+                        else
+                        {
+                            AsyncImage(
+                                model = Uri.parse(item.imageUrl),
+                                contentDescription = "",
+                                contentScale = ContentScale.Crop,
+                                error = painterResource(R.drawable.person),
+                                modifier = Modifier
+                                    .size(80.dp)
+                                    .clip(RoundedCornerShape(10.dp))
+                            )
+                        }
                     }
 
-                    Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
+                    Spacer(modifier = Modifier.width(15.dp))
 
-                    Row (modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.End){
+                    Column() {
+                        //name and edit
+                        Row(modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceBetween)
+                        {
+                            //name
+                            Text(
+                                text = item.name,
+                                color = colorResource(R.color.color_a),
+                                fontSize = 20.sp
+                            )
 
-                        Column {
+                            //edit
+                            Icon(
+                                Icons.Rounded.Edit,
+                                contentDescription = Constants.EDIT_CONTRIBUTOR,
+                                modifier = Modifier
+                                    .size(26.dp)
+                                    .clickable {
+                                        selectedContributor = item
+                                        showUpdateContributorDialog = true
+                                    },
+                                tint = colorResource(R.color.color_d)
+                            )
+                        }
 
-                            //updating date
-                            if(item.updatedAt != "")
-                            {
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        //dates
+                        Row(horizontalArrangement = Arrangement.End)
+                        {
+                            Column {
+                                //updating date
+                                if(item.updatedAt != "")
+                                {
+                                    Text(
+                                        text = Constants.UPDATED_AT + item.updatedAt,
+                                        color = colorResource(R.color.muted_gray),
+                                        fontSize = 15.sp,
+                                        fontStyle = FontStyle.Italic
+                                    )
+                                }
+
+                                //creation date
                                 Text(
-                                    text = Constants.UPDATED_AT + item.updatedAt,
+                                    text = Constants.CREATED_AT + item.createdAt,
                                     color = colorResource(R.color.muted_gray),
                                     fontSize = 15.sp,
                                     fontStyle = FontStyle.Italic
                                 )
                             }
-
-                            //creation date
-                            Text(
-                                text = Constants.CREATED_AT + item.createdAt,
-                                color = colorResource(R.color.muted_gray),
-                                fontSize = 15.sp,
-                                fontStyle = FontStyle.Italic
-                            )
                         }
                     }
-
                 }
             }
         }
@@ -442,75 +530,295 @@ fun ShowList(
     }
 }
 
+@SuppressLint("UseKtx")
 @Composable
 fun AddContributorDialog(
     onDismiss: () -> Unit,
-    onAdd: (String) -> Unit
-) {
+    onAddContributor: (name: String, uploadedImageUrl: String?) -> Unit,
+    isUploading: Boolean,
+    buttonState: Boolean,
+    onIsUploadingChange: (Boolean) -> Unit,
+    onButtonStateChange: (Boolean) -> Unit
+)
+{
     var name by remember { mutableStateOf("") }
 
-    Dialog(onDismissRequest = onDismiss) {
-        Card(
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = colorResource(R.color.white)
-            )
+    //image button state to prevent multiple clicks
+    var imageButtonState by remember { mutableStateOf(buttonState) }
+
+    var showImageUploaderGallery by remember { mutableStateOf(false) }
+    var showImageUploaderCamera by remember { mutableStateOf(false) }
+    var uploadedImageUrl by remember { mutableStateOf<String?>(null) }
+
+    Dialog(
+        onDismissRequest = {
+            if (!isUploading) {
+                onDismiss()
+            }
+        }
+    ) {
+        Box(
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(20.dp)
-                    .fillMaxWidth()
-            ) {
 
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center)
-                {
-                    Text(
-                        text = Constants.ADD_CONTRIBUTOR,
-                        style = MaterialTheme.typography.titleLarge,
-                        color = colorResource(R.color.color_a),
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text(Constants.CONTRIBUTOR_NAME) },
-                    singleLine = true
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = colorResource(R.color.white)
                 )
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .fillMaxWidth()
                 ) {
 
-                    Button(
-                        onClick = {
-                            onAdd(name.trim())
-                        },
-                        enabled = name.trim().isNotEmpty(),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(R.color.color_a),
-                            contentColor = colorResource(R.color.white)
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center)
+                    {
+                        Text(
+                            text = Constants.ADD_CONTRIBUTOR,
+                            style = MaterialTheme.typography.titleLarge,
+                            color = colorResource(R.color.color_a),
+                            fontWeight = FontWeight.Bold
                         )
-                    ) {
-                        Text(Constants.ADD)
                     }
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                    TextButton(onClick = onDismiss) {
-                        Text(Constants.CANCEL, color = colorResource(R.color.color_c))
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = { name = it },
+                        modifier = Modifier.fillMaxWidth(),
+                        label = { Text(Constants.CONTRIBUTOR_NAME) },
+                        singleLine = true
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween)
+                    {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth())
+                        {
+                            if (uploadedImageUrl != null)
+                            {
+
+                                //show the added image
+                                Box(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Box(
+                                        modifier = Modifier.size(150.dp)
+                                    ) {
+                                        AsyncImage(
+                                            model = uploadedImageUrl,
+                                            contentDescription = "",
+                                            contentScale = ContentScale.Crop,
+                                            error = painterResource(R.drawable.person),
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .clip(RoundedCornerShape(10.dp)),
+                                            onSuccess = {
+                                                onIsUploadingChange(false)
+                                            },
+                                            onError = {
+                                                onIsUploadingChange(false)
+                                            }
+                                        )
+
+                                        Icon(
+                                            imageVector = Icons.Rounded.Close,
+                                            contentDescription = "",
+                                            modifier = Modifier
+                                                .align(Alignment.TopEnd)
+                                                .offset(x = (-4).dp, y = (4).dp)
+                                                .size(24.dp)
+                                                .background(
+                                                    colorResource(R.color.white),
+                                                    shape = RoundedCornerShape(50)
+                                                )
+                                                .clickable {
+                                                    uploadedImageUrl = null
+                                                    imageButtonState = true
+                                                }
+                                                .padding(2.dp),
+                                            tint = colorResource(R.color.black)
+                                        )
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+
+                                    Text(
+
+                                        text = "add profile image",
+                                        color = colorResource(R.color.color_a),
+                                        fontSize = 15.sp
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.height(10.dp))
+
+                                //capture an image and upload it to cloudinary
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceEvenly
+                                )
+                                {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center,
+                                        modifier = Modifier
+                                            .height(70.dp)
+                                            .clickable {
+                                                if (imageButtonState)
+                                                {
+                                                    showImageUploaderGallery = true
+                                                    imageButtonState = false
+                                                }
+                                            })
+                                    {
+                                        Icon(
+                                            painter = painterResource(R.drawable.gallery),
+                                            contentDescription = "",
+                                            modifier = Modifier.size(30.dp),
+                                            tint = colorResource(R.color.color_a)
+                                        )
+                                        Spacer(modifier = Modifier.height(5.dp))
+                                        Text(
+                                            text = "gallery",
+                                            color = colorResource(R.color.color_a),
+                                            fontSize = 12.sp
+                                        )
+                                    }
+
+                                    VerticalDivider(
+                                        color = colorResource(R.color.color_b),
+                                        thickness = 1.dp,
+                                        modifier = Modifier
+                                            .padding(5.dp)
+                                            .height(70.dp)
+                                    )
+
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center,
+                                        modifier = Modifier
+                                            .height(70.dp)
+                                            .clickable {
+                                                if (imageButtonState) {
+                                                    showImageUploaderCamera = true
+                                                    imageButtonState = false
+                                                }
+                                            })
+                                    {
+                                        Icon(
+                                            painter = painterResource(R.drawable.camera),
+                                            contentDescription = "",
+                                            modifier = Modifier.size(30.dp),
+                                            tint = colorResource(R.color.color_a)
+                                        )
+                                        Spacer(modifier = Modifier.height(5.dp))
+                                        Text(
+                                            text = "camera",
+                                            color = colorResource(R.color.color_a),
+                                            fontSize = 12.sp
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     }
+
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    )
+                    {
+                        Button(
+                            onClick = {
+                                onAddContributor(name.trim(), uploadedImageUrl?.trim())
+                            },
+                            enabled = name.trim().isNotEmpty(),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = colorResource(R.color.color_a),
+                                contentColor = colorResource(R.color.white)
+                            )
+                        ) {
+                            Text(Constants.ADD)
+                        }
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        TextButton(onClick = onDismiss) {
+                            Text(Constants.CANCEL, color = colorResource(R.color.color_c))
+                        }
+                    }
+
+                }
+            }
+
+            if (isUploading) {
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .background(Color.Black.copy(alpha = 0.15f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
                 }
             }
         }
+    }
+
+    if (showImageUploaderGallery)
+    {
+        UploadImageFromGallery (
+            onUploadStarted = {
+                onIsUploadingChange(true)
+            },
+            onUploadFinished = { url ->
+                uploadedImageUrl = url
+                showImageUploaderGallery = false
+                imageButtonState = true
+
+                onIsUploadingChange(false)
+                onButtonStateChange(imageButtonState)
+            },
+            onDismissRequest = {
+                showImageUploaderGallery = false
+                imageButtonState = true
+            }
+        )
+    }
+    if (showImageUploaderCamera)
+    {
+        UploadImageFromCamera(
+            onUploadStarted = {
+                onIsUploadingChange(true)
+            },
+            onUploadFinished = { url ->
+                uploadedImageUrl = url
+                showImageUploaderCamera = false
+                imageButtonState = true
+
+                onIsUploadingChange(false)
+                onButtonStateChange(imageButtonState)
+            },
+            onDismissRequest = {
+                showImageUploaderCamera = false
+                imageButtonState = true
+            }
+        )
     }
 }
 
@@ -780,3 +1088,245 @@ fun DeleteContributorDialog(
         }
     }
 }
+
+
+//image
+@Composable
+fun UploadImageFromGallery(
+    onUploadStarted: () -> Unit,
+    onUploadFinished: (String?) -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    val context = LocalContext.current
+    //var tempImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    // Initialize Cloudinary once
+    LaunchedEffect(Unit) {
+        initCloudinary(context)
+    }
+
+    // 1. Launcher for Gallery Selection
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let {
+            //onDismissRequest()
+
+            onUploadStarted()
+            uploadImageToCloudinary(context, it) { url ->
+                onUploadFinished(url)
+
+            }
+        }?: onDismissRequest()
+    }
+
+    //upload image from gallery
+    LaunchedEffect(Unit) {
+        galleryLauncher.launch("image/*")
+    }
+}
+
+@Composable
+fun UploadImageFromCamera(
+    onUploadStarted: () -> Unit,
+    onUploadFinished: (String?) -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    val context = LocalContext.current
+    var tempImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    // Initialize Cloudinary once
+    LaunchedEffect(Unit) {
+        initCloudinary(context)
+    }
+
+    // 2. Launcher for Taking Picture
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            tempImageUri?.let { uri ->
+
+                //onDismissRequest()
+
+                onUploadStarted()
+
+                // Compress and upload
+                val compressedFile = compressImage(context, uri)
+                val compressedUri = Uri.fromFile(compressedFile)
+                uploadImageToCloudinary(context, compressedUri) { url ->
+                    onUploadFinished(url)
+                    // Clean up temp files
+                    File(uri.path ?: "").delete()
+                    compressedFile.delete()
+                }
+            }
+        }
+        else
+        {
+            onDismissRequest()
+        }
+    }
+
+
+    // 3. Permission Launcher for CAMERA
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            if (isGranted) {
+                val file = File(
+                    context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                    "camera_image_${System.currentTimeMillis()}.jpg"
+                )
+                val uri = FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.provider",
+                    file
+                )
+                tempImageUri = uri
+                cameraLauncher.launch(uri)
+            }
+            else
+            {
+                Toast.makeText(context, Constants.CAMERA_PERMISSION_IS_REQUIRED, Toast.LENGTH_SHORT).show()
+            }
+        }
+    )
+
+    //capture image from camera
+    LaunchedEffect(Unit) {
+        permissionLauncher.launch(Manifest.permission.CAMERA)
+    }
+}
+
+
+@SuppressLint("UseKtx")
+fun compressImage(context: Context, imageUri: Uri): File
+{
+    val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
+
+    // Resize
+    val resized = Bitmap.createScaledBitmap(bitmap, 500, 500, true)
+
+    // Compress
+    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
+    val storageDir = context.cacheDir
+    val compressedFile = File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir)
+    val outputStream = FileOutputStream(compressedFile)
+    resized.compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
+    outputStream.flush()
+    outputStream.close()
+
+    return compressedFile
+}
+
+/*
+@Composable
+fun ImageUploaderScreen(
+    onUploadStarted: () -> Unit,
+    onUploadFinished: (String?) -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    val context = LocalContext.current
+    var tempImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    // Initialize Cloudinary once
+    LaunchedEffect(Unit) {
+        initCloudinary(context)
+    }
+
+    // 1. Launcher for Gallery Selection
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let {
+            onDismissRequest()
+
+            onUploadStarted()
+            uploadImageToCloudinary(context, it) { url ->
+                onUploadFinished(url)
+
+            }
+        }?: onDismissRequest()
+    }
+
+
+    // 2. Launcher for Taking Picture
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            tempImageUri?.let { uri ->
+
+                onDismissRequest()
+
+                onUploadStarted()
+
+                // Compress and upload
+                val compressedFile = compressImage(context, uri)
+                val compressedUri = Uri.fromFile(compressedFile)
+                uploadImageToCloudinary(context, compressedUri) { url ->
+                    onUploadFinished(url)
+                    // Clean up temp files
+                    File(uri.path ?: "").delete()
+                    compressedFile.delete()
+                }
+            }
+        }
+        else
+        {
+            onDismissRequest()
+        }
+    }
+
+
+    // 3. Permission Launcher for CAMERA
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            if (isGranted) {
+                val file = File(
+                    context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                    "camera_image_${System.currentTimeMillis()}.jpg"
+                )
+                val uri = FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.provider",
+                    file
+                )
+                tempImageUri = uri
+                cameraLauncher.launch(uri)
+            }
+            else
+            {
+                Toast.makeText(context, Constants.CAMERA_PERMISSION_IS_REQUIRED, Toast.LENGTH_SHORT).show()
+            }
+        }
+    )
+
+
+    // 4. Alert Dialog for selecting camera or gallery
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        title = { Text(text= Constants.UPLOAD_IMAGE) },
+        text = { Text(text = Constants.CHOOSE_AN_IMAGE_FROM_THE_GALLERY_OR_TAKE_A_NEW_PHOTO) },
+        confirmButton = {
+            TextButton(onClick = {
+                //onDismissRequest() // Dismiss the dialog
+                galleryLauncher.launch("image/*")
+            }) {
+                Text(text = Constants.GALLERY)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = {
+                //onDismissRequest() // Dismiss the dialog
+                permissionLauncher.launch(Manifest.permission.CAMERA)
+            }) {
+                Text(text = Constants.CAMERA)
+            }
+        }
+    )
+}*/
+
+ */

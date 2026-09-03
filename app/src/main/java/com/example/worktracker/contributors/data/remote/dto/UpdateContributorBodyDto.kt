@@ -12,6 +12,9 @@ data class UpdateContributorBodyDto(
     var id: Int,
     @SerializedName("newName")
     @Expose
-    var newName: String
+    var newName: String,
+    @SerializedName("imageUrl")
+    @Expose
+    var imageUrl: String?
 )
 

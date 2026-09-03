@@ -9,5 +9,8 @@ data class AddContributorBodyDto(
     var action: String,
     @SerializedName("name")
     @Expose
-    var name: String
+    var name: String,
+    @SerializedName("imageUrl")
+    @Expose
+    var imageUrl: String?
 )

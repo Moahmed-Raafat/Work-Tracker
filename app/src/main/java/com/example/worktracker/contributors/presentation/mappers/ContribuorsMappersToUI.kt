@@ -12,6 +12,7 @@ fun Contributor.toUI(): ContributorUI
     return ContributorUI(
         id= id,
         name= name,
+        imageUrl= imageUrl,
         createdAt= formatDateTime(createdAt),
         updatedAt= formatDateTime(updatedAt)
     )

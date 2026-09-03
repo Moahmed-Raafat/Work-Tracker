@@ -31,9 +31,13 @@ class AddContributorViewModel @Inject constructor(private val addContributorUseC
     val addContributorEvents: SharedFlow<AddContributorEvents> = _addContributorEvents
 
 
-    fun addContributor(name: String)= viewModelScope.launch {
+    fun addContributor(name: String,imageUrl: String ?= null)= viewModelScope.launch {
 
-        val addContributorBody= AddContributorBody(Constants.ADD_CONTRIBUTOR_ACTION,name)
+        val addContributorBody= AddContributorBody(
+            action = Constants.ADD_CONTRIBUTOR_ACTION,
+            name = name,
+            imageUrl = imageUrl
+        )
 
         addContributorUseCase.invoke(addContributorBody).collect{ result ->
             when(result){

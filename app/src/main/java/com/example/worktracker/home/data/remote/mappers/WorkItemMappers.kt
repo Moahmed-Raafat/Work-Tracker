@@ -1,6 +1,10 @@
 package com.example.worktracker.home.data.remote.mappers
 
 import com.example.worktracker.contributors.data.remote.mappers.toDomain
+import com.example.worktracker.home.domain.model.AddWorkItemBody
+import com.example.worktracker.home.domain.model.AddWorkItemResponse
+import com.example.worktracker.home.data.remote.dto.AddWorkItemBodyDto
+import com.example.worktracker.home.data.remote.dto.AddWorkItemResponseDto
 import com.example.worktracker.home.data.remote.dto.GetWorkItemsBodyDto
 import com.example.worktracker.home.data.remote.dto.GetWorkItemsResponseDto
 import com.example.worktracker.home.data.remote.dto.WorkItemDto
@@ -67,5 +71,42 @@ fun GetWorkItemsResponseDto.toDomain(): GetWorkItemsResponse
         pageSize = this.pageSize,
         totalCount = this.totalCount,
         workItems = this.workItems.map { it.toDomain() }
+    )
+}
+
+fun AddWorkItemBodyDto.toDomain(): AddWorkItemBody {
+    return AddWorkItemBody(
+        action = this.action,
+        title = this.title,
+        description = this.description,
+        workTypeId = this.workTypeId,
+        assignerId = this.assignerId,
+        assigneeId = this.assigneeId,
+        statusId = this.statusId,
+        priorityId = this.priorityId,
+        documentationLinks = this.documentationLinks
+    )
+}
+
+fun AddWorkItemResponseDto.toDomain(): AddWorkItemResponse {
+    return AddWorkItemResponse(
+        success = this.success,
+        id = this.id,
+        workItemNumber = this.workItemNumber,
+        message = this.message
+    )
+}
+
+fun AddWorkItemBody.toDto(): AddWorkItemBodyDto {
+    return AddWorkItemBodyDto(
+        action = this.action,
+        title = this.title,
+        description = this.description,
+        workTypeId = this.workTypeId,
+        assignerId = this.assignerId,
+        assigneeId = this.assigneeId,
+        statusId = this.statusId,
+        priorityId = this.priorityId,
+        documentationLinks = this.documentationLinks
     )
 }

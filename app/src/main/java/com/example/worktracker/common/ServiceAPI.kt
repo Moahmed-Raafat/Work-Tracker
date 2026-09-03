@@ -8,6 +8,8 @@ import com.example.worktracker.contributors.data.remote.dto.GetContributorsBodyD
 import com.example.worktracker.contributors.data.remote.dto.GetContributorsResponseDto
 import com.example.worktracker.contributors.data.remote.dto.UpdateContributorBodyDto
 import com.example.worktracker.contributors.data.remote.dto.UpdateContributorResponseDto
+import com.example.worktracker.home.data.remote.dto.AddWorkItemBodyDto
+import com.example.worktracker.home.data.remote.dto.AddWorkItemResponseDto
 import com.example.worktracker.home.data.remote.dto.GetWorkItemsBodyDto
 import com.example.worktracker.home.data.remote.dto.GetWorkItemsResponseDto
 import com.example.worktracker.worktypes.data.remote.dto.AddWorkTypeBodyDto
@@ -35,7 +37,6 @@ import com.example.worktracker.priorities.data.remote.dto.GetPrioritiesResponseD
 import com.example.worktracker.priorities.data.remote.dto.UpdatePriorityBodyDto
 import com.example.worktracker.priorities.data.remote.dto.UpdatePriorityResponseDto
 import retrofit2.http.Body
-import retrofit2.http.Headers
 import retrofit2.http.POST
 
 interface ServiceAPI {
@@ -108,4 +109,7 @@ interface ServiceAPI {
 
     @POST("exec")
     suspend fun getWorkItems(@Body getWorkItemsBodyDto: GetWorkItemsBodyDto) : GetWorkItemsResponseDto
+
+    @POST("exec")
+    suspend fun addWorkItem(@Body addWorkItemBodyDto: AddWorkItemBodyDto) : AddWorkItemResponseDto
 }

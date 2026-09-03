@@ -34,6 +34,7 @@ object Constants {
 
 
 
+
     const val BUGS: String = "Bugs"
     const val EDIT_CONTRIBUTOR: String = "edit contributor"
     const val EDIT_STATUS: String = "edit status"
@@ -61,6 +62,10 @@ object Constants {
     const val ARE_YOU_SURE_YOU_WANT_TO_DELETE_THIS_WORK_TYPE: String = "Are you sure you want to delete this work type"
     const val WORK_ITEM_TITLE: String = "Work Item Title"
     const val WORK_ITEM_DESCRIPTION: String = "Work Item Description"
+    const val TITLE: String = "Title"
+    const val DESCRIPTION: String = "Description"
+    const val ADD_TITLE: String = "Add Title"
+    const val ADD_DESCRIPTION: String = "Add Description"
 
     const val NAME: String = "Name: "
     const val DASHBOARD: String = "Dashboard"
@@ -68,9 +73,11 @@ object Constants {
     const val CREATED_AT: String = "Created at: "
     const val UPDATED_AT: String = "Updated at: "
     const val NAME_CAN_NOT_BE_EMPTY: String = "name can not  be empty"
-    const val CONTRIBUTOR_IS_ADDED_SUCCESSFULLY: String = "Contributed is added successfully"
-    const val CONTRIBUTOR_IS_UPDATED_SUCCESSFULLY: String = "Contributed is updated successfully"
-    const val CONTRIBUTOR_IS_DELETED_SUCCESSFULLY: String = "Contributed is deleted successfully"
+    const val CONTRIBUTOR_IS_ADDED_SUCCESSFULLY: String = "Contributor is added successfully"
+    const val CONTRIBUTOR_IS_UPDATED_SUCCESSFULLY: String = "Contributor is updated successfully"
+    const val CONTRIBUTOR_IS_DELETED_SUCCESSFULLY: String = "Contributor is deleted successfully"
+    const val WORK_ITEM_IS_ADDED_SUCCESSFULLY: String = "Work item is added successfully"
+    const val WORK_ITEM_IS_UPDATED_SUCCESSFULLY: String = "Work item is updated successfully"
     const val STATUS_IS_ADDED_SUCCESSFULLY: String = "Status is added successfully"
     const val STATUS_IS_UPDATED_SUCCESSFULLY: String = "Status is updated successfully"
     const val STATUS_IS_DELETED_SUCCESSFULLY: String = "Status is deleted successfully"
@@ -95,9 +102,16 @@ object Constants {
     const val STATUS: String = "Status"
     const val PRIORITY: String = "Priority"
     const val NOT_AVAILABLE: String = "Not available"
+    const val SOMETHING_WENT_WRONG: String = "Something went wrong"
+    const val RETRY: String = "Retry"
+    const val CAMERA_PERMISSION_IS_REQUIRED: String = "Camera permission is required"
+    const val UPLOAD_IMAGE: String = "Upload Image"
+    const val CHOOSE_AN_IMAGE_FROM_THE_GALLERY_OR_TAKE_A_NEW_PHOTO: String = "Choose an image from the gallery or take a new photo"
 
+    const val CAMERA: String = "Camera"
+    const val GALLERY: String = "Gallery"
 
-    const val BASE_URL="https://script.google.com/macros/s/AKfycbwFQ_CrF2p4rkINqIDA4Ks8recXGEz263rZietoEPc4G2l6jl65n4PivhHn4ZPZOa0W-A/"
+    const val BASE_URL="https://script.google.com/macros/s/AKfycbzO3ztbm2jaZaSwdcfY03qqbdRClQJq2ymtAEwy6RFTEX8_y3A6kwrCDUp8Zjx7_tLItg/"
 
     const val CLOUD_NAME="drnwo9mdm"
     const val API_KEY="817135666282944"
