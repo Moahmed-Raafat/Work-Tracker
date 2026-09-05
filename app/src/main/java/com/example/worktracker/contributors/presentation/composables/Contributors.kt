@@ -96,7 +96,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-
+//todo add the image functionality to the details of contributor
+//todo add the image functionality to the update contributor
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Contributors(navController: NavController,
@@ -866,6 +867,21 @@ fun UpdateContributorDialog(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                //image
+                if(contributorUI.imageUrl.isNullOrBlank())
+                {
+                    //add image
+
+                }
+                else
+                {
+                    // show the image
+                }
+
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                //buttons
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
@@ -896,7 +912,6 @@ fun UpdateContributorDialog(
     }
 }
 
-
 @Composable
 fun ShowContributorDetailsDialog(
     contributorUI: ContributorUI,
@@ -917,32 +932,62 @@ fun ShowContributorDetailsDialog(
                     .padding(15.dp)
                     .fillMaxWidth()
             ) {
-
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center)
                 {
                     Text(
                         text = Constants.CONTRIBUTOR_DETAILS,
-                        style = MaterialTheme.typography.titleLarge,
+                        fontSize = 22.sp,
                         color = colorResource(R.color.color_a),
                         fontWeight = FontWeight.Bold
                     )
                 }
 
+                Spacer(modifier = Modifier.height(10.dp))
+
+                //image
+                Row(modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center)
+                {
+                    Box(modifier = Modifier.size(100.dp))
+                    {
+                        if (contributorUI.imageUrl?.isEmpty() == true)
+                        {
+                            Icon(
+                                painter = painterResource(R.drawable.person),
+                                contentDescription = "",
+                                modifier = Modifier.size(100.dp)
+                                    .clip(RoundedCornerShape(10.dp)),
+                                tint = colorResource(R.color.color_a)
+                            )
+                        }
+                        else {
+                            AsyncImage(
+                                model = contributorUI.imageUrl,
+                                contentDescription = "",
+                                contentScale = ContentScale.Crop,
+                                error = painterResource(R.drawable.person),
+                                modifier = Modifier.size(100.dp)
+                                    .clip(RoundedCornerShape(10.dp))
+                            )
+                        }
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                Row (modifier = Modifier.fillMaxWidth()){
-                    Text(
-                        text= Constants.NAME,
-                        fontSize = 15.sp,
-                        color = colorResource(R.color.muted_gray))
-
+                //name
+                Row (modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center)
+                {
                     Text(text= contributorUI.name,
-                        fontSize = 15.sp,
-                        color = colorResource(R.color.color_a))
+                        fontSize = 17.sp,
+                        color = colorResource(R.color.color_a),
+                        fontWeight = FontWeight.Bold)
                 }
-                Spacer(modifier = Modifier.height(5.dp))
 
+                Spacer(modifier = Modifier.height(10.dp))
+
+                //dates
                 if(contributorUI.updatedAt != "")
                 {
                     Row (modifier = Modifier.fillMaxWidth())
@@ -963,7 +1008,7 @@ fun ShowContributorDetailsDialog(
                 Row (modifier = Modifier.fillMaxWidth())
                 {
                     Text(
-                        text = Constants.UPDATED_AT,
+                        text = Constants.CREATED_AT,
                         color = colorResource(R.color.muted_gray),
                         fontSize = 15.sp
                     )
@@ -974,12 +1019,94 @@ fun ShowContributorDetailsDialog(
                     )
                 }
 
+                /*Row(modifier = Modifier.fillMaxWidth())
+                {
+                    //image
+                    Column()
+                    {
+                        Box(modifier = Modifier.size(80.dp))
+                        {
+                            if (contributorUI.imageUrl?.isEmpty() == true)
+                            {
+                                Icon(
+                                    painter = painterResource(R.drawable.person),
+                                    contentDescription = "",
+                                    modifier = Modifier.size(80.dp)
+                                        .clip(RoundedCornerShape(10.dp)),
+                                    tint = colorResource(R.color.color_a)
+                                )
+                            }
+                            else {
+                                AsyncImage(
+                                    model = contributorUI.imageUrl,
+                                    contentDescription = "",
+                                    contentScale = ContentScale.Crop,
+                                    error = painterResource(R.drawable.person),
+                                    modifier = Modifier.size(80.dp)
+                                        .clip(RoundedCornerShape(10.dp))
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    //name and dates
+                    Column()
+                    {
+                        Row (modifier = Modifier.fillMaxWidth()){
+                            Text(
+                                text= Constants.NAME,
+                                fontSize = 15.sp,
+                                color = colorResource(R.color.muted_gray))
+
+                            Text(text= contributorUI.name,
+                                fontSize = 15.sp,
+                                color = colorResource(R.color.color_a))
+                        }
+                        Spacer(modifier = Modifier.height(5.dp))
+
+                        if(contributorUI.updatedAt != "")
+                        {
+                            Row (modifier = Modifier.fillMaxWidth())
+                            {
+                                Text(
+                                    text = Constants.UPDATED_AT,
+                                    color = colorResource(R.color.muted_gray),
+                                    fontSize = 15.sp
+                                )
+                                Text(
+                                    text = contributorUI.updatedAt,
+                                    color = colorResource(R.color.color_a),
+                                    fontSize = 15.sp
+                                )
+                                Spacer(modifier = Modifier.height(5.dp))
+                            }
+                        }
+                        Row (modifier = Modifier.fillMaxWidth())
+                        {
+                            Text(
+                                text = Constants.UPDATED_AT,
+                                color = colorResource(R.color.muted_gray),
+                                fontSize = 15.sp
+                            )
+                            Text(
+                                text = contributorUI.createdAt,
+                                color = colorResource(R.color.color_a),
+                                fontSize = 15.sp
+                            )
+                        }
+                    }
+                }*/
+
                 Spacer(modifier = Modifier.height(15.dp))
 
+                //buttons
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
-                ) {
+                )
+                {
 
                     Button(
                         onClick = {
@@ -1017,8 +1144,6 @@ fun ShowContributorDetailsDialog(
             }
         }
     }
-
-
 }
 
 @Composable
@@ -1199,7 +1324,6 @@ fun UploadImageFromCamera(
     }
 }
 
-
 @SuppressLint("UseKtx")
 fun compressImage(context: Context, imageUri: Uri): File
 {
@@ -1219,114 +1343,3 @@ fun compressImage(context: Context, imageUri: Uri): File
 
     return compressedFile
 }
-
-/*
-@Composable
-fun ImageUploaderScreen(
-    onUploadStarted: () -> Unit,
-    onUploadFinished: (String?) -> Unit,
-    onDismissRequest: () -> Unit
-) {
-    val context = LocalContext.current
-    var tempImageUri by remember { mutableStateOf<Uri?>(null) }
-
-    // Initialize Cloudinary once
-    LaunchedEffect(Unit) {
-        initCloudinary(context)
-    }
-
-    // 1. Launcher for Gallery Selection
-    val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri ->
-        uri?.let {
-            onDismissRequest()
-
-            onUploadStarted()
-            uploadImageToCloudinary(context, it) { url ->
-                onUploadFinished(url)
-
-            }
-        }?: onDismissRequest()
-    }
-
-
-    // 2. Launcher for Taking Picture
-    val cameraLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicture()
-    ) { success ->
-        if (success) {
-            tempImageUri?.let { uri ->
-
-                onDismissRequest()
-
-                onUploadStarted()
-
-                // Compress and upload
-                val compressedFile = compressImage(context, uri)
-                val compressedUri = Uri.fromFile(compressedFile)
-                uploadImageToCloudinary(context, compressedUri) { url ->
-                    onUploadFinished(url)
-                    // Clean up temp files
-                    File(uri.path ?: "").delete()
-                    compressedFile.delete()
-                }
-            }
-        }
-        else
-        {
-            onDismissRequest()
-        }
-    }
-
-
-    // 3. Permission Launcher for CAMERA
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = { isGranted ->
-            if (isGranted) {
-                val file = File(
-                    context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                    "camera_image_${System.currentTimeMillis()}.jpg"
-                )
-                val uri = FileProvider.getUriForFile(
-                    context,
-                    "${context.packageName}.provider",
-                    file
-                )
-                tempImageUri = uri
-                cameraLauncher.launch(uri)
-            }
-            else
-            {
-                Toast.makeText(context, Constants.CAMERA_PERMISSION_IS_REQUIRED, Toast.LENGTH_SHORT).show()
-            }
-        }
-    )
-
-
-    // 4. Alert Dialog for selecting camera or gallery
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        title = { Text(text= Constants.UPLOAD_IMAGE) },
-        text = { Text(text = Constants.CHOOSE_AN_IMAGE_FROM_THE_GALLERY_OR_TAKE_A_NEW_PHOTO) },
-        confirmButton = {
-            TextButton(onClick = {
-                //onDismissRequest() // Dismiss the dialog
-                galleryLauncher.launch("image/*")
-            }) {
-                Text(text = Constants.GALLERY)
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = {
-                //onDismissRequest() // Dismiss the dialog
-                permissionLauncher.launch(Manifest.permission.CAMERA)
-            }) {
-                Text(text = Constants.CAMERA)
-            }
-        }
-    )
-}*/
-
- */
