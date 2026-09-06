@@ -31,9 +31,9 @@ class UpdateContributorViewModel @Inject constructor(private val updateContribut
     val updateContributorEvents: SharedFlow<UpdateContributorEvents> = _updateContributorEvents
 
 
-    fun updateContributor(id: Int, newName: String)= viewModelScope.launch {
+    fun updateContributor(id: Int, newName: String, imageUrl: String)= viewModelScope.launch {
 
-        val updateContributorBody= UpdateContributorBody(Constants.UPDATE_CONTRIBUTOR_ACTION,id,newName)
+        val updateContributorBody= UpdateContributorBody(Constants.UPDATE_CONTRIBUTOR_ACTION,id,newName,imageUrl)
 
         updateContributorUseCase.invoke(updateContributorBody).collect{ result ->
             when(result){

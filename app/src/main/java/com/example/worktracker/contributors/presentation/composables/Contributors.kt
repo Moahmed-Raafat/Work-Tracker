@@ -96,8 +96,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-//todo add the image functionality to the details of contributor
-//todo add the image functionality to the update contributor
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Contributors(navController: NavController,
@@ -487,9 +485,9 @@ fun ShowList(
                 onDismiss = {
                     showUpdateContributorDialog = false
                 },
-                updateOne = { id,name ->
+                updateOne = { id,name,imageUrl ->
                     showUpdateContributorDialog = false
-                    updateContributorViewModel.updateContributor(id,name)
+                    updateContributorViewModel.updateContributor(id,name,imageUrl)
                 }
             )
         }
@@ -608,7 +606,8 @@ fun AddContributorDialog(
                                 Box(
                                     modifier = Modifier.fillMaxWidth(),
                                     contentAlignment = Alignment.Center
-                                ) {
+                                )
+                                {
                                     Box(
                                         modifier = Modifier.size(150.dp)
                                     ) {
@@ -827,11 +826,27 @@ fun AddContributorDialog(
 fun UpdateContributorDialog(
     contributorUI: ContributorUI,
     onDismiss: () -> Unit,
-    updateOne: (Int,String) -> Unit
+    updateOne: (Int,String,String) -> Unit
 ) {
     var newName by remember { mutableStateOf(contributorUI.name) }
+    var newImageUrl by remember { mutableStateOf(contributorUI.imageUrl) }
 
-    Dialog(onDismissRequest = onDismiss) {
+    var showProgressBar by remember { mutableStateOf(false) }
+    //var imageButtonState by remember { mutableStateOf(true) }
+
+    var showImageUploaderGallery by remember { mutableStateOf(false) }
+    var showImageUploaderCamera by remember { mutableStateOf(false) }
+
+
+    Dialog(
+        onDismissRequest = {
+        if (!showProgressBar)
+        {
+            onDismiss()
+        }
+        }
+    )
+    {
         Card(
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier.fillMaxWidth(),
@@ -867,17 +882,147 @@ fun UpdateContributorDialog(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                //image
-                if(contributorUI.imageUrl.isNullOrBlank())
+                if(showProgressBar)
                 {
-                    //add image
-
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(150.dp)
+                            .background(Color.Black.copy(alpha = 0.15f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
                 else
                 {
-                    // show the image
-                }
+                    //image
+                    if(newImageUrl.isNullOrBlank())
+                    {
+                        //add image
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        )
+                        {
+                            Text(
+                                text = "add profile image",
+                                color = colorResource(R.color.color_a),
+                                fontSize = 15.sp
+                            )
+                        }
 
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        //capture an image and upload it to cloudinary
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        )
+                        {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .height(70.dp)
+                                    .clickable {
+                                        showImageUploaderGallery = true
+                                    })
+                            {
+                                Icon(
+                                    painter = painterResource(R.drawable.gallery),
+                                    contentDescription = "",
+                                    modifier = Modifier.size(30.dp),
+                                    tint = colorResource(R.color.color_a)
+                                )
+                                Spacer(modifier = Modifier.height(5.dp))
+                                Text(
+                                    text = "gallery",
+                                    color = colorResource(R.color.color_a),
+                                    fontSize = 12.sp
+                                )
+                            }
+
+                            VerticalDivider(
+                                color = colorResource(R.color.color_b),
+                                thickness = 1.dp,
+                                modifier = Modifier
+                                    .padding(5.dp)
+                                    .height(70.dp)
+                            )
+
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .height(70.dp)
+                                    .clickable {
+                                        showImageUploaderCamera = true
+                                    })
+                            {
+                                Icon(
+                                    painter = painterResource(R.drawable.camera),
+                                    contentDescription = "",
+                                    modifier = Modifier.size(30.dp),
+                                    tint = colorResource(R.color.color_a)
+                                )
+                                Spacer(modifier = Modifier.height(5.dp))
+                                Text(
+                                    text = "camera",
+                                    color = colorResource(R.color.color_a),
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //show image
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        )
+                        {
+                            Box(
+                                modifier = Modifier.size(150.dp)
+                            ) {
+                                AsyncImage(
+                                    model = newImageUrl,
+                                    contentDescription = "",
+                                    contentScale = ContentScale.Crop,
+                                    error = painterResource(R.drawable.person),
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(RoundedCornerShape(10.dp)),
+                                    onSuccess = {
+                                        showProgressBar= false
+                                    },
+                                    onError = {
+                                        showProgressBar= false
+                                    }
+                                )
+
+                                Icon(
+                                    imageVector = Icons.Rounded.Close,
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .offset(x = (-4).dp, y = (4).dp)
+                                        .size(24.dp)
+                                        .background(
+                                            colorResource(R.color.white),
+                                            shape = RoundedCornerShape(50)
+                                        )
+                                        .clickable {
+                                            newImageUrl=""
+                                        }
+                                        .padding(2.dp),
+                                    tint = colorResource(R.color.black)
+                                )
+                            }
+                        }
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -889,7 +1034,7 @@ fun UpdateContributorDialog(
 
                     Button(
                         onClick = {
-                            updateOne(contributorUI.id,newName.trim())
+                            updateOne(contributorUI.id,newName.trim(), newImageUrl?.trim() ?: "")
                         },
                         enabled = newName.trim().isNotEmpty(),
                         colors = ButtonDefaults.buttonColors(
@@ -909,6 +1054,42 @@ fun UpdateContributorDialog(
                 }
             }
         }
+    }
+
+    if (showImageUploaderGallery)
+    {
+        UploadImageFromGallery (
+            onUploadStarted = {
+                showProgressBar= true
+            },
+            onUploadFinished = { url ->
+                newImageUrl = url
+                showImageUploaderGallery = false
+                showProgressBar= false
+            },
+            onDismissRequest = {
+                showImageUploaderGallery = false
+                showProgressBar= false
+            }
+        )
+    }
+    if (showImageUploaderCamera)
+    {
+        UploadImageFromCamera(
+            onUploadStarted = {
+                showProgressBar= true
+            },
+            onUploadFinished = { url ->
+                newImageUrl = url
+                showImageUploaderCamera = false
+                showProgressBar= false
+
+            },
+            onDismissRequest = {
+                showImageUploaderCamera = false
+                showProgressBar= false
+            }
+        )
     }
 }
 
