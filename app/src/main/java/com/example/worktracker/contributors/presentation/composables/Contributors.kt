@@ -654,7 +654,6 @@ fun AddContributorDialog(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.Center
                                 ) {
-
                                     Text(
 
                                         text = "add profile image",
@@ -1199,86 +1198,6 @@ fun ShowContributorDetailsDialog(
                         fontSize = 15.sp
                     )
                 }
-
-                /*Row(modifier = Modifier.fillMaxWidth())
-                {
-                    //image
-                    Column()
-                    {
-                        Box(modifier = Modifier.size(80.dp))
-                        {
-                            if (contributorUI.imageUrl?.isEmpty() == true)
-                            {
-                                Icon(
-                                    painter = painterResource(R.drawable.person),
-                                    contentDescription = "",
-                                    modifier = Modifier.size(80.dp)
-                                        .clip(RoundedCornerShape(10.dp)),
-                                    tint = colorResource(R.color.color_a)
-                                )
-                            }
-                            else {
-                                AsyncImage(
-                                    model = contributorUI.imageUrl,
-                                    contentDescription = "",
-                                    contentScale = ContentScale.Crop,
-                                    error = painterResource(R.drawable.person),
-                                    modifier = Modifier.size(80.dp)
-                                        .clip(RoundedCornerShape(10.dp))
-                                )
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.width(10.dp))
-
-                    //name and dates
-                    Column()
-                    {
-                        Row (modifier = Modifier.fillMaxWidth()){
-                            Text(
-                                text= Constants.NAME,
-                                fontSize = 15.sp,
-                                color = colorResource(R.color.muted_gray))
-
-                            Text(text= contributorUI.name,
-                                fontSize = 15.sp,
-                                color = colorResource(R.color.color_a))
-                        }
-                        Spacer(modifier = Modifier.height(5.dp))
-
-                        if(contributorUI.updatedAt != "")
-                        {
-                            Row (modifier = Modifier.fillMaxWidth())
-                            {
-                                Text(
-                                    text = Constants.UPDATED_AT,
-                                    color = colorResource(R.color.muted_gray),
-                                    fontSize = 15.sp
-                                )
-                                Text(
-                                    text = contributorUI.updatedAt,
-                                    color = colorResource(R.color.color_a),
-                                    fontSize = 15.sp
-                                )
-                                Spacer(modifier = Modifier.height(5.dp))
-                            }
-                        }
-                        Row (modifier = Modifier.fillMaxWidth())
-                        {
-                            Text(
-                                text = Constants.UPDATED_AT,
-                                color = colorResource(R.color.muted_gray),
-                                fontSize = 15.sp
-                            )
-                            Text(
-                                text = contributorUI.createdAt,
-                                color = colorResource(R.color.color_a),
-                                fontSize = 15.sp
-                            )
-                        }
-                    }
-                }*/
 
                 Spacer(modifier = Modifier.height(15.dp))
 

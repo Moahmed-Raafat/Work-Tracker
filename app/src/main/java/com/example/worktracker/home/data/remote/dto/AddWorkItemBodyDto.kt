@@ -15,20 +15,20 @@ data class AddWorkItemBodyDto(
     var description: String,
     @SerializedName("workTypeId")
     @Expose
-    var workTypeId: Int,
+    var workTypeId: Int?,
     @SerializedName("assignerId")
     @Expose
-    var assignerId: Int,
+    var assignerId: Int?,
     @SerializedName("assigneeId")
     @Expose
-    var assigneeId: Int,
+    var assigneeId: Int?,
     @SerializedName("statusId")
     @Expose
-    var statusId: Int,
+    var statusId: Int?,
     @SerializedName("priorityId")
     @Expose
-    var priorityId: Int,
+    var priorityId: Int?,
     @SerializedName("documentationLinks")
     @Expose
-    var documentationLinks: MutableList<String> = mutableListOf()
+    var documentationLinks: List<String> = listOf()
 )

@@ -29,12 +29,12 @@ class AddWorkItemViewModel @Inject constructor(private val addWorkItemUseCase: A
 
     fun addWorkItem(title: String,
                     description: String,
-                    workTypeId: Int,
-                    assignerId: Int,
-                    assigneeId: Int,
-                    statusId: Int,
-                    priorityId: Int,
-                    documentationLinks: MutableList<String>) = viewModelScope.launch {
+                    workTypeId: Int?,
+                    assignerId: Int?,
+                    assigneeId: Int?,
+                    statusId: Int?,
+                    priorityId: Int?,
+                    documentationLinks: List<String>) = viewModelScope.launch {
 
         val addWorkItemBody = AddWorkItemBody(
             action = Constants.ADD_WORK_ITEM_ACTION,
