@@ -1,19 +1,27 @@
 package com.example.worktracker.home.data.remote.mappers
 
 import com.example.worktracker.contributors.data.remote.mappers.toDomain
+import com.example.worktracker.contributors.data.remote.mappers.toDto
 import com.example.worktracker.home.domain.model.AddWorkItemBody
 import com.example.worktracker.home.domain.model.AddWorkItemResponse
 import com.example.worktracker.home.data.remote.dto.AddWorkItemBodyDto
 import com.example.worktracker.home.data.remote.dto.AddWorkItemResponseDto
+import com.example.worktracker.home.data.remote.dto.GetWorkItemByIdBodyDto
+import com.example.worktracker.home.data.remote.dto.GetWorkItemByIdResponseDto
 import com.example.worktracker.home.data.remote.dto.GetWorkItemsBodyDto
 import com.example.worktracker.home.data.remote.dto.GetWorkItemsResponseDto
 import com.example.worktracker.home.data.remote.dto.WorkItemDto
+import com.example.worktracker.home.domain.model.GetWorkItemByIdBody
+import com.example.worktracker.home.domain.model.GetWorkItemByIdResponse
 import com.example.worktracker.home.domain.model.GetWorkItemsBody
 import com.example.worktracker.home.domain.model.GetWorkItemsResponse
 import com.example.worktracker.home.domain.model.WorkItem
 import com.example.worktracker.priorities.data.remote.mappers.toDomain
+import com.example.worktracker.priorities.data.remote.mappers.toDto
 import com.example.worktracker.statuses.data.remote.mappers.toDomain
+import com.example.worktracker.statuses.data.remote.mappers.toDto
 import com.example.worktracker.worktypes.data.remote.mappers.toDomain
+import com.example.worktracker.worktypes.data.remote.mappers.toDto
 
 fun GetWorkItemsBodyDto.toDomain(): GetWorkItemsBody {
     return GetWorkItemsBody(
@@ -58,6 +66,26 @@ fun WorkItemDto.toDomain(): WorkItem
         assignee = assignee?.toDomain(),
         status = status?.toDomain(),
         priority = priority?.toDomain(),
+
+        documentationLinks = this.documentationLinks
+    )
+}
+
+fun WorkItem.toDto(): WorkItemDto
+{
+    return WorkItemDto(
+        id = this.id,
+        workItemNumber= this.workItemNumber,
+        title = this.title,
+        description = this.description,
+        createdAt = this.createdAt,
+        updatedAt = this.updatedAt,
+
+        workType = workType?.toDto(),
+        assigner = assigner?.toDto(),
+        assignee = assignee?.toDto(),
+        status = status?.toDto(),
+        priority = priority?.toDto(),
 
         documentationLinks = this.documentationLinks
     )
@@ -108,5 +136,26 @@ fun AddWorkItemBody.toDto(): AddWorkItemBodyDto {
         statusId = this.statusId,
         priorityId = this.priorityId,
         documentationLinks = this.documentationLinks
+    )
+}
+
+fun GetWorkItemByIdBodyDto.toDomain(): GetWorkItemByIdBody {
+    return GetWorkItemByIdBody(
+        action = this.action,
+        workItemId = this.workItemId
+    )
+}
+
+fun GetWorkItemByIdBody.toDto(): GetWorkItemByIdBodyDto {
+    return GetWorkItemByIdBodyDto(
+        action = this.action,
+        workItemId = this.workItemId
+    )
+}
+
+fun GetWorkItemByIdResponseDto.toDomain(): GetWorkItemByIdResponse {
+    return GetWorkItemByIdResponse(
+        success = this.success,
+        workItem = this.workItem.toDomain()
     )
 }

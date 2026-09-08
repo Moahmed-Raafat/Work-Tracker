@@ -10,6 +10,8 @@ import com.example.worktracker.contributors.data.remote.dto.UpdateContributorBod
 import com.example.worktracker.contributors.data.remote.dto.UpdateContributorResponseDto
 import com.example.worktracker.home.data.remote.dto.AddWorkItemBodyDto
 import com.example.worktracker.home.data.remote.dto.AddWorkItemResponseDto
+import com.example.worktracker.home.data.remote.dto.GetWorkItemByIdBodyDto
+import com.example.worktracker.home.data.remote.dto.GetWorkItemByIdResponseDto
 import com.example.worktracker.home.data.remote.dto.GetWorkItemsBodyDto
 import com.example.worktracker.home.data.remote.dto.GetWorkItemsResponseDto
 import com.example.worktracker.worktypes.data.remote.dto.AddWorkTypeBodyDto
@@ -112,4 +114,6 @@ interface ServiceAPI {
 
     @POST("exec")
     suspend fun addWorkItem(@Body addWorkItemBodyDto: AddWorkItemBodyDto) : AddWorkItemResponseDto
+    @POST("exec")
+    suspend fun getWorkItemById(@Body getWorkItemByIdBodyDto: GetWorkItemByIdBodyDto) : GetWorkItemByIdResponseDto
 }

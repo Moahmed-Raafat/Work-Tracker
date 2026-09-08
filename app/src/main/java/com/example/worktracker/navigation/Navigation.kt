@@ -13,8 +13,11 @@ import com.example.worktracker.contributors.presentation.viewmodel.get_contribut
 import com.example.worktracker.contributors.presentation.viewmodel.update_contributor.UpdateContributorViewModel
 import com.example.worktracker.home.presentation.composables.AddWorkItem
 import com.example.worktracker.home.presentation.composables.Home
-import com.example.worktracker.home.presentation.viewmodel.GetWorkItemsViewModel
+import com.example.worktracker.home.presentation.composables.WorkItemDetails
+import com.example.worktracker.home.presentation.utils.ShareWorkItemIdViewModel
+import com.example.worktracker.home.presentation.viewmodel.get_work_items.GetWorkItemsViewModel
 import com.example.worktracker.home.presentation.viewmodel.add_work_item.AddWorkItemViewModel
+import com.example.worktracker.home.presentation.viewmodel.get_work_item_by_id.GetWorkItemByIdViewModel
 import com.example.worktracker.priorities.presentation.composables.Priorities
 import com.example.worktracker.priorities.presentation.viewmodel.add_priority.AddPriorityViewModel
 import com.example.worktracker.priorities.presentation.viewmodel.delete_priority.DeletePriorityViewModel
@@ -38,6 +41,7 @@ fun Navigation()
     
 
     val navController= rememberNavController()
+    val shareWorkItemIdViewModel: ShareWorkItemIdViewModel = hiltViewModel()
 
     NavHost(navController = navController, startDestination = Screens.Home.route)
     {
@@ -56,7 +60,8 @@ fun Navigation()
                 getStatusesViewModel= getStatusesViewModel,
                 getPrioritiesViewModel= getPrioritiesViewModel,
                 getAssignersViewModel= getAssignersViewModel,
-                getAssigneesViewModel= getAssigneesViewModel)
+                getAssigneesViewModel= getAssigneesViewModel,
+                shareWorkItemIdViewModel= shareWorkItemIdViewModel)
         }
         composable(route=Screens.WorkTypes.route)
         {
@@ -117,7 +122,7 @@ fun Navigation()
         {
             About(navController = navController)
         }
-        composable(route=Screens.ADDWorkItem.route)
+        composable(route=Screens.AddWorkItem.route)
         {
             //val getWorkItemsViewModel: GetWorkItemsViewModel = hiltViewModel()
             val getWorkTypesViewModel: GetWorkTypesViewModel = hiltViewModel()
@@ -135,6 +140,15 @@ fun Navigation()
                 getAssignersViewModel= getAssignersViewModel,
                 getAssigneesViewModel= getAssigneesViewModel,
                 addWorkItemViewModel= addWorkItemViewModel)
+        }
+        composable(route=Screens.WorkItemDetails.route)
+        {
+            val getWorkItemByIdViewModel: GetWorkItemByIdViewModel = hiltViewModel()
+
+            WorkItemDetails(
+                navController = navController,
+                getWorkItemByIdViewModel= getWorkItemByIdViewModel,
+                shareWorkItemIdViewModel= shareWorkItemIdViewModel)
         }
     }
 }

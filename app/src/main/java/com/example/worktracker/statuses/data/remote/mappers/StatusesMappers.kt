@@ -29,6 +29,15 @@ fun StatusDto.toDomain(): Status {
     )
 }
 
+fun Status.toDto(): StatusDto {
+    return StatusDto(
+        id = id,
+        name = name,
+        createdAt = createdAt,
+        updatedAt = updatedAt
+    )
+}
+
 fun GetStatusesBodyDto.toDomain(): GetStatusesBody {
     return GetStatusesBody(
         action = action,

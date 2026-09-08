@@ -608,9 +608,8 @@ fun AddContributorDialog(
                                     contentAlignment = Alignment.Center
                                 )
                                 {
-                                    Box(
-                                        modifier = Modifier.size(150.dp)
-                                    ) {
+                                    Box(modifier = Modifier.size(150.dp))
+                                    {
                                         AsyncImage(
                                             model = uploadedImageUrl,
                                             contentDescription = "",

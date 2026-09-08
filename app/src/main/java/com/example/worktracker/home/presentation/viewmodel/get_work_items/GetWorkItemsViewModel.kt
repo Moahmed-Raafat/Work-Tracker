@@ -1,4 +1,4 @@
-package com.example.worktracker.home.presentation.viewmodel
+package com.example.worktracker.home.presentation.viewmodel.get_work_items
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

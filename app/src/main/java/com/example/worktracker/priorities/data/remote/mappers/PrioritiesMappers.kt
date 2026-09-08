@@ -29,6 +29,16 @@ fun PriorityDto.toDomain(): Priority {
     )
 }
 
+fun Priority.toDto(): PriorityDto {
+    return PriorityDto(
+        id = id,
+        name = name,
+        createdAt = createdAt,
+        updatedAt = updatedAt
+    )
+}
+
+
 fun GetPrioritiesBodyDto.toDomain(): GetPrioritiesBody {
     return GetPrioritiesBody(
         action = action,

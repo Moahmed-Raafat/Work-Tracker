@@ -30,6 +30,17 @@ fun ContributorDto.toDomain(): Contributor
     )
 }
 
+fun Contributor.toDto(): ContributorDto
+{
+    return ContributorDto(
+        id= id,
+        name= name,
+        imageUrl= imageUrl,
+        createdAt= createdAt,
+        updatedAt= updatedAt
+    )
+}
+
 fun GetContributorsBodyDto.toDomain(): GetContributorsBody
 {
     return GetContributorsBody(

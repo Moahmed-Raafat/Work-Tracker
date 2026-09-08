@@ -6,6 +6,8 @@ import com.example.worktracker.home.data.remote.mappers.toDomain
 import com.example.worktracker.home.data.remote.mappers.toDto
 import com.example.worktracker.home.domain.model.AddWorkItemBody
 import com.example.worktracker.home.domain.model.AddWorkItemResponse
+import com.example.worktracker.home.domain.model.GetWorkItemByIdBody
+import com.example.worktracker.home.domain.model.GetWorkItemByIdResponse
 import com.example.worktracker.home.domain.model.GetWorkItemsBody
 import com.example.worktracker.home.domain.model.GetWorkItemsResponse
 import com.example.worktracker.home.domain.repository.WorkItemsRepository
@@ -19,4 +21,7 @@ class WorkItemsRepositoryImpl@Inject constructor(private val serviceAPI: Service
 
     override suspend fun addWorkItem(addWorkItemBody: AddWorkItemBody): AddWorkItemResponse =
         safeApiCall { serviceAPI.addWorkItem(addWorkItemBody.toDto()).toDomain() }
+
+    override suspend fun getWorkItemById(getWorkItemByIdBody: GetWorkItemByIdBody): GetWorkItemByIdResponse =
+        safeApiCall { serviceAPI.getWorkItemById(getWorkItemByIdBody.toDto()).toDomain() }
 }

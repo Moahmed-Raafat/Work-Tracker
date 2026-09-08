@@ -1,6 +1,15 @@
 package com.example.worktracker.home.presentation.composables
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Environment
+import android.provider.MediaStore
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -36,6 +46,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -53,7 +64,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -65,11 +75,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.worktracker.R
 import com.example.worktracker.common.Constants
+import com.example.worktracker.common.cloundinary.CloudinaryUploader.initCloudinary
+import com.example.worktracker.common.cloundinary.CloudinaryUploader.uploadImageToCloudinary
+import com.example.worktracker.contributors.presentation.composables.UploadImageFromCamera
+import com.example.worktracker.contributors.presentation.composables.UploadImageFromGallery
 import com.example.worktracker.contributors.presentation.model.ContributorUI
 import com.example.worktracker.contributors.presentation.viewmodel.get_contributors.GetContributorsViewModel
 import com.example.worktracker.home.presentation.viewmodel.add_work_item.AddWorkItemEvents
@@ -83,6 +98,11 @@ import com.example.worktracker.worktypes.presentation.model.WorkTypeUI
 import com.example.worktracker.worktypes.presentation.viewmodel.get_worktypes.GetWorkTypesViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import java.io.File
+import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -355,6 +375,13 @@ fun AddWorkItem(navController: NavController,
                                     onAddingDescription = { description ->
                                         addedDescription = description
                                     },
+                                    onAddingDocumentation = { url ->
+                                        addedDocumentations = addedDocumentations + url
+                                    },
+                                    onRemovingDocumentation = { url ->
+                                        addedDocumentations = addedDocumentations - url
+                                    },
+                                    addedDocumentations= addedDocumentations,
                                     onSubmit = {
                                         addWorkItemViewModel.addWorkItem(
                                             title = addedTitle,
@@ -538,6 +565,9 @@ fun AddWorkItem(
     onSelectAssignee: (ContributorUI?) -> Unit,
     onAddingTitle: (String) -> Unit,
     onAddingDescription: (String) -> Unit,
+    onAddingDocumentation: (String) -> Unit,
+    onRemovingDocumentation: (String) -> Unit,
+    addedDocumentations: List<String>,
 
     onSubmit: () -> Unit
 )
@@ -547,6 +577,7 @@ fun AddWorkItem(
     val prioritiesListState = rememberLazyListState()
     val assignersListState = rememberLazyListState()
     val assigneesListState = rememberLazyListState()
+    val documentationsListState = rememberLazyListState()
 
     var selectedWorkType by remember { mutableStateOf<WorkTypeUI?>(null) }
     var selectedStatus by remember { mutableStateOf<StatusUI?>(null) }
@@ -560,6 +591,7 @@ fun AddWorkItem(
     var showImageUploaderGallery by remember { mutableStateOf(false) }
     var showImageUploaderCamera by remember { mutableStateOf(false) }
     var uploadedImageUrl by remember { mutableStateOf<String?>(null) }
+    var uploadingImage by remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
 
@@ -1013,7 +1045,8 @@ fun AddWorkItem(
             itemsIndexed(
                 items = assignersList,
                 key = { _, item -> item.id }
-            ) { index, item ->
+            )
+            { index, item ->
 
                 // Pagination trigger when scrolling near bottom
                 if (index >= assignersList.size - 3)
@@ -1135,8 +1168,97 @@ fun AddWorkItem(
                     )
                 }
 
-                //todo show added images here
-                Spacer(modifier = Modifier.height(25.dp))
+                Spacer(modifier = Modifier.height(10.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    LazyRow(
+                        verticalAlignment = Alignment.CenterVertically,
+                        state = documentationsListState)
+                    {
+                        itemsIndexed(items = addedDocumentations)
+                        { index,item ->
+
+                            Card(
+                                modifier = Modifier
+                                    .padding(0.dp)
+                                    .clickable {
+                                        //todo open the image in full screen
+                                    },
+                                //shape = RoundedCornerShape(20.dp),
+                                //elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color.Transparent
+                                )
+                            )
+                            {
+                                Column(modifier = Modifier.padding(5.dp),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally)
+                                {
+                                    Box(modifier = Modifier.size(150.dp))
+                                    {
+                                        AsyncImage(
+                                            model = item,
+                                            contentDescription = "",
+                                            contentScale = ContentScale.Crop,
+                                            error = painterResource(R.drawable.person),
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .clip(RoundedCornerShape(10.dp)),
+                                            /*onSuccess = {
+                                                onIsUploadingChange(false)
+                                            },
+                                            onError = {
+                                                onIsUploadingChange(false)
+                                            }*/
+                                        )
+
+                                        Icon(
+                                            imageVector = Icons.Rounded.Close,
+                                            contentDescription = "",
+                                            modifier = Modifier
+                                                .align(Alignment.TopEnd)
+                                                .offset(x = (-4).dp, y = (4).dp)
+                                                .size(24.dp)
+                                                .background(
+                                                    colorResource(R.color.white),
+                                                    shape = RoundedCornerShape(50)
+                                                )
+                                                .clickable {
+                                                    onRemovingDocumentation(item)
+                                                }
+                                                .padding(2.dp),
+                                            tint = colorResource(R.color.black)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (uploadingImage) {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+                                    shape = CircleShape
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                strokeWidth = 2.dp
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
 
                 Row(modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
@@ -1266,5 +1388,172 @@ fun AddWorkItem(
         Spacer(modifier = Modifier.height(50.dp))
     }
 
+    if (showImageUploaderGallery)
+    {
+        UploadImageFromGallery (
+            onUploadStarted = {
+                uploadingImage= true
+            },
+            onUploadFinished = { url ->
+                url?.let{
+                    onAddingDocumentation(url)
+                }
+                showImageUploaderGallery = false
+                addAttachmentsButtonIsClicked = false
+                uploadingImage= false
+            },
+            onDismissRequest = {
+                showImageUploaderGallery = false
+                addAttachmentsButtonIsClicked = false
+            }
+        )
+    }
+    if (showImageUploaderCamera)
+    {
+        UploadImageFromCamera(
+            onUploadStarted = {
+                uploadingImage= true
+            },
+            onUploadFinished = { url ->
+                url?.let{
+                    onAddingDocumentation(url)
+                }
+                showImageUploaderCamera = false
+                addAttachmentsButtonIsClicked = false
+                uploadingImage= false
+            },
+            onDismissRequest = {
+                showImageUploaderCamera = false
+                addAttachmentsButtonIsClicked = false
+            }
+        )
+    }
 }
 
+@Composable
+fun UploadImageFromGallery(
+    onUploadStarted: () -> Unit,
+    onUploadFinished: (String?) -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    val context = LocalContext.current
+    //var tempImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    // Initialize Cloudinary once
+    LaunchedEffect(Unit) {
+        initCloudinary(context)
+    }
+
+    // 1. Launcher for Gallery Selection
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let {
+            //onDismissRequest()
+
+            onUploadStarted()
+            uploadImageToCloudinary(context, it) { url ->
+                onUploadFinished(url)
+
+            }
+        }?: onDismissRequest()
+    }
+
+    //upload image from gallery
+    LaunchedEffect(Unit) {
+        galleryLauncher.launch("image/*")
+    }
+}
+
+@Composable
+fun UploadImageFromCamera(
+    onUploadStarted: () -> Unit,
+    onUploadFinished: (String?) -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    val context = LocalContext.current
+    var tempImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    // Initialize Cloudinary once
+    LaunchedEffect(Unit) {
+        initCloudinary(context)
+    }
+
+    // 2. Launcher for Taking Picture
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            tempImageUri?.let { uri ->
+
+                //onDismissRequest()
+
+                onUploadStarted()
+
+                // Compress and upload
+                val compressedFile = compressImage(context, uri)
+                val compressedUri = Uri.fromFile(compressedFile)
+                uploadImageToCloudinary(context, compressedUri) { url ->
+                    onUploadFinished(url)
+                    // Clean up temp files
+                    File(uri.path ?: "").delete()
+                    compressedFile.delete()
+                }
+            }
+        }
+        else
+        {
+            onDismissRequest()
+        }
+    }
+
+
+    // 3. Permission Launcher for CAMERA
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            if (isGranted) {
+                val file = File(
+                    context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                    "camera_image_${System.currentTimeMillis()}.jpg"
+                )
+                val uri = FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.provider",
+                    file
+                )
+                tempImageUri = uri
+                cameraLauncher.launch(uri)
+            }
+            else
+            {
+                Toast.makeText(context, Constants.CAMERA_PERMISSION_IS_REQUIRED, Toast.LENGTH_SHORT).show()
+            }
+        }
+    )
+
+    //capture image from camera
+    LaunchedEffect(Unit) {
+        permissionLauncher.launch(Manifest.permission.CAMERA)
+    }
+}
+
+@SuppressLint("UseKtx")
+fun compressImage(context: Context, imageUri: Uri): File
+{
+    val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
+
+    // Resize
+    val resized = Bitmap.createScaledBitmap(bitmap, 500, 500, true)
+
+    // Compress
+    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
+    val storageDir = context.cacheDir
+    val compressedFile = File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir)
+    val outputStream = FileOutputStream(compressedFile)
+    resized.compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
+    outputStream.flush()
+    outputStream.close()
+
+    return compressedFile
+}

@@ -10,6 +10,7 @@ object Constants {
     const val WORK_TYPE: String = "Work Type"
     const val ABOUT: String = "About"
     const val ADD_WORK_ITEM: String = "Add Work Item"
+    const val WORK_ITEM_DETAILS: String = "Work Item Details"
 
     //actions
     const val GET_CONTRIBUTORS_ACTION: String = "getContributors"
@@ -31,6 +32,7 @@ object Constants {
     const val GET_WORK_ITEMS_ACTION: String = "getWorkItems"
     const val ADD_WORK_ITEM_ACTION: String = "addWorkItem"
     const val UPDATE_WORK_ITEM_ACTION: String = "updateWorkItem"
+    const val GET_WORK_ITEM_BY_ID_ACTION: String = "getWorkItemById"
 
 
 
@@ -122,7 +124,7 @@ object Constants {
     const val CAMERA: String = "Camera"
     const val GALLERY: String = "Gallery"
 
-    const val BASE_URL="https://script.google.com/macros/s/AKfycbzlA4_jGq6wqwmhFHhZsuc7YTc3UVylx_GwzQCfYaDIhYPWKedZNnkVZmQbltTh4ogqZQ/"
+    const val BASE_URL="https://script.google.com/macros/s/AKfycbxgZyc0xRx8gjx6ZpHROVvGU_lQmJ33Nf0e0bN2w1LDjjn-3YrPxKjLEAjKNOjsYXRH5g/"
 
     const val CLOUD_NAME="drnwo9mdm"
     const val API_KEY="817135666282944"

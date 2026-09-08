@@ -10,5 +10,6 @@ sealed class Screens (val route:String)
     data object Statuses:Screens(Constants.STATUSES)
     data object Priorities:Screens(Constants.PRIORITIES)
     data object About:Screens(Constants.ABOUT)
-    data object ADDWorkItem:Screens(Constants.ADD_WORK_ITEM)
+    data object AddWorkItem:Screens(Constants.ADD_WORK_ITEM)
+    data object WorkItemDetails:Screens(Constants.WORK_ITEM_DETAILS)
 }

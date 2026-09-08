@@ -29,6 +29,15 @@ fun WorkTypeDto.toDomain(): WorkType {
     )
 }
 
+fun WorkType.toDto(): WorkTypeDto {
+    return WorkTypeDto(
+        id = id,
+        name = name,
+        createdAt = createdAt,
+        updatedAt = updatedAt
+    )
+}
+
 fun GetWorkTypesBodyDto.toDomain(): GetWorkTypesBody {
     return GetWorkTypesBody(
         action = action,

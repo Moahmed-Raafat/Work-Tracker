@@ -73,7 +73,8 @@ import com.example.worktracker.common.Constants
 import com.example.worktracker.contributors.presentation.model.ContributorUI
 import com.example.worktracker.contributors.presentation.viewmodel.get_contributors.GetContributorsViewModel
 import com.example.worktracker.home.presentation.model.WorkItemUI
-import com.example.worktracker.home.presentation.viewmodel.GetWorkItemsViewModel
+import com.example.worktracker.home.presentation.utils.ShareWorkItemIdViewModel
+import com.example.worktracker.home.presentation.viewmodel.get_work_items.GetWorkItemsViewModel
 import com.example.worktracker.navigation.Screens
 import com.example.worktracker.priorities.presentation.model.PriorityUI
 import com.example.worktracker.priorities.presentation.viewmodel.get_priorities.GetPrioritiesViewModel
@@ -96,7 +97,8 @@ fun Home(navController: NavController,
          getStatusesViewModel: GetStatusesViewModel,
          getPrioritiesViewModel: GetPrioritiesViewModel,
          getAssignersViewModel: GetContributorsViewModel,
-         getAssigneesViewModel: GetContributorsViewModel
+         getAssigneesViewModel: GetContributorsViewModel,
+         shareWorkItemIdViewModel: ShareWorkItemIdViewModel
 )
 {
     val context = LocalContext.current.applicationContext
@@ -279,7 +281,7 @@ fun Home(navController: NavController,
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = {
-                        navController.navigate(Screens.ADDWorkItem.route)
+                        navController.navigate(Screens.AddWorkItem.route)
                     },
                     contentColor = Color.White,
                     containerColor = colorResource(R.color.color_d)
@@ -413,10 +415,12 @@ fun Home(navController: NavController,
                                     Spacer(modifier = Modifier.fillMaxWidth().height(10.dp))
 
                                     ShowList(
+                                        navController = navController,
                                         context = context,
                                         list = items,
                                         resetSignal = getWorkItemsState.resetToken,
-                                        onLoadMore = { getWorkItemsViewModel.loadNextPage() }
+                                        onLoadMore = { getWorkItemsViewModel.loadNextPage() },
+                                        shareWorkItemIdViewModel= shareWorkItemIdViewModel
                                     )
                                 }
                                 else if(!getWorkItemsState.isLoading)
@@ -874,13 +878,14 @@ fun ShowFilters(
 @SuppressLint("UseKtx", "ResourceAsColor")
 @Composable
 fun ShowList(
+    navController: NavController,
     context: Context,
     list: List<WorkItemUI>,
     resetSignal: Int,
-    onLoadMore: () -> Unit
+    onLoadMore: () -> Unit,
+    shareWorkItemIdViewModel: ShareWorkItemIdViewModel
 ) {
     val listState = rememberLazyListState()
-    var selectedWorkItem by remember { mutableStateOf<WorkItemUI?>(null) }
 
     LaunchedEffect(resetSignal) {
         listState.scrollToItem(0, 0)
@@ -908,8 +913,8 @@ fun ShowList(
                     .fillMaxWidth()
                     .padding(5.dp)
                     .clickable {
-                        //todo show details
-                        selectedWorkItem = item
+                        shareWorkItemIdViewModel.workItemId= item.id
+                        navController.navigate(Screens.WorkItemDetails.route)
                     },
                 shape = RoundedCornerShape(7.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
