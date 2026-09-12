@@ -145,10 +145,21 @@ fun Navigation()
         {
             val getWorkItemByIdViewModel: GetWorkItemByIdViewModel = hiltViewModel()
 
+            val getWorkTypesViewModel: GetWorkTypesViewModel = hiltViewModel()
+            val getStatusesViewModel: GetStatusesViewModel = hiltViewModel()
+            val getPrioritiesViewModel: GetPrioritiesViewModel= hiltViewModel()
+            val getAssignersViewModel: GetContributorsViewModel = hiltViewModel()
+            val getAssigneesViewModel: GetContributorsViewModel = hiltViewModel()
+
             WorkItemDetails(
                 navController = navController,
                 getWorkItemByIdViewModel= getWorkItemByIdViewModel,
-                shareWorkItemIdViewModel= shareWorkItemIdViewModel)
+                shareWorkItemIdViewModel= shareWorkItemIdViewModel,
+                getWorkTypesViewModel= getWorkTypesViewModel,
+                getStatusesViewModel= getStatusesViewModel,
+                getPrioritiesViewModel= getPrioritiesViewModel,
+                getAssignersViewModel= getAssignersViewModel,
+                getAssigneesViewModel= getAssigneesViewModel)
         }
     }
 }
